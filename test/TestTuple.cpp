@@ -11,10 +11,6 @@
 
 using namespace raytracer;
 
-TEST_CASE("tup should not accept a parameter other than 0 or 1 in w", "[tup][point][vector]") {
-    REQUIRE_THROWS(tup{1, 2, 3, 4});
-}
-
 TEST_CASE("tup should be constructible via initializer list", "[tup][initializer_list]") {
     tup t1{1, 2, 3, tup::vector_flag};
     tup t2 = {1, 2, 3, tup::vector_flag};
@@ -78,16 +74,10 @@ TEST_CASE("tup addition should be associative", "[tup][addition][associativity]"
     REQUIRE(tx + (ty + tz) == (tx + ty) + tz);
 }
 
-TEST_CASE("tup should not add points together", "[tup][addition][point]") {
-    tup t1 = tup::point(1, 0, 0);
-    tup t2 = tup::point(0, 1, 0);
-    REQUIRE_THROWS(t1 + t2);
-}
-
 TEST_CASE("tup should have inverses", "[tup][inverse]") {
     tup t{1, 2, 3, tup::vector_flag};
-    REQUIRE(t - t == tup::zero_vector);
-    REQUIRE(t + (-t) == tup::zero_vector);
+    REQUIRE(t - t == tup_constants::zero_vector);
+    REQUIRE(t + (-t) == tup_constants::zero_vector);
 }
 
 TEST_CASE("tup subtraction should not be commutative", "[tup][subtraction][commutativity]") {
@@ -142,10 +132,6 @@ TEST_CASE("tup dot product should be distributive", "[tup][dot_product][distribu
     REQUIRE(t1 * (t2 + t3) == t1 * t2 + t1 * t3);
 }
 
-TEST_CASE("tup point should not be able to calculate dot product", "[tup][dot_product][point]") {
-    REQUIRE_THROWS(tup{1, 2, 3, tup::vector_flag} * tup{2, 4, 8, tup::point_flag});
-}
-
 TEST_CASE("tup should be able to calculate cross product", "[tup][cross_product][vector]") {
     tup tx{1, 0, 0, tup::vector_flag};
     tup ty{0, 1, 0, tup::vector_flag};
@@ -164,9 +150,9 @@ TEST_CASE("tup cross product should be self-inverting", "[tup][cross_product][in
     tup ty{0, 1, 0, tup::vector_flag};
     tup tz{0, 0, 1, tup::vector_flag};
 
-    REQUIRE(tx % tx == tup::zero_vector);
-    REQUIRE(ty % ty == tup::zero_vector);
-    REQUIRE(tz % tz == tup::zero_vector);
+    REQUIRE(tx % tx == tup_constants::zero_vector);
+    REQUIRE(ty % ty == tup_constants::zero_vector);
+    REQUIRE(tz % tz == tup_constants::zero_vector);
 }
 
 TEST_CASE("tup cross product is not associative", "[tup][cross_product][associativity]") {
@@ -203,4 +189,14 @@ TEST_CASE("tup comparison equality should be able to tolerate slight offsets", "
     tup t1 = tup::point(1, 0, 0);
     tup t2 = tup::point(1 - EPSILON/2, EPSILON/2, -EPSILON/2);
     REQUIRE(t1 == t2);
+}
+
+TEST_CASE("tup should calculate the magnitude of a vector", "[tup][magnitude]") {
+    tup t = tup::vector(1, 4, 8);
+    REQUIRE(t.magnitude() == 9);
+}
+
+TEST_CASE("tup normalization should produce a vector of magnitude 1", "[tup][normalization]") {
+    tup t = tup::vector(1, 4, 8);
+    REQUIRE(t.normalize().magnitude() == 1);
 }

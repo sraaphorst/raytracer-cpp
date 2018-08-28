@@ -11,6 +11,10 @@
 #include <ostream>
 #include <string>
 
+#include "common.h"
+#include "init_list.h"
+#include "sqrt.h"
+
 namespace raytracer {
     using tup_contents = std::array<double, 4>;
 
@@ -18,49 +22,119 @@ namespace raytracer {
     private:
         const tup_contents contents;
 
-        void check() const;
-        void check_vector(std::string op) const;
+        constexpr void check_vector() const {
+            if (contents[w] != vector_flag)
+                throw std::invalid_argument("tup operation requires vectors");
+        }
 
     public:
-        tup(const tup_contents &contents);
-        tup(tup_contents&& contents);
-        tup(const tup &other);
-        tup(tup&& other);
+        constexpr explicit tup(const tup_contents &contents): contents{contents} {};
+        constexpr explicit tup(tup_contents&& contents): contents{contents} {};
+        constexpr explicit tup(const tup &other) = default;
+        constexpr explicit tup(tup&& other) = default;
+        constexpr tup(const std::initializer_list<double> lst): contents{idx(lst)[x], idx(lst)[y], idx(lst)[z], idx(lst)[w]} {}
 
-        /// This creates a bunch of intermediate objects and thus is not very efficient.
-        tup(std::initializer_list<double> lst);
+        template<size_t N>
+        constexpr tup(const double (&arr)[N]): contents{arr} {
+            static_assert(N == 4, "tup must be initialized with four values");
+        };
 
-        inline bool isPoint() const { return contents[w] == 1; };
-        inline bool isVector() const { return contents[w] == 0; };
+        constexpr inline bool isPoint() const noexcept { return contents[w] == point_flag; };
+        constexpr inline bool isVector() const noexcept { return contents[w] == vector_flag; };
 
-        const tup operator+(const tup &other) const;
-        const tup operator-(const tup &other) const;
-        const tup operator*(double factor) const;
-        const tup operator/(double denominator) const;
-        const tup operator-() const;
+        constexpr tup operator+(const tup &other) const noexcept {
+            return tup({contents[x] + other[x], contents[y] + other[y], contents[z] + other[z], contents[w] + other[w]});
+        }
+
+        constexpr tup operator-(const tup &other) const noexcept {
+            return tup({contents[x] - other[x], contents[y] - other[y], contents[z] - other[z], contents[w] - other[w]});
+        }
+
+        constexpr tup operator*(double factor) const noexcept {
+            return tup({factor * contents[x], factor * contents[y], factor * contents[z], factor * contents[w]});
+        }
+
+        constexpr tup operator/(double denominator) const noexcept {
+            return tup({contents[x] / denominator, contents[y] / denominator, contents[z] / denominator, contents[w] / denominator});
+        }
+
+        constexpr tup operator-() const noexcept {
+            return tup({-contents[x], -contents[y], -contents[z], -contents[w]});
+        }
 
         /// Dot product
-        const double operator*(const tup &other) const;
+        constexpr double operator*(const tup &other) const noexcept {
+            return contents[x] * other[x] + contents[y] * other[y] + contents[z] * other[z] + contents[w] * other[w];
+        }
 
         /// Cross product
-        const tup operator%(const tup &other) const;
+        constexpr tup operator%(const tup &other) const {
+            check_vector();
+            other.check_vector();
+            return tup({
+                contents[y] * other[z] - contents[z] * other[y],
+                contents[z] * other[x] - contents[x] * other[z],
+                contents[x] * other[y] - contents[y] * other[x],
+                vector_flag
+            });
+        }
 
-        bool operator==(const tup &rhs) const;
-        bool operator!=(const tup &rhs) const;
-        double operator[](int pos) const;
+        constexpr bool operator==(const tup &rhs) const noexcept {
+            return ALMOST_EQUALS(contents[x], rhs[x]) &&
+                   ALMOST_EQUALS(contents[y], rhs[y]) &&
+                   ALMOST_EQUALS(contents[z], rhs[z]) &&
+                   ALMOST_EQUALS(contents[w], rhs[w]);
+        }
+
+        constexpr bool operator!=(const tup &rhs) const noexcept {
+            return !(rhs == *this);
+        }
+
+        constexpr double operator[](size_t pos) const noexcept {
+            return contents[pos];
+        }
+
+        /// Magnitude of the tuple.
+        constexpr double magnitude() const noexcept {
+            return sqrtd(
+                    contents[x] * contents[x] +
+                    contents[y] * contents[y] +
+                    contents[z] * contents[z] +
+                    contents[w] * contents[w]
+                    );
+        }
+
+        /// Normalization of the tuple.
+        constexpr tup normalize() const noexcept {
+            return *this / magnitude();
+        }
+
+        /// Factory methods.
+        constexpr static tup point(double dx, double dy, double dz) noexcept {
+            return tup({dx, dy, dz, point_flag});
+        }
+
+        constexpr static tup vector(double dx, double dy, double dz) noexcept {
+            return tup({dx, dy, dz, vector_flag});
+        }
 
         friend std::ostream &operator<<(std::ostream &os, const tup &tup);
         friend tup operator*(double factor, const tup &t);
 
-        static const double point_flag;
-        static const double vector_flag;
-        static const tup zero_point;
-        static const tup zero_vector;
-        static const int x, y, z, w;
+        constexpr static double point_flag = 1;
+        constexpr static double vector_flag = 0;
+        constexpr static int x = 0;
+        constexpr static int y = 1;
+        constexpr static int z = 2;
+        constexpr static int w = 3;
+    };
 
-        /// Factory methods.
-        static tup point(double dx, double dy, double dz);
-        static tup vector(double dx, double dy, double dz);
+    struct tup_constants {
+        static constexpr tup zero_point{{0, 0, 0, tup::point_flag}};
+        static constexpr tup zero_vector{{0, 0, 0, tup::vector_flag}};
+        static constexpr tup x1{{1, 0, 0, tup::vector_flag}};
+        static constexpr tup y1{{0, 1, 0, tup::vector_flag}};
+        static constexpr tup z1{{0, 0, 1, tup::vector_flag}};
     };
 }
 

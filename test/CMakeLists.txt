@@ -14,8 +14,5 @@ set(TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 add_executable(tests ${TEST_SOURCES})
 target_link_libraries(tests Catch)
 
-add_executable(TestConcatenation TestConcatenation.cpp ${TEST_SOURCES})
-target_link_libraries(TestConcatenation Catch raytracer)
-
 add_executable(TestTuple TestTuple.cpp ${TEST_SOURCES})
 target_link_libraries(TestTuple Catch raytracer)
