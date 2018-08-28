@@ -13,7 +13,7 @@
 
 #include "common.h"
 #include "init_list.h"
-#include "sqrt.h"
+#include "constmath.h"
 
 namespace raytracer {
     using tup_contents = std::array<double, 4>;

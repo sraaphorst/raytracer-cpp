@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <cmath>
+#include "constmath.h"
 
 #define EPSILON 1e-5
-#define ALMOST_EQUALS(x, y) (std::abs((x) - (y)) < EPSILON)
+#define ALMOST_EQUALS(x, y) (absd((x) - (y)) < EPSILON)

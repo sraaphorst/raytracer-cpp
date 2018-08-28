@@ -22,4 +22,8 @@ namespace raytracer {
                ? sqrtNewtonRaphson(x, x, 0)
                : std::numeric_limits<double>::quiet_NaN();
     }
+
+    constexpr double absd(const double d) {
+        return d >= 0 ? d : -d;
+    }
 }
