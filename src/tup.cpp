@@ -4,11 +4,14 @@
  * By Sebastian Raaphorst, 2018.
  */
 
+#include <cmath>
 #include <initializer_list>
 #include <stdexcept>
 #include <sstream>
+#include <string>
 #include <tuple>
 
+#include "common.h"
 #include "tup.h"
 
 namespace raytracer {
@@ -63,49 +66,57 @@ namespace raytracer {
         }
     }
 
-    void tup::check_vector() const {
-        if (contents[3] != 1) {
+    void tup::check_vector(const std::string op) const {
+        if (contents[3] != vector_flag) {
             std::stringstream str;
-            str << "tup operation requires vectors and not points";
+            str << "tup operation " << op << " requires vectors and not points";
             throw std::invalid_argument(str.str());
         }
     }
 
     const tup tup::operator+(const tup &other) const {
-        return tup{contents[x] + other[x], contents[y] + other[y], contents[z] + other[z], 1};
+        return tup{contents[x] + other[x], contents[y] + other[y], contents[z] + other[z], contents[w] + other[w]};
     }
 
     const tup tup::operator-(const tup &other) const {
-        return tup{contents[x] - other[x], contents[y] - other[y], contents[z] - other[z], 1};
+        return tup{contents[x] - other[x], contents[y] - other[y], contents[z] - other[z], contents[w] - other[w]};
     }
 
     const tup tup::operator*(double factor) const {
-        return tup{factor * contents[x], factor * contents[y], factor * contents[z], 1};
+        return tup{factor * contents[x], factor * contents[y], factor * contents[z], contents[w]};
     }
 
+    const tup tup::operator/(double denominator) const {
+        if (denominator == 0)
+            throw std::invalid_argument("tup division by 0");
+        return tup{contents[x] / denominator, contents[y] / denominator, contents[z] / denominator, contents[w]};
+    }
     const tup tup::operator-() const {
         return tup{-contents[x], -contents[y], -contents[z], contents[w]};
     }
 
     const double tup::operator*(const tup &other) const {
-        check_vector();
-        other.check_vector();
+        check_vector("*");
+        other.check_vector("*");
         return contents[x] * other[x] + contents[y] * other[y] + contents[z] * other[z];
     }
 
     const tup tup::operator%(const tup &other) const {
-        check_vector();
-        other.check_vector();
+        check_vector("%");
+        other.check_vector("%");
         return tup{
             contents[y] * other[z] - contents[z] * other[y],
             contents[z] * other[x] - contents[x] * other[z],
             contents[x] * other[y] - contents[y] * other[x],
-            1
+            vector_flag
         };
     }
 
     bool tup::operator==(const tup &rhs) const {
-        return contents == rhs.contents;
+        for (int i=0; i < 3; ++i)
+            if (!ALMOST_EQUALS(contents[i], rhs[i]))
+                return false;
+        return contents[3] == rhs[3];
     }
 
     bool tup::operator!=(const tup &rhs) const {
@@ -121,15 +132,27 @@ namespace raytracer {
         return contents[pos];
     }
 
-    tup tup::zero_point{0, 0, 0, 0};
-    tup tup::zero_vector{0, 0, 0, 1};
-    int tup::x = 0;
-    int tup::y = 1;
-    int tup::z = 2;
-    int tup::w = 3;
+    tup tup::point(double dx, double dy, double dz) {
+        return tup{dx, dy, dz, point_flag};
+    }
+
+    tup tup::vector(double dx, double dy, double dz) {
+        return tup{dx, dy, dz, vector_flag};
+    }
+
+    const double tup::point_flag = 1;
+    const double tup::vector_flag = 0;
+    const tup tup::zero_point{0, 0, 0, tup::point_flag};
+    const tup tup::zero_vector{0, 0, 0, tup::vector_flag};
+    const int tup::x = 0;
+    const int tup::y = 1;
+    const int tup::z = 2;
+    const int tup::w = 3;
 
     std::ostream &operator<<(std::ostream &os, const tup &tup) {
-        return os << '(' << tup[0] << ", " << tup[1] << ", " << tup[2] << ", " << tup[3] << ')';
+
+        return os << (tup.isPoint() ? "point" : "vector") <<
+            '(' << tup[0] << ", " << tup[1] << ", " << tup[2] << ", " << ')';
     }
 
     tup operator*(double factor, const tup &t) {
