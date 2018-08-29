@@ -16,3 +16,9 @@ target_link_libraries(tests Catch)
 
 add_executable(TestTuple TestTuple.cpp ${TEST_SOURCES})
 target_link_libraries(TestTuple Catch raytracer)
+
+add_executable(TestColour TestColour.cpp ${TEST_SOURCES})
+target_link_libraries(TestColour Catch raytracer)
+
+add_executable(TestCanvas TestCanvas.cpp ${TEST_SOURCES})
+target_link_libraries(TestCanvas Catch raytracer)

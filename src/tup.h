@@ -18,7 +18,7 @@
 namespace raytracer {
     using tup_contents = std::array<double, 4>;
 
-    class tup final {
+    class tup {
     private:
         const tup_contents contents;
 
@@ -30,14 +30,16 @@ namespace raytracer {
     public:
         constexpr explicit tup(const tup_contents &contents): contents{contents} {};
         constexpr explicit tup(tup_contents&& contents): contents{contents} {};
-        constexpr explicit tup(const tup &other) = default;
-        constexpr explicit tup(tup&& other) = default;
+        constexpr tup(const tup &other) = default;
+        constexpr tup(tup&& other) = default;
         constexpr tup(const std::initializer_list<double> lst): contents{idx(lst)[x], idx(lst)[y], idx(lst)[z], idx(lst)[w]} {}
 
         template<size_t N>
-        constexpr tup(const double (&arr)[N]): contents{arr} {
+        constexpr explicit tup(const double (&arr)[N]): contents{arr} {
             static_assert(N == 4, "tup must be initialized with four values");
         };
+
+        ~tup() = default;
 
         constexpr inline bool isPoint() const noexcept { return contents[w] == point_flag; };
         constexpr inline bool isVector() const noexcept { return contents[w] == vector_flag; };
@@ -63,12 +65,12 @@ namespace raytracer {
         }
 
         /// Dot product
-        constexpr double operator*(const tup &other) const noexcept {
+        constexpr double dot_product(const tup &other) const noexcept {
             return contents[x] * other[x] + contents[y] * other[y] + contents[z] * other[z] + contents[w] * other[w];
         }
 
         /// Cross product
-        constexpr tup operator%(const tup &other) const {
+        constexpr tup cross_product(const tup &other) const {
             check_vector();
             other.check_vector();
             return tup({
@@ -76,6 +78,18 @@ namespace raytracer {
                 contents[z] * other[x] - contents[x] * other[z],
                 contents[x] * other[y] - contents[y] * other[x],
                 vector_flag
+            });
+        }
+
+        /// Hadamard product
+        constexpr tup hadamard_product(const tup &other) const {
+            check_vector();
+            other.check_vector();
+            return tup({
+               contents[x] * other[x],
+               contents[y] * other[y],
+               contents[z] * other[z],
+               contents[w] * other[w]
             });
         }
 

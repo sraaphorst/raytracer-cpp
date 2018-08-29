@@ -18,19 +18,18 @@ TEST_CASE("tup should be constructible via initializer list", "[tup][initializer
 }
 
 TEST_CASE("tup should be indexable", "[tup][index]") {
-    tup t = tup::point(0, 1, 2);
-    REQUIRE(t[0] == 0);
+    tup t = tup::point(3, 1, 2);
+    REQUIRE(t[0] == 3);
     REQUIRE(t[1] == 1);
     REQUIRE(t[2] == 2);
-    REQUIRE(t.isPoint());
 }
 
-TEST_CASE("tup with w=0 is a point", "[tup][point]") {
+TEST_CASE("tup with w=1 is a point", "[tup][point]") {
     tup t{1, 1, 1, tup::point_flag};
     REQUIRE(t.isPoint());
 }
 
-TEST_CASE("tup with w=1 is a vector", "[tup][vector]") {
+TEST_CASE("tup with w=0 is a vector", "[tup][vector]") {
     tup t{1, 1, 1, tup::vector_flag};
     REQUIRE(t.isVector());
 }
@@ -67,9 +66,9 @@ TEST_CASE("tup addition should be commutative", "[tup][addition][commutativity]"
 }
 
 TEST_CASE("tup addition should be associative", "[tup][addition][associativity]") {
-    tup tx{1, 0, 0, tup::vector_flag};
-    tup ty{0, 1, 0, tup::vector_flag};
-    tup tz{0, 0, 1, tup::vector_flag};
+    const tup &tx = tup_constants::x1;
+    const tup &ty = tup_constants::y1;
+    const tup &tz = tup_constants::z1;
 
     REQUIRE(tx + (ty + tz) == (tx + ty) + tz);
 }
@@ -88,9 +87,9 @@ TEST_CASE("tup subtraction should not be commutative", "[tup][subtraction][commu
 }
 
 TEST_CASE("tup subtraction should not be associative", "[tup][subtraction][associativity]") {
-    tup tx{1, 0, 0, tup::vector_flag};
-    tup ty{0, 1, 0, tup::vector_flag};
-    tup tz{0, 0, 1, tup::vector_flag};
+    const tup &tx = tup_constants::x1;
+    const tup &ty = tup_constants::y1;
+    const tup &tz = tup_constants::z1;
 
     REQUIRE(tx - (ty - tz) != (tx - ty) - tz);
 }
@@ -116,65 +115,65 @@ TEST_CASE("tup subtraction of two vectors should result in a vector", "[tup][sub
 TEST_CASE("tup should be able to calculate dot product", "[tup][dot_product][vector]") {
     tup t1{1, 1, 1, tup::vector_flag};
     tup t2{2, 4, 8, tup::vector_flag};
-    REQUIRE(t1 * t2 == 14);
+    REQUIRE(t1.dot_product(t2) == 14);
 }
 
 TEST_CASE("tup dot product should be commutative", "[tup][dot_product][commutativity]") {
     tup t1{1, 2, 3, tup::vector_flag};
     tup t2{2, 4, 6, tup::vector_flag};
-    REQUIRE(t1 * t2 == t2 * t1);
+    REQUIRE(t1.dot_product(t2) == t2.dot_product(t1));
 }
 
 TEST_CASE("tup dot product should be distributive", "[tup][dot_product][distributivity]") {
     tup t1{1, 2, 3, tup::vector_flag};
     tup t2{2, 4, 6, tup::vector_flag};
     tup t3{-1, -2, -3, tup::vector_flag};
-    REQUIRE(t1 * (t2 + t3) == t1 * t2 + t1 * t3);
+    REQUIRE(t1.dot_product(t2 + t3) == t1.dot_product(t2) + t1.dot_product(t3));
 }
 
 TEST_CASE("tup should be able to calculate cross product", "[tup][cross_product][vector]") {
-    tup tx{1, 0, 0, tup::vector_flag};
-    tup ty{0, 1, 0, tup::vector_flag};
-    tup tz{0, 0, 1, tup::vector_flag};
+    const tup &tx = tup_constants::x1;
+    const tup &ty = tup_constants::y1;
+    const tup &tz = tup_constants::z1;
 
-    REQUIRE(tx % ty == tz);
-    REQUIRE(ty % tx == -tz);
-    REQUIRE(tx % tz == -ty);
-    REQUIRE(tz % tx == ty);
-    REQUIRE(ty % tz == tx);
-    REQUIRE(tz % ty == -tx);
+    REQUIRE(tx.cross_product(ty) == tz);
+    REQUIRE(ty.cross_product(tx) == -tz);
+    REQUIRE(tx.cross_product(tz) == -ty);
+    REQUIRE(tz.cross_product(tx) == ty);
+    REQUIRE(ty.cross_product(tz) == tx);
+    REQUIRE(tz.cross_product(ty) == -tx);
 }
 
 TEST_CASE("tup cross product should be self-inverting", "[tup][cross_product][inverse]") {
-    tup tx{1, 0, 0, tup::vector_flag};
-    tup ty{0, 1, 0, tup::vector_flag};
-    tup tz{0, 0, 1, tup::vector_flag};
+    const tup &tx = tup_constants::x1;
+    const tup &ty = tup_constants::y1;
+    const tup &tz = tup_constants::z1;
 
-    REQUIRE(tx % tx == tup_constants::zero_vector);
-    REQUIRE(ty % ty == tup_constants::zero_vector);
-    REQUIRE(tz % tz == tup_constants::zero_vector);
+    REQUIRE(tx.cross_product(tx) == tup_constants::zero_vector);
+    REQUIRE(ty.cross_product(ty) == tup_constants::zero_vector);
+    REQUIRE(tz.cross_product(tz) == tup_constants::zero_vector);
 }
 
 TEST_CASE("tup cross product is not associative", "[tup][cross_product][associativity]") {
-    tup txy{1, 1, 0, tup::vector_flag};
-    tup ty{0, 1, 0, tup::vector_flag};
-    tup tz{0, 0, 1, tup::vector_flag};
+    const tup txy = tup_constants::x1 + tup_constants::y1;
+    const tup &ty = tup_constants::y1;
+    const tup &tz = tup_constants::z1;
 
-    REQUIRE(txy % (ty % tz) != (txy % ty) % tz);
+    REQUIRE(txy.cross_product(ty.cross_product(tz)) != txy.cross_product(ty).cross_product(tz));
 }
 
 TEST_CASE("tup cross product is not commutative", "[tup][cross_product][commutativity]") {
-    tup tx{1, 0, 0, tup::vector_flag};
-    tup ty{0, 1, 0, tup::vector_flag};
-    tup tz{0, 0, 1, tup::vector_flag};
+    const tup &tx = tup_constants::x1;
+    const tup &ty = tup_constants::y1;
+    const tup &tz = tup_constants::z1;
 
-    REQUIRE(tx % ty != ty % tx);
-    REQUIRE(tx % tz != tz % tx);
-    REQUIRE(ty % tz != tz % ty);
+    REQUIRE(tx.cross_product(ty) != ty.cross_product(tx));
+    REQUIRE(tx.cross_product(tz) != tz.cross_product(tx));
+    REQUIRE(ty.cross_product(tz) != tz.cross_product(ty));
 }
 
 TEST_CASE("tup point should not be able to calculate cross product", "[tup][cross_product][point]") {
-    REQUIRE_THROWS(tup{1, 0, 0, tup::vector_flag} % tup{0, 1, 0, tup::point_flag});
+    REQUIRE_THROWS(tup{1, 0, 0, tup::vector_flag}.cross_product(tup{0, 1, 0, tup::point_flag}));
 }
 
 TEST_CASE("tup point should create a point", "[tup][point]") {
