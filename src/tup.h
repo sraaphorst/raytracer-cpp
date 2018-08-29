@@ -10,6 +10,7 @@
 #include <initializer_list>
 #include <ostream>
 #include <string>
+#include <tuple>
 
 #include "common.h"
 #include "init_list.h"
@@ -121,6 +122,11 @@ namespace raytracer {
         /// Normalization of the tuple.
         constexpr tup normalize() const noexcept {
             return *this / magnitude();
+        }
+
+        /// Output as a tuple to get all vals at once.
+        constexpr std::tuple<const double&, const double&, const double&, const double&> asTuple() const {
+            return std::tie(contents[x], contents[y], contents[z], contents[w]);
         }
 
         /// Factory methods.
