@@ -8,8 +8,8 @@
 #include <iostream>
 #include <memory>
 
-#include <tup.h>
 #include <projectile.h>
+#include <tup.h>
 #include <world.h>
 
 using namespace raytracer;

@@ -12,6 +12,7 @@
 #include <memory>
 #include <ostream>
 
+#include "constmath.h"
 #include "colour.h"
 
 namespace raytracer {
@@ -47,16 +48,40 @@ namespace raytracer {
         /// Create a stream representing this as a PPM file.
         friend std::ostream &operator<<(std::ostream &ostr, const canvas<width, height> &c) {
             ostr << "P3\n" << width << ' ' << height << '\n' << colour::maxvalue << '\n';
+
+            int linewidth = 0;
             for (auto j=0; j < height; ++j) {
+                bool first = true;
+
                 for (auto i=0; i < width; ++i) {
                     for (auto rgb = 0; rgb < 3; ++rgb) {
-                        int cval = (int) ((*c[i][j])[rgb] * colour::maxvalue + 0.5);
+                        auto cval = (int) ((*c[i][j])[rgb] * colour::maxvalue + 0.5);
                         auto val = std::max(0, std::min(cval, colour::maxvalue));
-                        ostr << val << (i == width - 1 && rgb == 2 ? "" : " ");
+
+                        // Constrain lines to 70 characters as per PPM specifications.
+                        auto valwidth = numDigits(val);
+                        if (linewidth + 1 + valwidth > 70) {
+                            ostr << '\n';
+                            linewidth = 0;
+                            first = true;
+                        }
+
+                        // Separate by spaces.
+                        if (first)
+                            first = false;
+                        else {
+                            ostr << ' ';
+                            ++linewidth;
+                        }
+
+                        ostr << val;
+                        linewidth += valwidth;
                     }
-                    if (i == width - 1 && j < height - 1)
-                        ostr << '\n';
                 }
+
+                // We always want a newline at the end of the output as per PPM specification.
+                ostr << '\n';
+                linewidth = 0;
             }
             return ostr;
         }

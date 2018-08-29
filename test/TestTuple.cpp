@@ -4,7 +4,7 @@
  * By Sebastian Raaphorst, 2018.
  */
 
-#include <catch.hpp>
+#include "catch.hpp"
 
 #include "common.h"
 #include "tup.h"

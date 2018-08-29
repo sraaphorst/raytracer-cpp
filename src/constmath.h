@@ -26,4 +26,16 @@ namespace raytracer {
     constexpr double absd(const double d) {
         return d >= 0 ? d : -d;
     }
+
+    template <class T>
+    constexpr int numDigits(T number)
+    {
+        int digits = 0;
+        if (number < 0) digits = 1;
+        while (number) {
+            number /= 10;
+            digits++;
+        }
+        return digits;
+    }
 }

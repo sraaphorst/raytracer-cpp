@@ -4,7 +4,7 @@
  * By Sebastian Raaphorst, 2018.
  */
 
-#include <catch.hpp>
+#include "catch.hpp"
 
 #include <algorithm>
 #include <array>
@@ -22,8 +22,8 @@ constexpr int height = 10;
 
 TEST_CASE("canvas initializes to black", "[canvas][initialization]") {
     canvas<width, height> c;
-    for (int i=0; i < width; ++i)
-        for (int j=0; j < height; ++j)
+    for (auto i=0; i < width; ++i)
+        for (auto j=0; j < height; ++j)
             REQUIRE(*(c[i][j]) == colour_constants::black);
 }
 
@@ -41,12 +41,12 @@ TEST_CASE("canvas can be written to", "[canvas][set]") {
             colour_ptrs.begin(),
             [](auto c){ return colour_ptr_t{new colour{c}}; });
 
-    for (int i=0; i < width; ++i)
-        for (int j=0; j < width; ++j)
+    for (auto i=0; i < width; ++i)
+        for (auto j=0; j < width; ++j)
             c[i][j] = colour_ptrs[(i + j) % 3];
 
-    for (int i=0; i < width; ++i)
-        for (int j=0; j < height; ++j)
+    for (auto i=0; i < width; ++i)
+        for (auto j=0; j < height; ++j)
             REQUIRE(*(c[i][j]) == colours[(i + j) % 3]);
 }
 
@@ -59,7 +59,25 @@ TEST_CASE("canvas outputs as PPM", "[canvas][ppm]") {
     auto s = "P3\n5 3\n" + std::to_string(colour::maxvalue) + '\n' +
             "255 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n"
             "0 0 0 0 0 0 0 128 0 0 0 0 0 0 0\n"
-            "0 0 0 0 0 0 0 0 0 0 0 0 0 0 255";
+            "0 0 0 0 0 0 0 0 0 0 0 0 0 0 255\n";
+
+    std::stringstream ostr;
+    ostr << c;
+    REQUIRE(s == ostr.str());
+}
+
+TEST_CASE("canvas PPM file truncates at 70 characters", "[canvas][ppm]") {
+    canvas<10, 2> c;
+    colour_ptr_t colour_ptr{new colour{1, 0.8, 0.6}};
+    for (auto i=0; i < 10; ++i)
+        for (auto j=0; j < 2; ++j)
+            c[i][j] = colour_ptr;
+
+    auto s = "P3\n10 2\n" + std::to_string(colour::maxvalue) + '\n' +
+            "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204\n"
+            "153 255 204 153 255 204 153 255 204 153 255 204 153\n"
+            "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204\n"
+            "153 255 204 153 255 204 153 255 204 153 255 204 153\n";
 
     std::stringstream ostr;
     ostr << c;
