@@ -10,17 +10,17 @@
 #include <ostream>
 #include <stdexcept>
 
-#include "tup.h"
+#include "tuple.h"
 #include "world.h"
 
 namespace raytracer {
     class projectile {
     private:
-        const tup position;
-        const tup velocity;
+        const Tuple position;
+        const Tuple velocity;
 
     public:
-        constexpr projectile(const tup &position, const tup &velocity): position{position}, velocity{velocity} {
+        constexpr projectile(const Tuple &position, const Tuple &velocity): position{position}, velocity{velocity} {
             if (!position.isPoint())
                 throw std::invalid_argument("projectile requires a position for the first argument");
             if (!velocity.isVector())
@@ -33,16 +33,16 @@ namespace raytracer {
             return std::make_unique<projectile>(position + velocity, velocity + w.gravity + w.wind);
         }
 
-        constexpr const tup &getPosition() const {
+        constexpr const Tuple &getPosition() const {
             return position;
         }
 
-        constexpr const tup &getVelocity() const {
+        constexpr const Tuple &getVelocity() const {
             return velocity;
         }
 
         constexpr bool inAir() const {
-            return position[tup::y] >= 0;
+            return position[Tuple::y] >= 0;
         }
 
         friend std::ostream &operator<<(std::ostream &os, const projectile &projectile);

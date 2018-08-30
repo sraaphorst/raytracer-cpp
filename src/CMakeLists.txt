@@ -5,7 +5,7 @@ project(raytracer VERSION 0.1.0 LANGUAGES CXX)
 
 add_library(raytracer SHARED
         vector.h
-        tup.cpp
+        tuple.h
         projectile.cpp
         world.cpp
         )

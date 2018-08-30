@@ -9,18 +9,18 @@
 #include <stdexcept>
 #include <ostream>
 
-#include "tup.h"
+#include "tuple.h"
 
 namespace raytracer {
     class projectile;
 
     class world {
     private:
-        const tup gravity;
-        const tup wind;
+        const Tuple gravity;
+        const Tuple wind;
 
     public:
-        constexpr world(tup gravity, tup wind): gravity{std::move(gravity)}, wind{std::move(wind)} {
+        constexpr world(Tuple gravity, Tuple wind): gravity{std::move(gravity)}, wind{std::move(wind)} {
             if (!gravity.isVector())
                 throw std::invalid_argument("world requires a vector for the first argument");
             if (!wind.isVector())

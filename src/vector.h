@@ -73,7 +73,9 @@ namespace raytracer {
     private:
         using BiFunction = T (*)(T, T);
         using BoolBiFuncton = bool (*)(T, T);
-        content_t contents;
+
+    protected:
+        const content_t contents;
 
     public:
 
@@ -85,6 +87,8 @@ namespace raytracer {
         /// Variadic template constructor
         template<typename... V>
         constexpr Vector(V... rs) noexcept : contents{{rs...}} {}
+
+        ~Vector() = default;
 
         constexpr const T operator[](size_t idx) const noexcept {
             return contents[idx];
@@ -141,15 +145,19 @@ namespace raytracer {
             return N;
         }
 
-        friend constexpr vector_t operator*(T factor, const vector_t &t) {
+        friend constexpr vector_t operator*(T factor, const vector_t &t) noexcept {
             return t * factor;
         }
 
-        friend std::ostream &operator<<(std::ostream &os, const vector_t &t) {
+        friend std::ostream &operator<<(std::ostream &os, const vector_t &t) noexcept {
             os << "Vector(";
             for (int i=0; i < t.size(); ++i)
                 os << t[i] << (i == t.size() - 1 ? "" : ", ");
             return os << ')';
+        }
+
+        constexpr content_t getContents() const noexcept {
+            return contents;
         }
     };
 }
