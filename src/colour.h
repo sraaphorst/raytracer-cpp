@@ -14,8 +14,8 @@ namespace raytracer {
      */
     class Colour final: public Vector<double, 3> {
     public:
-        constexpr explicit Colour(const content_t &contents) noexcept: Vector{contents} {}
-        constexpr explicit Colour(content_t&& contents): Vector{contents} {}
+        constexpr explicit Colour(const vector_type &contents) noexcept: Vector{contents} {}
+        constexpr explicit Colour(vector_type&& contents): Vector{contents} {}
         constexpr Colour(const Colour &other) = default;
         constexpr Colour(Colour&& other) = default;
         constexpr Colour(double rc, double gc, double bc): Vector{rc, gc, bc} {}

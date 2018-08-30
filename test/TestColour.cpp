@@ -6,6 +6,7 @@
 
 #include "catch.hpp"
 
+#include "common.h"
 #include "colour.h"
 
 using namespace raytracer;

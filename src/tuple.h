@@ -21,8 +21,8 @@ namespace raytracer {
         }
 
     public:
-        constexpr explicit Tuple(const content_t &contents) noexcept : Vector{contents} {}
-        constexpr explicit Tuple(content_t&& contents) noexcept : Vector{contents} {}
+        constexpr explicit Tuple(const vector_type &contents) noexcept : Vector{contents} {}
+        constexpr explicit Tuple(vector_type&& contents) noexcept : Vector{contents} {}
         constexpr Tuple(const Tuple &other) noexcept = default;
         constexpr Tuple(Tuple&& other) noexcept = default;
 

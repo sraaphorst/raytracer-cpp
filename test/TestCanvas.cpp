@@ -6,7 +6,6 @@
 
 #include "catch.hpp"
 
-#include <algorithm>
 #include <array>
 #include <memory>
 #include <string>
