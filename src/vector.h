@@ -14,6 +14,8 @@
 #include "transformers.h"
 
 namespace raytracer {
+    using namespace details;
+
     template<typename T, size_t N,
             typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
     class Vector {
@@ -46,28 +48,32 @@ namespace raytracer {
         }
 
         constexpr Vector operator+(const Vector &t) const noexcept {
-            return Vector{details::bitransform(details::sum<T>, contents, t.contents)};
+            return Vector{contents + t.contents};
         }
 
         constexpr Vector operator-(const Vector &t) const noexcept {
-            return Vector{details::bitransform(details::diff<T>, contents, t.contents)};
+            return Vector{contents - t.contents};
         }
 
         /// The Hadamard product.
         constexpr Vector operator*(const Vector &t) const noexcept {
-            return Vector{details::bitransform(details::mult<T>, contents, t.contents)};
+            return Vector{contents * t.contents};
         }
 
         constexpr Vector operator*(const T t) const noexcept {
-            return Vector(details::unitransform([t](const T &v) { return t * v; }, contents));
+            return Vector{t * contents};
         }
 
         constexpr Vector operator/(const Vector &t) const noexcept {
-            return Vector{details::bitransform(details::div<T>, contents, t.contents)};
+            return Vector{contents / t.contents};
+        }
+
+        constexpr Vector operator/(const T t) const noexcept {
+            return Vector{t / contents};
         }
 
         constexpr Vector operator-() const noexcept {
-            return Vector{details::unitransform(details::neg<T>, contents)};
+            return Vector{-contents};
         }
 
         constexpr bool operator==(const Vector &t) const noexcept {
@@ -79,7 +85,9 @@ namespace raytracer {
         }
 
         constexpr T dot_product(const Vector &t) const noexcept {
-            return details::Reducer<BiFunction, BiFunction, T, T, N, N>::result(details::mult<T>, details::sum<T>, 0,
+            return details::Reducer<T, T, N, N>::result(
+                    [](T t1, T t2) { return t1 * t2; },
+                    [](const T &t1, const T &t2) { return t1 + t2; }, 0,
                     contents, t.contents);
         }
 
@@ -88,7 +96,7 @@ namespace raytracer {
         }
 
         constexpr Vector normalize() const noexcept {
-            return Vector{details::unitransform([this](T t) { return t / magnitude(); }, contents)};
+            return Vector{contents / magnitude()};
         }
 
         static constexpr size_t size() noexcept {
