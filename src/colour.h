@@ -6,41 +6,34 @@
 
 #pragma once
 
-#include <initializer_list>
-
-#include "tup.h"
-#include "init_list.h"
+#include "vector.h"
 
 namespace raytracer {
-    using colour_contents = std::array<double, 3>;
-
     /**
-     * A modification of tup to limit it to three values, i.e. RGB, to represent colours.
+     * A subclass of Vector to limit it to three values, i.e. RGB, to represent Colours.
      */
-    class colour final: public tup {
+    class Colour final: public Vector<double, 3> {
     public:
-        constexpr explicit colour(const colour_contents &contents): tup{tup_contents{contents[r], contents[g], contents[b], 0}} {}
-        constexpr explicit colour(colour_contents&& contents): tup{tup_contents{contents[r], contents[g], contents[b], 0}} {}
-        constexpr colour(const colour &other) = default;
-        constexpr colour(colour&& other) = default;
-        constexpr colour(const std::initializer_list<double> lst): tup{idx(lst)[0], idx(lst)[1], idx(lst)[2], 0} {}
-        constexpr colour(double rc, double gc, double bc): tup{rc, gc, bc, 0} {}
+        constexpr explicit Colour(const content_t &contents) noexcept: Vector{contents} {}
+        constexpr explicit Colour(content_t&& contents): Vector{contents} {}
+        constexpr Colour(const Colour &other) = default;
+        constexpr Colour(Colour&& other) = default;
+        constexpr Colour(double rc, double gc, double bc): Vector{rc, gc, bc} {}
 
-        /// Conversion constructors: we need to be able to convert from tup to colour to use the tup ops on colour.
-        constexpr colour(const tup &t): tup{t} {}
-        constexpr colour(tup&& t): tup{t} {}
+        /// Variadic template constructor
+        template<typename... V>
+        constexpr Colour(V... rs) noexcept : Vector{rs...} {}
 
-        template<size_t N>
-        constexpr explicit colour(const double (&arr)[N]): tup{{arr[0], arr[1], arr[2], 0}} {
-            static_assert(N == 3);
-        }
+        /// Conversion constructors: we need to be able to convert from tup to Colour to use the tup ops on Colour.
+        constexpr Colour(const Vector &v): Vector{v} {}
+        constexpr Colour(Vector&& v): Vector{v} {}
 
-        /// A colour is valid if the RGB entries are in [0,1] and the w coordinate is 0.
+
+        /// A Colour is valid if the RGB entries are in [0,1] and the w coordinate is 0.
         constexpr bool isValid() const {
             return 0 <= (*this)[r] && (*this)[r] <= 1
                 && 0 <= (*this)[g] && (*this)[g] <= 1
-                && 0 <= (*this)[b] && (*this)[b] <= 1
-                && (*this)[w] == 0;
+                && 0 <= (*this)[b] && (*this)[b] <= 1;
         }
 
         static constexpr int r = 0;
@@ -50,10 +43,10 @@ namespace raytracer {
     };
 
     struct colour_constants {
-        static constexpr colour black{0, 0, 0};
-        static constexpr colour white{1, 1, 1};
-        static constexpr colour red  {1, 0, 0};
-        static constexpr colour green{0, 1, 0};
-        static constexpr colour blue {0, 0, 1};
+        static constexpr Colour black{0, 0, 0};
+        static constexpr Colour white{1, 1, 1};
+        static constexpr Colour red  {1, 0, 0};
+        static constexpr Colour green{0, 1, 0};
+        static constexpr Colour blue {0, 0, 1};
     };
 }

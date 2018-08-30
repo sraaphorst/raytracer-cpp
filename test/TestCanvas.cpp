@@ -30,7 +30,7 @@ TEST_CASE("canvas initializes to black", "[canvas][initialization]") {
 TEST_CASE("canvas can be written to", "[canvas][set]") {
     canvas<width, height> c;
 
-    std::array<const colour, 3> colours{
+    std::array<const Colour, 3> colours{
         colour_constants::red,
         colour_constants::green,
         colour_constants::blue
@@ -39,7 +39,7 @@ TEST_CASE("canvas can be written to", "[canvas][set]") {
     std::array<colour_ptr_t, 3> colour_ptrs;
     std::transform(colours.cbegin(), colours.cend(),
             colour_ptrs.begin(),
-            [](auto c){ return colour_ptr_t{new colour{c}}; });
+            [](auto c){ return colour_ptr_t{new Colour{c}}; });
 
     for (auto i=0; i < width; ++i)
         for (auto j=0; j < width; ++j)
@@ -52,11 +52,11 @@ TEST_CASE("canvas can be written to", "[canvas][set]") {
 
 TEST_CASE("canvas outputs as PPM", "[canvas][ppm]") {
     canvas<5, 3> c;
-    c[0][0] = colour_ptr_t{new colour{ 1.5, 0  , 0}};
-    c[2][1] = colour_ptr_t{new colour{ 0  , 0.5, 0}};
-    c[4][2] = colour_ptr_t{new colour{-0.5, 0  , 1}};
+    c[0][0] = colour_ptr_t{new Colour{ 1.5, 0  , 0}};
+    c[2][1] = colour_ptr_t{new Colour{ 0  , 0.5, 0}};
+    c[4][2] = colour_ptr_t{new Colour{-0.5, 0  , 1}};
 
-    auto s = "P3\n5 3\n" + std::to_string(colour::maxvalue) + '\n' +
+    auto s = "P3\n5 3\n" + std::to_string(Colour::maxvalue) + '\n' +
             "255 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n"
             "0 0 0 0 0 0 0 128 0 0 0 0 0 0 0\n"
             "0 0 0 0 0 0 0 0 0 0 0 0 0 0 255\n";
@@ -68,12 +68,12 @@ TEST_CASE("canvas outputs as PPM", "[canvas][ppm]") {
 
 TEST_CASE("canvas PPM file truncates at 70 characters", "[canvas][ppm]") {
     canvas<10, 2> c;
-    colour_ptr_t colour_ptr{new colour{1, 0.8, 0.6}};
+    colour_ptr_t colour_ptr{new Colour{1, 0.8, 0.6}};
     for (auto i=0; i < 10; ++i)
         for (auto j=0; j < 2; ++j)
             c[i][j] = colour_ptr;
 
-    auto s = "P3\n10 2\n" + std::to_string(colour::maxvalue) + '\n' +
+    auto s = "P3\n10 2\n" + std::to_string(Colour::maxvalue) + '\n' +
             "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204\n"
             "153 255 204 153 255 204 153 255 204 153 255 204 153\n"
             "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204\n"

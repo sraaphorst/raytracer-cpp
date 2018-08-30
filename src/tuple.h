@@ -30,6 +30,10 @@ namespace raytracer {
         template<typename... V>
         constexpr Tuple(V... rs) noexcept : Vector{rs...} {}
 
+        /// We need to be able to convert from Vector to use Vector ops.
+        constexpr Tuple(const Vector<double, 4> &v): Vector{v} {}
+        constexpr Tuple(Vector<double, 4>&& v): Vector{v} {}
+
         ~Tuple() = default;
 
         constexpr inline bool isPoint() const noexcept { return (*this)[w] == point_flag; }
