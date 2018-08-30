@@ -1,5 +1,5 @@
 /**
- * tup2.h
+ * vector.h
  *
  * By Sebastian Raaphorst, 2018.
  */
