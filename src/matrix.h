@@ -34,7 +34,7 @@ namespace raytracer {
         }
 
     public:
-        constexpr Matrix() = default;
+        constexpr Matrix() {};
         constexpr Matrix(const matrix_type &contents) noexcept : contents{contents} {}
         constexpr Matrix(matrix_type&& contents) noexcept : contents{contents} {}
         constexpr Matrix(const Matrix&) noexcept = default;
@@ -49,7 +49,7 @@ namespace raytracer {
         constexpr Matrix &operator=(const Matrix&) noexcept = default;
         constexpr Matrix &operator=(Matrix&&) noexcept = default;
 
-        constexpr const row_type &operator[](size_t idx) const {
+        constexpr row_type &operator[](size_t idx) {
             return contents[idx];
         }
 
@@ -91,7 +91,7 @@ namespace raytracer {
             Matrix<T, cols, rows> m;
             for (auto i=0; i < rows; ++i)
                 for (auto j=0; j < cols; ++j)
-                    m.contents[j][i] = contents[i][j];
+                    m[j][i] = contents[i][j];
             return m;
         }
 

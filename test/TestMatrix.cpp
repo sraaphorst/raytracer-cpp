@@ -14,9 +14,9 @@ using namespace raytracer;
 /// Matrices we will reuse multiple times.
 const Matrix<double, 2, 3> m1 = {{0, 1, 2},
                                  {3, 4, 5}};
-const Matrix<double, 3, 2> m2 = {{0, 1},
-                                 {2, 3},
-                                 {4, 5}};
+const Matrix<double, 3, 2> m2 = {{0, 3},
+                                 {1, 4},
+                                 {2, 5}};
 
 TEST_CASE("Matrix should be constructible via initializer list and indexable", "[Matrix][initializer_list][index]") {
     Matrix<double,4,4> m = {{ 1,    2,    3,    4},
@@ -51,7 +51,10 @@ TEST_CASE("Matrix comparison equality should be able to tolerate slight offsets"
     REQUIRE(m1 == m1 - EPSILON/2 * Matrix<double, 2, 3>::ones());
 }
 
-
 TEST_CASE("Matrix should be transposable", "[Matrix][transpose]") {
-    //REQUIRE(m1)
+    REQUIRE(m1.transpose() == m2);
+}
+
+TEST_CASE("Matrix transpose should be self-inverting", "[Matrix][transpose]") {
+    REQUIRE(m1.transpose().transpose() == m1);
 }
