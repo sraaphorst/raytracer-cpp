@@ -13,6 +13,8 @@
 #include "vector.h"
 
 namespace raytracer {
+    using namespace transformers;
+
     class Tuple final: public Vector<double, 4> {
     private:
         constexpr void check_vector() const {

@@ -12,7 +12,7 @@
 #include "transformers.h"
 
 namespace raytracer {
-    using namespace details;
+    using namespace transformers;
 
     template<typename T, size_t rows, size_t cols,
             typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
@@ -27,7 +27,7 @@ namespace raytracer {
 
         /// Used in matrix multiplication.
         static constexpr T dot_product(const row_type &r1, const row_type &r2) noexcept {
-            return details::Reducer<T, T, cols>::result(
+            return transformers::Reducer<T, T, cols>::result(
                     [](T t1, T t2) { return t1 * t2; },
                     [](const T &t1, const T &t2) { return t1 + t2; }, 0,
                     r1, r2);

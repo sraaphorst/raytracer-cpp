@@ -12,50 +12,53 @@
 
 #include "common.h"
 
-namespace raytracer::details {
-    /// Reduce two arrays by applying a function for each index and combining the terms.
-    template<class T, class R, size_t N, size_t k>
-    struct ReducerAux {
-        static constexpr inline R result(std::function<R(T, T)> f, std::function<R(R, R)> r, R defaultval, const std::array<T, N> &a, const std::array<T, N> &b) {
-            return r(f(a[k-1], b[k-1]), ReducerAux<T, R, N, k - 1>::result(f, r, defaultval, a, b));
-        }
-    };
+namespace raytracer::transformers {
+    namespace details {
+        /// Reduce two arrays by applying a function for each index and combining the terms.
+        template<class T, class R, size_t N, size_t k>
+        struct ReducerAux {
+            static constexpr inline R result(std::function<R(T, T)> f, std::function<R(R, R)> r, R defaultval, const std::array<T, N> &a, const std::array<T, N> &b) {
+                return r(f(a[k-1], b[k-1]), ReducerAux<T, R, N, k - 1>::result(f, r, defaultval, a, b));
+            }
+        };
 
-    template<class T, class R, size_t N>
-    struct ReducerAux<T, R, N, 0> {
-        static constexpr inline R result(std::function<R(T, T)> f, std::function<R(R, R)> r, R defaultval, const std::array<T, N>&, const std::array<T, N>&) {
-            return defaultval;
+        template<class T, class R, size_t N>
+        struct ReducerAux<T, R, N, 0> {
+            static constexpr inline R result(std::function<R(T, T)> f, std::function<R(R, R)> r, R defaultval, const std::array<T, N>&, const std::array<T, N>&) {
+                return defaultval;
+            }
+        };
+
+        template<class R, class T, unsigned long int N, size_t... Indices>
+        constexpr std::array<T, N> unitransform_helper(std::function<R(const T&)> f, const std::array<T, N> &a,
+                                                       std::index_sequence<Indices...>) {
+            return {{ f(a[Indices])... }};
         }
-    };
+
+        template<class R, class T, unsigned long int N, size_t... Indices>
+        constexpr std::array<T, N> bitransform_helper(std::function<R(const T&, const T&)> f, const std::array<T, N> &a1, const std::array<T, N> &a2,
+                                                      std::index_sequence<Indices...>) {
+            return {{ f(a1[Indices], a2[Indices])... }};
+        }
+    }
 
     template<class T, class R, size_t N>
     struct Reducer {
         static constexpr inline R result(std::function<R(T, T)> f, std::function<R(R, R)> r, R defaultval, const std::array<T, N> &a, const std::array<T, N> &b) {
-            return ReducerAux<T, R, N, N>::result(f, r, defaultval, a, b);
+            return details::ReducerAux<T, R, N, N>::result(f, r, defaultval, a, b);
         }
     };
 
     /// Execute a transformation on an array for each index.
-    template<class R, class T, unsigned long int N, size_t... Indices>
-    constexpr std::array<T, N> unitransform_helper(std::function<R(const T&)> f, const std::array<T, N> &a,
-                                                   std::index_sequence<Indices...>)
-    {
-        return {{ f(a[Indices])... }};
-    }
     template<class R, class T, unsigned long int N>
     constexpr std::array<T, N> unitransform(std::function<R(const T&)> f, const std::array<T, N> &a) {
-        return unitransform_helper(f, a, std::make_index_sequence<N>{});
+        return details::unitransform_helper(f, a, std::make_index_sequence<N>{});
     }
 
     /// Execute a transformation on a pair of arrays for each index.
-    template<class R, class T, unsigned long int N, size_t... Indices>
-    constexpr std::array<T, N> bitransform_helper(std::function<R(const T&, const T&)> f, const std::array<T, N> &a1, const std::array<T, N> &a2,
-                                                  std::index_sequence<Indices...>) {
-        return {{ f(a1[Indices], a2[Indices])... }};
-    }
     template<class R, class T, unsigned long int N>
     constexpr std::array<T, N> bitransform(std::function<R(const T&, const T&)> f, const std::array<T, N> &a1, const std::array<T, N> &a2) {
-        return bitransform_helper(f, a1, a2, std::make_index_sequence<N>{});
+        return details::bitransform_helper(f, a1, a2, std::make_index_sequence<N>{});
     }
 
     /// Simple type specifiers.
@@ -67,7 +70,8 @@ namespace raytracer::details {
         return bitransform<T,T,N>([](const T &a, const T &b) { return a - b; }, t1, t2);
     }
 
-    template<typename T, size_t N> constexpr std::array<T,N> operator*(const std::array<T,N> &t1, const std::array<T,N> &t2) {
+    template<typename T, size_t N>
+    constexpr std::array<T,N> operator*(const std::array<T,N> &t1, const std::array<T,N> &t2) {
         return bitransform<T,T,N>([](const T &a, const T &b) { return a * b; }, t1, t2);
     }
 

@@ -14,7 +14,7 @@
 #include "transformers.h"
 
 namespace raytracer {
-    using namespace details;
+    using namespace transformers;
 
     template<typename T, size_t N,
             typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
@@ -85,7 +85,7 @@ namespace raytracer {
         }
 
         constexpr T dot_product(const Vector &t) const noexcept {
-            return details::Reducer<T, T, N>::result(
+            return transformers::Reducer<T, T, N>::result(
                     [](T t1, T t2) { return t1 * t2; },
                     [](const T &t1, const T &t2) { return t1 + t2; }, 0,
                     contents, t.contents);
