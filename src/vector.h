@@ -37,7 +37,7 @@ namespace raytracer {
         constexpr Vector(const Vector &other) noexcept = default;
         constexpr Vector(Vector &&other) noexcept = default;
 
-        /// Variadic template constructor
+        /// Variadic template constructor instead of initializer_list.
         template<typename... V>
         constexpr Vector(V... rs) noexcept : contents{{rs...}} {}
 

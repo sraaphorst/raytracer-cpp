@@ -25,7 +25,7 @@ namespace raytracer {
         using matrix_type = std::array<row_type, rows>;
 
     protected:
-        matrix_type contents;
+        const matrix_type contents;
 
         /// Used in matrix multiplication.
         static constexpr T dot_product(const row_type &r1, const row_type &r2) noexcept {
@@ -36,23 +36,42 @@ namespace raytracer {
         }
 
     public:
-        constexpr Matrix() {};
+        constexpr Matrix() noexcept {};
         constexpr Matrix(const matrix_type &contents) noexcept : contents{contents} {}
         constexpr Matrix(matrix_type&& contents) noexcept : contents{contents} {}
         constexpr Matrix(const Matrix&) noexcept = default;
         constexpr Matrix(Matrix&&) noexcept = default;
 
-        constexpr Matrix(std::initializer_list<row_type> r) {
-            std::copy(r.begin(), r.end(), contents.begin());
-        }
+        constexpr Matrix(std::initializer_list<row_type> r):
+            contents{
+                make_array<row_type,rows>([&r](int i) {
+                    return make_array<T,cols>([&r,i](int j) {
+                        return r.begin()[i][j];
+                    });
+                })
+            } {}
 
         ~Matrix() = default;
 
         constexpr Matrix &operator=(const Matrix&) noexcept = default;
         constexpr Matrix &operator=(Matrix&&) noexcept = default;
 
-        constexpr row_type &operator[](size_t idx) {
+        constexpr const row_type &operator[](size_t idx) const {
             return contents[idx];
+        }
+
+        /**
+         * Despite my best efforts, I cannot make this genuinely constexpr due to the lambdas.
+         * You cannot, for example, set:
+         *     constexpr Matrix<T, cols, rows> m = transpose()
+         * without getting an error about transpose() not being constexpr.
+         */
+        constexpr const Matrix<T, cols, rows> transpose() const {
+            using column_type = std::array<T, rows>;
+
+            return Matrix<T, cols, rows>{indextransform<column_type, cols>([this](int c) {
+                return indextransform<T, rows>([this, c](int r){ return this->contents[r][c]; });
+            })};
         }
 
         constexpr Matrix operator+(const Matrix &other) const {
@@ -63,16 +82,17 @@ namespace raytracer {
             return Matrix{contents - other.contents};
         }
 
+        /// I don't think this will be constexpr because transpose is never really constexpr.
         constexpr Matrix<T, rows, rows> operator*(const Matrix<T, cols, rows> &other) const {
+            // This cannot be declared constexpr.
             const Matrix otherT = other.transpose();
 
-            Matrix<T, rows, rows> m;
-            for (int i=0; i < rows; ++i)
-                for (int j=0; j < rows; ++j)
-                    m[i][j] = dot_product(contents[i], otherT.contents[j]);
-            return m;
+            return Matrix<T, rows, rows>{indextransform<std::array<T, rows>, rows>([this, otherT](int i) {
+                return indextransform<T, rows>([this, otherT, i](int j){ return dot_product(contents[i], otherT.contents[j]); });
+            })};
         }
 
+        /// This one, however, is constexpr, as checked by assigning the value to be returned to a constexpr variable.
         constexpr Vector<T, rows> operator*(const Vector<T, cols> &v) const {
             return unitransform([&v,this] (const row_type& r) { return dot_product(r, v); }, contents);
         }
@@ -93,14 +113,6 @@ namespace raytracer {
             return !(*this == other);
         }
 
-        constexpr Matrix<T, cols, rows> transpose() const {
-            using column_type = std::array<T, rows>;
-
-            return Matrix<T, cols, rows>{indextransform<column_type, cols>([this](int c) {
-                return indextransform<T, rows>([this, c](int r){ return this->contents[r][c]; });
-            })};
-        }
-
         static constexpr size_t row_count() {
             return rows;
         }
@@ -113,11 +125,9 @@ namespace raytracer {
             return m * factor;
         }
 
-        static Matrix ones() {
-            Matrix m;
-            for (auto i=0; i < rows; ++i)
-                std::fill(m.contents[i].begin(), m.contents[i].end(), 1);
-            return m;
+        /// Create a matrix where all elements are 1, probably not really constexpr.
+        static constexpr Matrix ones() {
+            return make_array<row_type,rows>([](int) { return make_array<T,cols>([](int) { return 1; });} );
         }
     };
 }

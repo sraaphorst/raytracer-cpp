@@ -122,4 +122,19 @@ namespace raytracer::transformers {
         return Reducer<T, bool, N>::result([](const T &d1, const T &d2) { return equals(d1, d2); },
                 [](bool b1, bool b2) { return b1 && b2; }, true, t1, t2);
     }
+
+    /// Create an array where the elements are determined by a supplied function invoked on index.
+    template<size_t N, class C, class F, int... Indices>
+    static constexpr std::array<C, N> make_array(F f, std::index_sequence<Indices...>) {
+        return std::array<C,N>{{ f(Indices)...}};
+    }
+
+//    template<class T, unsigned long int N>
+//    constexpr std::array<T, N> indextransform(std::function<T(int)> f) {
+//        return details::indextransform_helper<T, N>(f, std::make_index_sequence<N>{});
+//    }
+    template<class T, unsigned long int N>
+    static constexpr std::array<T, N> make_array(const std::function<T(int)> f) {
+        return indextransform<T,N>(f);
+    }
 }

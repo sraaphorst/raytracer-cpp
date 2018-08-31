@@ -20,7 +20,7 @@ namespace raytracer {
         constexpr Colour(Colour&& other) = default;
         constexpr Colour(double rc, double gc, double bc): Vector{rc, gc, bc} {}
 
-        /// Variadic template constructor
+        /// Variadic template constructor instead of initializer_list.
         template<typename... V>
         constexpr Colour(V... rs) noexcept : Vector{rs...} {}
 

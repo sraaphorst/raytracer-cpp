@@ -28,7 +28,7 @@ namespace raytracer {
         constexpr Tuple(const Tuple &other) noexcept = default;
         constexpr Tuple(Tuple&& other) noexcept = default;
 
-        /// Variadic template constructor
+        /// Variadic template constructor instead of initializer_list.
         template<typename... V>
         constexpr Tuple(V... rs) noexcept : Vector{rs...} {}
 
