@@ -12,23 +12,23 @@
 #include "tuple.h"
 
 namespace raytracer {
-    class projectile;
+    class Projectile;
 
-    class world {
+    class World {
     private:
         const Tuple gravity;
         const Tuple wind;
 
     public:
-        constexpr world(Tuple gravity, Tuple wind): gravity{std::move(gravity)}, wind{std::move(wind)} {
+        constexpr World(Tuple gravity, Tuple wind): gravity{gravity}, wind{wind} {
             if (!gravity.isVector())
                 throw std::invalid_argument("world requires a vector for the first argument");
             if (!wind.isVector())
                 throw std::invalid_argument("world requires a vector for the second argument");
         }
 
-        friend std::ostream &operator<<(std::ostream &os, const world &world);
-        friend class projectile;
+        friend std::ostream &operator<<(std::ostream &os, const World &world);
+        friend class Projectile;
     };
 }
 

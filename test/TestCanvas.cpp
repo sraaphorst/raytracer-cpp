@@ -19,15 +19,15 @@ using namespace raytracer;
 constexpr int width  = 10;
 constexpr int height = 10;
 
-TEST_CASE("canvas initializes to black", "[canvas][initialization]") {
-    canvas<width, height> c;
+TEST_CASE("Canvas initializes to black", "[Canvas][initialization]") {
+    Canvas<width, height> c;
     for (auto i=0; i < width; ++i)
         for (auto j=0; j < height; ++j)
             REQUIRE(*(c[i][j]) == colour_constants::black);
 }
 
-TEST_CASE("canvas can be written to", "[canvas][set]") {
-    canvas<width, height> c;
+TEST_CASE("Canvas can be written to", "[Canvas][set]") {
+    Canvas<width, height> c;
 
     std::array<const Colour, 3> colours{
         colour_constants::red,
@@ -49,8 +49,8 @@ TEST_CASE("canvas can be written to", "[canvas][set]") {
             REQUIRE(*(c[i][j]) == colours[(i + j) % 3]);
 }
 
-TEST_CASE("canvas outputs as PPM", "[canvas][ppm]") {
-    canvas<5, 3> c;
+TEST_CASE("Canvas outputs as PPM", "[Canvas][ppm]") {
+    Canvas<5, 3> c;
     c[0][0] = colour_ptr_t{new Colour{ 1.5, 0  , 0}};
     c[2][1] = colour_ptr_t{new Colour{ 0  , 0.5, 0}};
     c[4][2] = colour_ptr_t{new Colour{-0.5, 0  , 1}};
@@ -65,8 +65,8 @@ TEST_CASE("canvas outputs as PPM", "[canvas][ppm]") {
     REQUIRE(s == ostr.str());
 }
 
-TEST_CASE("canvas PPM file truncates at 70 characters", "[canvas][ppm]") {
-    canvas<10, 2> c;
+TEST_CASE("Canvas PPM file truncates at 70 characters", "[Canvas][ppm]") {
+    Canvas<10, 2> c;
     colour_ptr_t colour_ptr{new Colour{1, 0.8, 0.6}};
     for (auto i=0; i < 10; ++i)
         for (auto j=0; j < 2; ++j)

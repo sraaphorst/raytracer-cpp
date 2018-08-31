@@ -10,7 +10,7 @@
 
 namespace raytracer {
 
-    std::ostream &operator<<(std::ostream &os, const projectile &projectile) {
+    std::ostream &operator<<(std::ostream &os, const Projectile &projectile) {
         return os << "projectile(position: " << projectile.position << ", velocity: " << projectile.velocity << ')';
     }
 }

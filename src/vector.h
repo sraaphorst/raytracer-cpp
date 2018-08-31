@@ -77,7 +77,7 @@ namespace raytracer {
         }
 
         constexpr bool operator==(const Vector &t) const noexcept {
-            return details::equals(contents, t.contents);
+            return equals(contents, t.contents);
         }
 
         constexpr bool operator!=(const Vector &rhs) const noexcept {
@@ -112,10 +112,6 @@ namespace raytracer {
             for (int i=0; i < t.size(); ++i)
                 os << t[i] << (i == t.size() - 1 ? "" : ", ");
             return os << ')';
-        }
-
-        constexpr vector_type getContents() const noexcept {
-            return contents;
         }
     };
 }

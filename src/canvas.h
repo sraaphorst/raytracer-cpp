@@ -17,9 +17,8 @@
 
 namespace raytracer {
     using colour_ptr_t = std::shared_ptr<const Colour>;
-
     template<size_t width, size_t height>
-    class canvas final {
+    class Canvas final {
     private:
         using col  = std::array<colour_ptr_t, height>;
         using grid = std::array<col, width>;
@@ -30,7 +29,7 @@ namespace raytracer {
         grid pixels;
 
     public:
-        canvas() {
+        Canvas() {
             for (int i=0; i < width; ++i)
                 for (int j=0; j < height; ++j)
                     pixels[i][j] = std::shared_ptr<const Colour>(black);
@@ -46,7 +45,7 @@ namespace raytracer {
         }
 
         /// Create a stream representing this as a PPM file.
-        friend std::ostream &operator<<(std::ostream &ostr, const canvas<width, height> &c) {
+        friend std::ostream &operator<<(std::ostream &ostr, const Canvas<width, height> &c) {
             ostr << "P3\n" << width << ' ' << height << '\n' << Colour::maxvalue << '\n';
 
             int linewidth = 0;

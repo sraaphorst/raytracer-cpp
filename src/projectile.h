@@ -14,23 +14,23 @@
 #include "world.h"
 
 namespace raytracer {
-    class projectile {
+    class Projectile {
     private:
         const Tuple position;
         const Tuple velocity;
 
     public:
-        constexpr projectile(const Tuple &position, const Tuple &velocity): position{position}, velocity{velocity} {
+        constexpr Projectile(const Tuple &position, const Tuple &velocity): position{position}, velocity{velocity} {
             if (!position.isPoint())
                 throw std::invalid_argument("projectile requires a position for the first argument");
             if (!velocity.isVector())
                 throw std::invalid_argument("projectile requires a vector for the second argument");
         }
 
-        constexpr projectile(const projectile &other) = default;
+        constexpr Projectile(const Projectile &other) = default;
 
-        std::unique_ptr<projectile> tick(const world w) const {
-            return std::make_unique<projectile>(position + velocity, velocity + w.gravity + w.wind);
+        std::unique_ptr<Projectile> tick(const World w) const {
+            return std::make_unique<Projectile>(position + velocity, velocity + w.gravity + w.wind);
         }
 
         constexpr const Tuple &getPosition() const {
@@ -45,7 +45,7 @@ namespace raytracer {
             return position[Tuple::y] >= 0;
         }
 
-        friend std::ostream &operator<<(std::ostream &os, const projectile &projectile);
+        friend std::ostream &operator<<(std::ostream &os, const Projectile &projectile);
     };
 }
 

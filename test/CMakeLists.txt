@@ -22,3 +22,6 @@ target_link_libraries(TestColour Catch raytracer)
 
 add_executable(TestCanvas TestCanvas.cpp ${TEST_SOURCES})
 target_link_libraries(TestCanvas Catch raytracer)
+
+add_executable(TestMatrix TestMatrix.cpp ${TEST_SOURCES})
+target_link_libraries(TestMatrix Catch raytracer)

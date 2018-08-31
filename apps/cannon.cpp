@@ -15,8 +15,8 @@
 using namespace raytracer;
 
 int main() {
-    world w{Tuple::vector(0, -0.1, 0), Tuple::vector(-0.01, 0, 0)};
-    std::unique_ptr<projectile> ptr = std::make_unique<projectile>(Tuple::point(0, 1, 0), Tuple::vector(1, 1, 0).normalize());
+    World w{Tuple::vector(0, -0.1, 0), Tuple::vector(-0.01, 0, 0)};
+    std::unique_ptr<Projectile> ptr = std::make_unique<Projectile>(Tuple::point(0, 1, 0), Tuple::vector(1, 1, 0).normalize());
 
     std::cout << "In " << w << "\n\tbeginning with " << *ptr << "\n\n";
 

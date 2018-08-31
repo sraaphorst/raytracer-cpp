@@ -52,30 +52,34 @@ namespace raytracer {
         }
 
         constexpr Tuple operator+(const Tuple &other) const noexcept {
-            return Tuple{((const Vector&)*this + (const Vector&)other).getContents()};
+            return Tuple{contents + other.contents};
         }
 
         constexpr Tuple operator-(const Tuple &other) const noexcept {
-            return Tuple{((const Vector&)*this - (const Vector&)other).getContents()};
+            return Tuple{contents - other.contents};
         }
 
         constexpr Tuple operator*(const Tuple &other) const noexcept {
-            return Tuple{((const Vector&)*this * (const Vector&)other).getContents()};
+            return Tuple{contents * other.contents};
         }
 
         constexpr Tuple operator*(double factor) const noexcept {
-            return Tuple{((const Vector&)*this * factor).getContents()};
+            return Tuple{factor * contents};
         }
 
         constexpr Tuple operator/(const Tuple &other) const noexcept {
-            return Tuple{((const Vector&)*this / (const Vector&)other).getContents()};
+            return Tuple{contents / other.contents};
+        }
+
+        constexpr Tuple operator/(double denom) const noexcept {
+            return  Tuple{contents / denom};
         }
 
         constexpr Tuple operator-() const noexcept {
-            return Tuple{(- (const Vector&)*this).getContents()};
+            return Tuple{-contents};
         }
 
-        friend Tuple operator*(double factor, const Tuple &t) {
+        friend constexpr Tuple operator*(double factor, const Tuple &t) {
             return Tuple{t * factor};
         }
 

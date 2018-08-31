@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <array>
 #include <limits>
 
 namespace raytracer {
@@ -22,6 +23,8 @@ namespace raytracer {
                ? sqrtNewtonRaphson(x, x, 0)
                : std::numeric_limits<double>::quiet_NaN();
     }
+
+    /// This is a bit hacky, but since we are going to call absd recursively, we need a dummy absd for arrays.
 
     constexpr double absd(const double d) {
         return d >= 0 ? d : -d;

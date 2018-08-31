@@ -10,7 +10,7 @@
 
 namespace raytracer {
 
-    std::ostream &operator<<(std::ostream &os, const world &world) {
+    std::ostream &operator<<(std::ostream &os, const World &world) {
         return os << "world(gravity: " << world.gravity << ", wind: " << world.wind << ')';
     }
 }
