@@ -58,3 +58,28 @@ TEST_CASE("Matrix should be transposable", "[Matrix][transpose]") {
 TEST_CASE("Matrix transpose should be self-inverting", "[Matrix][transpose]") {
     REQUIRE(m1.transpose().transpose() == m1);
 }
+
+TEST_CASE("Matrix multiplication should multiply compatibly sized matrices", "[Matrx][multiplication]") {
+    Matrix<double, 2, 2> prod = {{ 5, 14},
+                                 {14, 50}};
+    REQUIRE(m1 * m2 == prod);
+}
+
+TEST_CASE("Matrix multiplication should multiply square matrices", "[Matrix][multiplication]") {
+    Matrix<double, 4, 4> m1 = {{1, 2, 3, 4},
+                               {2, 3, 4, 5},
+                               {3, 4, 5, 6},
+                               {4, 5, 6, 7}};
+    
+    Matrix<double, 4, 4> m2 = {{0, 1,  2,  4},
+                               {1, 2,  4,  8},
+                               {2, 4,  8, 16},
+                               {4, 8, 16, 32}};
+
+    Matrix<double, 4, 4> m3 = {{24, 49,  98, 196},
+                               {31, 64, 128, 256},
+                               {38, 79, 158, 316},
+                               {45, 94, 188, 376}};
+
+    REQUIRE(m1 * m2 == m3);
+}

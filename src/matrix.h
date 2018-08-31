@@ -61,13 +61,13 @@ namespace raytracer {
             return Matrix{contents - other.contents};
         }
 
-        constexpr Matrix<T, rows, rows> operator*(const Matrix<T, cols, rows> &other) const {
-            constexpr const Matrix &otherT = other.transpose();
+        Matrix<T, rows, rows> operator*(const Matrix<T, cols, rows> &other) const {
+            Matrix otherT = other.transpose();
 
             Matrix<T, rows, rows> m;
             for (int i=0; i < rows; ++i)
                 for (int j=0; j < rows; ++j)
-                    m.contents[i][j] = dot_product(contents[i], otherT.contents[i]);
+                    m[i][j] = dot_product(contents[i], otherT.contents[j]);
             return m;
         }
 
@@ -87,7 +87,7 @@ namespace raytracer {
             return !(*this == other);
         }
 
-        constexpr Matrix<T, cols, rows> transpose() const {
+        Matrix<T, cols, rows> transpose() const {
             Matrix<T, cols, rows> m;
             for (auto i=0; i < rows; ++i)
                 for (auto j=0; j < cols; ++j)
