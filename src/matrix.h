@@ -27,7 +27,7 @@ namespace raytracer {
 
         /// Used in matrix multiplication.
         static constexpr T dot_product(const row_type &r1, const row_type &r2) noexcept {
-            return details::Reducer<T, T, cols, cols>::result(
+            return details::Reducer<T, T, cols>::result(
                     [](T t1, T t2) { return t1 * t2; },
                     [](const T &t1, const T &t2) { return t1 + t2; }, 0,
                     r1, r2);

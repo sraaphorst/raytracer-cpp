@@ -85,7 +85,7 @@ namespace raytracer {
         }
 
         constexpr T dot_product(const Vector &t) const noexcept {
-            return details::Reducer<T, T, N, N>::result(
+            return details::Reducer<T, T, N>::result(
                     [](T t1, T t2) { return t1 * t2; },
                     [](const T &t1, const T &t2) { return t1 + t2; }, 0,
                     contents, t.contents);

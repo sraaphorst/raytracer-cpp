@@ -15,15 +15,23 @@
 namespace raytracer::details {
     /// Reduce two arrays by applying a function for each index and combining the terms.
     template<class T, class R, size_t N, size_t k>
-    struct Reducer {
+    struct ReducerAux {
         static constexpr inline R result(std::function<R(T, T)> f, std::function<R(R, R)> r, R defaultval, const std::array<T, N> &a, const std::array<T, N> &b) {
-            return r(f(a[k-1], b[k-1]), Reducer<T, R, N, k - 1>::result(f, r, defaultval, a, b));
+            return r(f(a[k-1], b[k-1]), ReducerAux<T, R, N, k - 1>::result(f, r, defaultval, a, b));
         }
     };
+
     template<class T, class R, size_t N>
-    struct Reducer<T, R, N, 0> {
+    struct ReducerAux<T, R, N, 0> {
         static constexpr inline R result(std::function<R(T, T)> f, std::function<R(R, R)> r, R defaultval, const std::array<T, N>&, const std::array<T, N>&) {
             return defaultval;
+        }
+    };
+
+    template<class T, class R, size_t N>
+    struct Reducer {
+        static constexpr inline R result(std::function<R(T, T)> f, std::function<R(R, R)> r, R defaultval, const std::array<T, N> &a, const std::array<T, N> &b) {
+            return ReducerAux<T, R, N, N>::result(f, r, defaultval, a, b);
         }
     };
 
@@ -96,7 +104,7 @@ namespace raytracer::details {
     /// If an array, iterate. This will allow us to check multidimensional arrays.
     template<typename T, size_t N>
     constexpr bool equals(const std::array<T,N> &t1, const std::array<T,N> &t2) {
-        return Reducer<T, bool, N, N>::result([](const T &d1, const T &d2) { return equals(d1, d2); },
-                                              [](bool b1, bool b2) { return b1 && b2; }, true, t1, t2);
+        return Reducer<T, bool, N>::result([](const T &d1, const T &d2) { return equals(d1, d2); },
+                [](bool b1, bool b2) { return b1 && b2; }, true, t1, t2);
     }
 }
