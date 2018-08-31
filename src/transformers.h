@@ -29,6 +29,11 @@ namespace raytracer::transformers {
             }
         };
 
+        template<class T, unsigned long int N, size_t... Indices>
+        constexpr std::array<T, N> indextransform_helper(std::function<T(int)> f, std::index_sequence<Indices...>) {
+            return {{ f(Indices)... }};
+        }
+
         template<class R, class T, unsigned long int N, size_t... Indices>
         constexpr std::array<T, N> unitransform_helper(std::function<R(const T&)> f, const std::array<T, N> &a,
                                                        std::index_sequence<Indices...>) {
@@ -48,6 +53,12 @@ namespace raytracer::transformers {
             return details::ReducerAux<T, R, N, N>::result(f, r, defaultval, a, b);
         }
     };
+
+    /// Execute a transormation on a range of indices.
+    template<class T, unsigned long int N>
+    constexpr std::array<T, N> indextransform(std::function<T(int)> f) {
+        return details::indextransform_helper<T, N>(f, std::make_index_sequence<N>{});
+    }
 
     /// Execute a transformation on an array for each index.
     template<class R, class T, unsigned long int N>

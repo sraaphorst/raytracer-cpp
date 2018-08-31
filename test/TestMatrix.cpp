@@ -70,7 +70,7 @@ TEST_CASE("Matrix multiplication should multiply square matrices", "[Matrix][mul
                                {2, 3, 4, 5},
                                {3, 4, 5, 6},
                                {4, 5, 6, 7}};
-    
+
     Matrix<double, 4, 4> m2 = {{0, 1,  2,  4},
                                {1, 2,  4,  8},
                                {2, 4,  8, 16},
