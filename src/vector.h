@@ -117,7 +117,7 @@ namespace raytracer {
         template<typename, size_t, size_t, typename>
         friend class Matrix;
 
-        template<typename R, typename S, size_t m, size_t n>
-        friend constexpr Vector<R,n> operator*(const Vector<S,m>&, const Matrix<S,m,n,S>&);
+        template<typename S, size_t m, size_t n>
+        friend constexpr Vector<S,n> operator*(const Vector<S,m>&, const Matrix<S,m,n,S>&);
     };
 }

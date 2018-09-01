@@ -94,9 +94,9 @@ TEST_CASE("Matrix multiplied with a vector should give a vector", "[Matrix][vect
     REQUIRE(m * v == prod);
 }
 
-//TEST_CASE("Matrix multiplied on the left by a vector should give a vector", "[Matrix][vector_multipication]") {
-//    Vector<double, 3> v = {1, 2, 3};
-//    Vector<double, 2> prod = {8, 26};
-//    Vector<double, 2> vm2 = operator*(v,m2);
-//    REQUIRE(vm2 == prod);
-//}
+TEST_CASE("Matrix multiplied on the left by a vector should give a vector", "[Matrix][vector_multipication]") {
+    Vector<double, 3> v = {1, 2, 3};
+    Vector<double, 2> prod = {8, 26};
+    Vector<double, 2> vm2 = operator*(v,m2);
+    REQUIRE(vm2 == prod);
+}
