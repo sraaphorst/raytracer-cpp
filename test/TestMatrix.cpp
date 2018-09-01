@@ -83,3 +83,17 @@ TEST_CASE("Matrix multiplication should multiply square matrices", "[Matrix][mul
 
     REQUIRE(m1 * m2 == m3);
 }
+
+TEST_CASE("Matrix multiplied with a vector should give a vector", "[Matrix][vector_multiplication]") {
+    Matrix<double, 3, 4> m = {{1, 2, 3, 4},
+                              {2, 4, 4, 2},
+                              {8, 6, 4, 1}};
+
+    Vector<double, 4> v = {1, 2, 3, 1};
+
+    Vector<double, 3> prod = {18, 24, 33};
+
+    m.operator*(v);
+    REQUIRE(m.operator*(v) == prod);
+
+}

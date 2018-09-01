@@ -10,7 +10,6 @@
 #include <array>
 
 #include "transformers.h"
-#include "tuple.h"
 #include "vector.h"
 
 namespace raytracer {
@@ -22,6 +21,7 @@ namespace raytracer {
     public:
         using type = T;
         using row_type = std::array<T, cols>;
+        using col_type = std::array<T, rows>;
         using matrix_type = std::array<row_type, rows>;
 
     protected:
@@ -94,7 +94,7 @@ namespace raytracer {
 
         /// This one, however, is constexpr, as checked by assigning the value to be returned to a constexpr variable.
         constexpr Vector<T, rows> operator*(const Vector<T, cols> &v) const {
-            return unitransform([&v,this] (const row_type& r) { return dot_product(r, v); }, contents);
+            return Vector<T, rows>{unitransform<T, row_type, rows>([v] (const row_type &r) { return dot_product(r, v.contents); }, contents)};
         }
 
         constexpr Matrix operator*(T factor) const {
@@ -121,13 +121,22 @@ namespace raytracer {
             return cols;
         }
 
+        /// Create a matrix where all elements are 1, probably not really constexpr.
+        static constexpr Matrix ones() {
+            return make_array<row_type,rows>([](int) { return make_array<T,cols>([](int) { return 1; });} );
+        }
+
+        /// Multiply by factor on the left.
         friend constexpr Matrix operator*(T factor, const Matrix &m) {
             return m * factor;
         }
 
-        /// Create a matrix where all elements are 1, probably not really constexpr.
-        static constexpr Matrix ones() {
-            return make_array<row_type,rows>([](int) { return make_array<T,cols>([](int) { return 1; });} );
+        /// Multiply by vector on the left.
+        friend constexpr Vector<T, cols> operator*(const Vector<T, rows> &v, const Matrix &m) {
+            // This cannot be declared constexpr.
+            const Matrix mT = m.transpose();
+
+            return Vector<T, cols>{unitransform([&v] (const row_type &r) { return dot_product(v.contents, r); }, mT.contents)};
         }
     };
 }

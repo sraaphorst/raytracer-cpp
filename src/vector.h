@@ -23,10 +23,6 @@ namespace raytracer {
         using type        = T;
         using vector_type = std::array<T, N>;
 
-    private:
-        using BiFunction = T (*)(T, T);
-        using BoolBiFuncton = bool (*)(T, T);
-
     protected:
         const vector_type contents;
 
@@ -113,5 +109,8 @@ namespace raytracer {
                 os << t[i] << (i == t.size() - 1 ? "" : ", ");
             return os << ')';
         }
+
+        template<typename, size_t, size_t, typename>
+        friend class Matrix;
     };
 }
