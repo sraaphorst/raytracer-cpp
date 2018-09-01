@@ -94,7 +94,7 @@ namespace raytracer {
 
         /// This one, however, is constexpr, as checked by assigning the value to be returned to a constexpr variable.
         constexpr Vector<T, rows> operator*(const Vector<T, cols> &v) const {
-            return Vector<T, rows>{unitransform<T, row_type, rows>([v] (const row_type &r) { return dot_product(r, v.contents); }, contents)};
+            return Vector<T, rows>{unitransform<T, row_type, rows>([&v] (const row_type &r) { return dot_product(r, v.contents); }, contents)};
         }
 
         constexpr Matrix operator*(T factor) const {
@@ -132,11 +132,37 @@ namespace raytracer {
         }
 
         /// Multiply by vector on the left.
-        friend constexpr Vector<T, cols> operator*(const Vector<T, rows> &v, const Matrix &m) {
-            // This cannot be declared constexpr.
-            const Matrix mT = m.transpose();
-
-            return Vector<T, cols>{unitransform([&v] (const row_type &r) { return dot_product(v.contents, r); }, mT.contents)};
-        }
+        template<typename R, typename S, size_t m, size_t n>
+        friend constexpr Vector<R,n> operator*(const Vector<S,m>&, const Matrix<S,m,n,S>&);
+//        template<typename S, size_t m, size_t n, typename R>
+//        friend constexpr Vector<S,n> operator*(const Vector<S, m>&, const Matrix<S,m,n,R>&);
+//        friend constexpr Vector<T, cols> operator*(const Vector<T, rows> &v, const Matrix &m);// {
+//            // This cannot be declared constexpr.
+//            const Matrix<T, cols, rows> mT = m.transpose();
+//            const auto &c = v.contents;
+//            return Vector<T, cols>{unitransform([&v] (const row_type &r) { return dot_product(v.contents, r); }, mT.contents)};
+//        }
     };
+
+//    template<class R, class T, unsigned long int N>
+//    constexpr std::array<R, N> unitransform(std::function<R(const T&)> f, const std::array<T, N> &a) {
+//        return details::unitransform_helper(f, a, std::make_index_sequence<N>{});
+//    }
+
+//    constexpr Vector<T, rows> operator*(const Vector<T, cols> &v) const {
+//        return Vector<T, rows>{unitransform<T, row_type, rows>([v] (const row_type &r) { return dot_product(r, v.contents); }, contents)};
+//    }
+    template<typename R, typename S, size_t m, size_t n>
+    constexpr Vector<R,n> operator*(const Vector<S,m> &v, const Matrix<S,m,n,S> &matrix) {
+        using matrixT_type = Matrix<S,n,m,S>;
+        using rowT_type = typename matrixT_type::row_type;
+
+        const matrixT_type mT = matrix.transpose();
+
+        // R=R, T=S, N=n
+        std::function<R(const rowT_type&)> f = [&v] (const typename matrixT_type::row_type &r) { return matrixT_type::dot_product(v.contents, r); };
+        const std::array<R,n> res = unitransform<R,rowT_type,n>(f, mT.contents);
+        return Vector<R,n>{res};
+        //return Vector<S, n>{unitransform<S, n, m>([&v] (const typename matrixT_type::row_type &r) { return matrixT_type::dot_product(v.contents, r); }, mT.contents)};
+    }
 }

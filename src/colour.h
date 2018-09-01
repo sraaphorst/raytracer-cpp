@@ -18,11 +18,9 @@ namespace raytracer {
         constexpr explicit Colour(vector_type&& contents): Vector{contents} {}
         constexpr Colour(const Colour &other) = default;
         constexpr Colour(Colour&& other) = default;
-        constexpr Colour(double rc, double gc, double bc): Vector{rc, gc, bc} {}
+        constexpr Colour(double rc, double gc, double bc): Vector{std::array<double, 3>{rc, gc, bc}} {}
 
-        /// Variadic template constructor instead of initializer_list.
-        template<typename... V>
-        constexpr Colour(V... rs) noexcept : Vector{rs...} {}
+        constexpr Colour(std::initializer_list<double> &lst): Vector{lst} {}
 
         /// Conversion constructors: we need to be able to convert from tup to Colour to use the tup ops on Colour.
         constexpr Colour(const Vector &v): Vector{v} {}

@@ -27,10 +27,9 @@ namespace raytracer {
         constexpr explicit Tuple(vector_type&& contents) noexcept : Vector{contents} {}
         constexpr Tuple(const Tuple &other) noexcept = default;
         constexpr Tuple(Tuple&& other) noexcept = default;
+        constexpr Tuple(double dx, double dy, double dz, double dw): Vector{std::array<double, 4>{dx, dy, dz, dw}} {}
 
-        /// Variadic template constructor instead of initializer_list.
-        template<typename... V>
-        constexpr Tuple(V... rs) noexcept : Vector{rs...} {}
+        constexpr Tuple(std::initializer_list<double> &lst): Vector{lst} {}
 
         /// We need to be able to convert from Vector to use Vector ops.
         constexpr Tuple(const Vector<double, 4> &v): Vector{v} {}

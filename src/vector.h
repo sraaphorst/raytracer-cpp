@@ -7,6 +7,7 @@
 #pragma once
 
 #include <array>
+#include <initializer_list>
 #include <numeric>
 #include <ostream>
 #include <type_traits>
@@ -15,6 +16,9 @@
 
 namespace raytracer {
     using namespace transformers;
+
+    template<typename, size_t, size_t, typename>
+    class Matrix;
 
     template<typename T, size_t N,
             typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
@@ -33,9 +37,9 @@ namespace raytracer {
         constexpr Vector(const Vector &other) noexcept = default;
         constexpr Vector(Vector &&other) noexcept = default;
 
-        /// Variadic template constructor instead of initializer_list.
-        template<typename... V>
-        constexpr Vector(V... rs) noexcept : contents{{rs...}} {}
+        constexpr Vector(std::initializer_list<T> lst): contents{
+            make_array<T,N>([&lst](int i) { return lst.begin()[i]; })
+        } {}
 
         ~Vector() = default;
 
@@ -112,5 +116,8 @@ namespace raytracer {
 
         template<typename, size_t, size_t, typename>
         friend class Matrix;
+
+        template<typename R, typename S, size_t m, size_t n>
+        friend constexpr Vector<R,n> operator*(const Vector<S,m>&, const Matrix<S,m,n,S>&);
     };
 }
