@@ -49,7 +49,7 @@ TEST_CASE("Matrix should be able to determine equality", "[Matrix][equality]") {
 
 TEST_CASE("Matrix comparison equality should be able to tolerate slight offsets", "[Matrix][equality]") {
     REQUIRE(m1 == m1 - EPSILON/2 * matrix_constants::ones<double, 2, 3>);
-    REQUIRE(matrix_constants::I<double, 3, 3> == matrix_constants::I<double, 3, 3> + EPSILON/2 * matrix_constants::I<double, 3, 3>);
+    REQUIRE(matrix_constants::I<double, 3> == matrix_constants::I<double, 3> + EPSILON/2 * matrix_constants::I<double, 3>);
 }
 
 TEST_CASE("Matrix should be transposable", "[Matrix][transpose]") {
@@ -100,4 +100,19 @@ TEST_CASE("Matrix multiplied on the left by a vector should give a vector", "[Ma
     Vector<double, 2> prod = {8, 26};
     Vector<double, 2> vm2 = operator*(v,m2);
     REQUIRE(vm2 == prod);
+}
+
+TEST_CASE("Identity matrix should not change the value of a matrix, whether on left or right", "[Matrix][identity][multiplication]") {
+    Matrix<double, 4, 4> m = {{0, 1,  2,  4},
+                              {1, 2,  4,  8},
+                              {2, 4,  8, 16},
+                              {4, 8, 16, 32}};
+    REQUIRE(matrix_constants::I<double, 4> * m == m);
+    REQUIRE(m * matrix_constants::I<double, 4> == m);
+}
+
+TEST_CASE("Identity matrix should not change the value of vectors, whether on left or right") {
+    Vector<double, 4> v = {4, 3, 2, 1};
+    REQUIRE(matrix_constants::I<double, 4> * v == v);
+    REQUIRE(v * matrix_constants::I<double, 4> == v);
 }

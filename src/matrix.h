@@ -133,13 +133,10 @@ namespace raytracer {
         friend constexpr Vector<S,n> operator*(const Vector<S,m>&, const Matrix<S,m,n,S>&);
     };
 
+    /// We use the property that (v * A)^T = A^t * v^t.
     template<typename S, size_t m, size_t n>
     constexpr Vector<S,n> operator*(const Vector<S,m> &v, const Matrix<S,m,n,S> &matrix) {
-        using matrixT_type = Matrix<S,n,m,S>;
-        using rowT_type = typename matrixT_type::row_type;
-
-        const matrixT_type mT = matrix.transpose();
-        return Vector<S,n>{unitransform<S,rowT_type,n>([&v] (const typename matrixT_type::row_type &r) { return matrixT_type::dot_product(v.contents, r); }, mT.contents)};
+        return matrix.transpose() * v;
     }
 
     struct matrix_constants {
@@ -150,7 +147,8 @@ namespace raytracer {
         template<typename T, size_t R, size_t C>
         static constexpr Matrix<T, R, C> ones = make_uniform_matrix<T, R, C>(1);
 
-        template<typename T, size_t R, size_t C>
-        static constexpr Matrix<T, R, C> I = make_diagonal_matrix<T, R, C>(0, 1);
+        /// Identity matrix, only defined as a square matrix.
+        template<typename T, size_t N>
+        static constexpr Matrix<T, N, N> I = make_diagonal_matrix<T, N, N>(0, 1);
     };
 }
