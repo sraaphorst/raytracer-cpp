@@ -65,6 +65,8 @@ namespace raytracer {
          * You cannot, for example, set:
          *     constexpr Matrix<T, cols, rows> m = transpose()
          * without getting an error about transpose() not being constexpr.
+         * I even tried using templates to unroll without using a function, but have to then pass contents in, and
+         * "this" is not constexpr, so it didn't work either.
          */
         constexpr const Matrix<T, cols, rows> transpose() const {
             using column_type = std::array<T, rows>;
