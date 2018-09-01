@@ -111,8 +111,14 @@ TEST_CASE("Identity matrix should not change the value of a matrix, whether on l
     REQUIRE(m * matrix_constants::I<double, 4> == m);
 }
 
-TEST_CASE("Identity matrix should not change the value of vectors, whether on left or right") {
+TEST_CASE("Identity matrix should not change the value of vectors, whether on left or right", "[Matrix][identity][vector_multiplication]") {
     Vector<double, 4> v = {4, 3, 2, 1};
     REQUIRE(matrix_constants::I<double, 4> * v == v);
     REQUIRE(v * matrix_constants::I<double, 4> == v);
+}
+
+TEST_CASE("Matrix of size 2x2 should be able to calculate its determinant", "[Matrix][determinant]") {
+    Matrix<double, 2, 2> m = {{ 1, 5},
+                              {-3, 2}};
+    REQUIRE(m.determinant() == 17);
 }

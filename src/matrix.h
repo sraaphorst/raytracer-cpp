@@ -123,6 +123,15 @@ namespace raytracer {
             return cols;
         }
 
+        static constexpr size_t size() {
+            static_assert(rows == cols, "Matrix::size() only for use with square matrices");
+            return rows;
+        }
+
+        constexpr T determinant() {
+            return determinant_helper(contents);
+        }
+
         /// Multiply by factor on the left.
         friend constexpr Matrix operator*(T factor, const Matrix &m) {
             return m * factor;

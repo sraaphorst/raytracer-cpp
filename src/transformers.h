@@ -151,4 +151,23 @@ namespace raytracer::transformers {
     static constexpr std::array<T, N> make_array(const std::function<T(int)> f) {
         return indextransform<T,N>(f);
     }
+
+    /// Test at compile time if two sizes are equal.
+    template<size_t m, size_t n>
+    struct are_equal final: std::false_type {};
+
+    template<size_t m>
+    struct are_equal<m,m> final: std::true_type {};
+
+    /// Auxiliary tools to find the determinant. Only for square matrices.
+    template<typename T, size_t N>
+    T determinant_helper(const std::array<std::array<T,N>,N> &m) {
+        return {};
+    }
+
+    template<typename T>
+    T determinant_helper(const std::array<std::array<T,2>,2> &m) {
+        return m[0][0] * m[1][1] - m[1][0] * m[0][1];
+    }
+
 }
