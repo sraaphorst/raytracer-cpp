@@ -29,6 +29,18 @@ namespace raytracer::transformers {
             }
         };
 
+        /// Fill a row with values. Two parameters are provided: one for elements on the diagonal, and one for all others.
+        template <typename T, unsigned long C, size_t... Indices>
+        constexpr std::array<T, C> fill_row_by_diagonal(T nondiag, T diag, size_t row, std::index_sequence<Indices...>) {
+            return {{ (Indices == row ? diag : nondiag)... }};
+        }
+
+        /// Fill a matrix with values. Two parameters are provided: one for elements on the diagonal, and one for all others.
+        template <typename T, unsigned long int R, unsigned long C, size_t... Indices>
+        constexpr std::array<std::array<T, C>, R> fill_rows_by_diagonal(T nondiag, T diag, std::index_sequence<Indices...>) {
+            return {{ fill_row_by_diagonal<T, C>(nondiag, diag, Indices, std::make_index_sequence<C>{})... }};
+        }
+
         template<class T, unsigned long int N, size_t... Indices>
         constexpr std::array<T, N> indextransform_helper(std::function<T(int)> f, std::index_sequence<Indices...>) {
             return {{ f(Indices)... }};
@@ -54,12 +66,25 @@ namespace raytracer::transformers {
         }
     };
 
+    /// Create simple 2-D arrays where the value at pos (i,i) is one value, and the value at position (i,j), i != j, is another.
+    template <typename T, unsigned long int R, unsigned long C>
+    constexpr std::array<std::array<T, C>, R> make_diagonal_matrix(T nondiag, T diag) {
+        return details::fill_rows_by_diagonal<T, R, C>(nondiag, diag, std::make_index_sequence<R>{});
+    }
+
+    template <typename T, unsigned long int R, unsigned long C>
+    constexpr std::array<std::array<T, C>, R> make_uniform_matrix(T fill) {
+        return make_diagonal_matrix<T,R,C>(fill, fill);
+    }
+
     /// Execute a transormation on a range of indices.
     template<class T, unsigned long int N>
     constexpr std::array<T, N> indextransform(std::function<T(int)> f) {
         return details::indextransform_helper<T, N>(f, std::make_index_sequence<N>{});
     }
 
+    /// Transpose a matrix.
+    ///<typename T, unsigned long int N, unsigned long int M>
     /// Execute a transformation on an array for each index.
     template<class R, class T, unsigned long int N>
     constexpr std::array<R, N> unitransform(std::function<R(const T&)> f, const std::array<T, N> &a) {
@@ -124,15 +149,6 @@ namespace raytracer::transformers {
     }
 
     /// Create an array where the elements are determined by a supplied function invoked on index.
-    template<size_t N, class C, class F, int... Indices>
-    static constexpr std::array<C, N> make_array(F f, std::index_sequence<Indices...>) {
-        return std::array<C,N>{{ f(Indices)...}};
-    }
-
-//    template<class T, unsigned long int N>
-//    constexpr std::array<T, N> indextransform(std::function<T(int)> f) {
-//        return details::indextransform_helper<T, N>(f, std::make_index_sequence<N>{});
-//    }
     template<class T, unsigned long int N>
     static constexpr std::array<T, N> make_array(const std::function<T(int)> f) {
         return indextransform<T,N>(f);

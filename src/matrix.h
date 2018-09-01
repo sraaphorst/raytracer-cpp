@@ -121,11 +121,6 @@ namespace raytracer {
             return cols;
         }
 
-        /// Create a matrix where all elements are 1, probably not really constexpr.
-        static constexpr Matrix ones() {
-            return make_array<row_type,rows>([](int) { return make_array<T,cols>([](int) { return 1; });} );
-        }
-
         /// Multiply by factor on the left.
         friend constexpr Matrix operator*(T factor, const Matrix &m) {
             return m * factor;
@@ -144,4 +139,16 @@ namespace raytracer {
         const matrixT_type mT = matrix.transpose();
         return Vector<S,n>{unitransform<S,rowT_type,n>([&v] (const typename matrixT_type::row_type &r) { return matrixT_type::dot_product(v.contents, r); }, mT.contents)};
     }
+
+    struct matrix_constants {
+        /**
+         * Unlike make_array, make_uniform_matrix and make_diagonal matrix allow us to be constexpr as they don't
+         * use any std::function.
+         */
+        template<typename T, size_t R, size_t C>
+        static constexpr Matrix<T, R, C> ones = make_uniform_matrix<T, R, C>(1);
+
+        template<typename T, size_t R, size_t C>
+        static constexpr Matrix<T, R, C> I = make_diagonal_matrix<T, R, C>(0, 1);
+    };
 }

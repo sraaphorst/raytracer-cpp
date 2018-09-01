@@ -48,7 +48,8 @@ TEST_CASE("Matrix should be able to determine equality", "[Matrix][equality]") {
 }
 
 TEST_CASE("Matrix comparison equality should be able to tolerate slight offsets", "[Matrix][equality]") {
-    REQUIRE(m1 == m1 - EPSILON/2 * Matrix<double, 2, 3>::ones());
+    REQUIRE(m1 == m1 - EPSILON/2 * matrix_constants::ones<double, 2, 3>);
+    REQUIRE(matrix_constants::I<double, 3, 3> == matrix_constants::I<double, 3, 3> + EPSILON/2 * matrix_constants::I<double, 3, 3>);
 }
 
 TEST_CASE("Matrix should be transposable", "[Matrix][transpose]") {
