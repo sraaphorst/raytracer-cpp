@@ -170,3 +170,19 @@ TEST_CASE("Matrix of non-square size should be able to get submatrix", "[Matrix]
 
     REQUIRE(m.submatrix(3, 2) == sm);
 }
+
+TEST_CASE("Matrix of size 3x3 should be able to calculate its minors", "[Matrix][minor]") {
+    Matrix<double, 3, 3> m = {{3,  5,  0},
+                              {2, -1, -7},
+                              {6, -1,  5}};
+
+    REQUIRE(m.minor(0, 0) == -12);
+    REQUIRE(m.minor(0, 1) ==  52);
+    REQUIRE(m.minor(0, 2) ==   4);
+    REQUIRE(m.minor(1, 0) ==  25);
+    REQUIRE(m.minor(1, 1) ==  15);
+    REQUIRE(m.minor(1, 2) == -33);
+    REQUIRE(m.minor(2, 0) == -35);
+    REQUIRE(m.minor(2, 1) == -21);
+    REQUIRE(m.minor(2, 2) == -13);
+}

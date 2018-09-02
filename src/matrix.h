@@ -138,6 +138,11 @@ namespace raytracer {
             return array_submatrix<T,rows,cols>(contents, i, j);
         }
 
+        /// Calculate the minor(i,j) of a matrix, i.e. the determinant of the submatrix(i,j).
+        T minor(size_t i, size_t j) {
+            return submatrix(i, j).determinant();
+        }
+
         /// Multiply by factor on the left.
         friend constexpr Matrix operator*(T factor, const Matrix &m) {
             return m * factor;
