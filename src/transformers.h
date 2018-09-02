@@ -32,6 +32,22 @@ namespace raytracer::transformers {
             }
         };
 
+        // TODO:  Not sure how we can pack these into an array?
+        template<typename T, size_t N, T nondiag, T diag, size_t idx>
+        struct DiagonalizerRow {
+            static constexpr T value() {
+                if constexpr (idx == N) return diag;
+                else return nondiag;
+            }
+        };
+
+        template<typename T, size_t N, T nondiag, T diag>
+        struct DiagonalizerRow<T, N, nondiag, diag, N> {
+            static constexpr T value() {
+                return 0;
+            }
+        };
+
         /// Fill a row with values. Two parameters are provided: one for elements on the diagonal, and one for all others.
         template <typename T, unsigned long C, size_t... Indices>
         constexpr std::array<T, C> make_diagonal_matrix_helper(T nondiag, T diag, size_t row, std::index_sequence<Indices...>) {
@@ -70,12 +86,12 @@ namespace raytracer::transformers {
     };
 
     /// Create simple 2-D arrays where the value at pos (i,i) is one value, and the value at position (i,j), i != j, is another.
-    template <typename T, unsigned long int R, unsigned long C>
+    template <typename T, size_t R, size_t C>
     constexpr std::array<std::array<T, C>, R> make_diagonal_matrix(T nondiag, T diag) {
         return details::make_diagonal_matrix_helper<T, R, C>(nondiag, diag, std::make_index_sequence<R>{});
     }
 
-    template <typename T, unsigned long int R, unsigned long C>
+    template <typename T, size_t R, size_t C>
     constexpr std::array<std::array<T, C>, R> make_uniform_matrix(T fill) {
         return make_diagonal_matrix<T,R,C>(fill, fill);
     }
@@ -98,55 +114,100 @@ namespace raytracer::transformers {
         return details::bitransform_helper(f, a1, a2, std::make_index_sequence<N>{});
     }
 
-    /// Simple type specifiers.
-    template<typename T, size_t N> constexpr std::array<T,N> operator+(const std::array<T,N> &t1, const std::array<T,N> &t2) {
-        return bitransform<T,T,N>([](const T &a, const T &b) { return a + b; }, t1, t2);
+    /// Checked for constexpr.
+    template<typename T, size_t N, size_t... Indices>
+    constexpr std::array<T,N> vector_opadd_helper(const std::array<T,N> &t1, const std::array<T,N> &t2, std::index_sequence<Indices...>) {
+        return {{t1[Indices] + t2[Indices]...}};
+    }
+    template<typename T, size_t N>
+    constexpr std::array<T,N> operator+(const std::array<T,N> &t1, const std::array<T,N> &t2) {
+        return vector_opadd_helper<T,N>(t1, t2, std::make_index_sequence<N>{});
     }
 
-    template<typename T, size_t N> constexpr std::array<T,N> operator-(const std::array<T,N> &t1, const std::array<T,N> &t2) {
-        return bitransform<T,T,N>([](const T &a, const T &b) { return a - b; }, t1, t2);
+    template<typename T, size_t N, size_t... Indices>
+    constexpr std::array<T,N> vector_opdiff_helper(const std::array<T,N> &t1, const std::array<T,N> &t2, std::index_sequence<Indices...>) {
+        return {{t1[Indices] - t2[Indices]...}};
+    }
+    template<typename T, size_t N>
+    constexpr std::array<T,N> operator-(const std::array<T,N> &t1, const std::array<T,N> &t2) {
+        //return bitransform<T,T,N>([](const T &a, const T &b) { return a - b; }, t1, t2);
+        return vector_opdiff_helper<T,N>(t1, t2, std::make_index_sequence<N>{});
     }
 
+    /// Checked for constexpr.
+    template<typename T, size_t N, size_t... Indices>
+    constexpr std::array<T,N> vector_opmult_helper(const std::array<T,N> &t1, const std::array<T,N> &t2, std::index_sequence<Indices...>) {
+        return {{t1[Indices] * t2[Indices]...}};
+    }
     template<typename T, size_t N>
     constexpr std::array<T,N> operator*(const std::array<T,N> &t1, const std::array<T,N> &t2) {
-        return bitransform<T,T,N>([](const T &a, const T &b) { return a * b; }, t1, t2);
+        return vector_opmult_helper<T,N>(t1, t2, std::make_index_sequence<N>{});
     }
 
-    template<typename F, typename T, size_t N,
-            typename = typename std::enable_if<std::is_arithmetic<F>::value, F>::type>
-    constexpr std::array<T,N> operator*(F f, const std::array<T,N> &t) {
-        return unitransform<T,T,N>([f](const T &a) { return f * a; }, t);
+    /// Checked for constexpr.
+    template<typename F, typename T, size_t N, size_t... Indices>
+    constexpr std::array<T,N>
+    scalar_opmult_helper(F f, const std::array<T,N> &t, std::index_sequence<Indices...>) {
+        return {{f * t[Indices]...}};
+    }
+    template<typename F, typename T, size_t N>
+    constexpr typename std::enable_if_t<std::is_arithmetic_v<F>, std::array<T,N>>
+    operator*(F f, const std::array<T,N> &t) {
+        return scalar_opmult_helper<F,T,N>(f, t, std::make_index_sequence<N>{});
+
     }
 
-    template<typename T, size_t N> constexpr std::array<T,N> operator/(const std::array<T,N> &t1, const std::array<T,N> &t2) {
-        return bitransform<T,T,N>([](const T &a, const T &b) { return a / b; }, t1, t2);
+    /// Checked for constexpr: ONLY WORKS IF T2 HAS NO ZEROES.
+    template<typename T, size_t N, size_t... Indices>
+    constexpr std::array<T,N> vector_opdiv_helper(const std::array<T,N> &t1, const std::array<T,N> &t2, std::index_sequence<Indices...>) {
+        return {{(t1[Indices] / t2[Indices])...}};
+    }
+    template<typename T, size_t N>
+    constexpr std::array<T,N> operator/(const std::array<T,N> &t1, const std::array<T,N> &t2) {
+        return vector_opdiv_helper<T,N>(t1, t2, std::make_index_sequence<N>{});
     }
 
-    template<typename F, typename T, size_t N,
-            typename = typename std::enable_if<std::is_arithmetic<F>::value, F>::type>
-    constexpr std::array<T,N> operator/(const std::array<T,N> &t, F f) {
-        return unitransform<T,T,N>([f](const T &a) { return a / f; }, t);
+    /// Checked for constexpr.
+    template<typename F, typename T, size_t N, size_t... Indices>
+    constexpr std::array<T,N> scalar_opdiv_helper(const std::array<T,N> &t, F f, std::index_sequence<Indices...>) {
+        return {{t[Indices] / f...}};
+    }
+    template<typename F, typename T, size_t N>
+    constexpr typename std::enable_if_t<std::is_arithmetic_v<F>, std::array<T,N>>
+    operator/(const std::array<T,N> &t, F f) {
+        return scalar_opdiv_helper<F,T,N>(t, f, std::make_index_sequence<N>{});
     }
 
-    template<typename T, size_t N> constexpr std::array<T,N> operator-(const std::array<T,N> &t) {
-        return unitransform<T,T,N>([](const T &a) { return -a; }, t);
+    /// Checked for constexpr.
+    template<typename T, size_t N, size_t... Indices>
+    constexpr std::array<T,N> vector_neg_helper(const std::array<T,N> &t, std::index_sequence<Indices...>) {
+        return {{-t[Indices]...}};
+    }
+    template<typename T, size_t N>
+    constexpr std::array<T,N> operator-(const std::array<T,N> &t) {
+        return vector_neg_helper<T,N>(t, std::make_index_sequence<N>{});
     }
 
+    /// Array partial equality.
     /// If floating point, use ALMOST_EQUALS.
     template<typename T>
-    constexpr typename std::enable_if<std::is_floating_point<T>::value, bool>::type
+    constexpr typename std::enable_if_t<std::is_floating_point_v<T>, bool>
     equals(T t1, T t2) { return ALMOST_EQUALS(t1, t2); }
 
     /// If integral, just use ==.
     template<typename T>
-    constexpr typename std::enable_if<std::is_integral<T>::value, bool>::type
+    constexpr typename std::enable_if_t<std::is_integral_v<T>, bool>
     equals(T t1, T t2) { return t1 == t2; }
 
     /// If an array, iterate. This will allow us to check multidimensional arrays.
+    /// Checked for constexpr.
+    template<typename T, size_t N, size_t... Indices>
+    constexpr bool equals_helper(const std::array<T,N> &t1, const std::array<T,N> &t2, std::index_sequence<Indices...>) {
+        return (ALMOST_EQUALS(t1[Indices], t2[Indices]) && ...);
+    }
     template<typename T, size_t N>
     constexpr bool equals(const std::array<T,N> &t1, const std::array<T,N> &t2) {
-        return Reducer<T, bool, N>::result([](const T &d1, const T &d2) { return equals(d1, d2); },
-                [](bool b1, bool b2) { return b1 && b2; }, true, t1, t2);
+        return equals_helper(t1, t2, std::make_index_sequence<N>{});
     }
 
     /// Create an array where the elements are determined by a supplied function invoked on index.
@@ -163,8 +224,32 @@ namespace raytracer::transformers {
     struct are_equal<m,m> final: std::true_type {};
 
     /// Auxiliary tools to find submatrices.
-    template<typename T, size_t R, size_t C>
-    constexpr std::array<std::array<T, C-1>, R-1> array_submatrix(const std::array<std::array<T, C>, R> &m, size_t row, size_t col) {
+//    template<typename T, size_t R, size_t C>
+//    constexpr std::array<std::array<T, C-1>, R-1> array_submatrix(const std::array<std::array<T, C>, R> &m, size_t row, size_t col) {
+//        static_assert(R > 1, "Submatrix requires that the matrix have more than one row");
+//        static_assert(C > 1, "Submatrix requires that the matrix have more than one column");
+//
+//        if (row < 0 || row >= R)
+//            throw std::invalid_argument("To calculate submatrix, row must be in bounds");
+//        if (col < 0 || col >= C)
+//            throw std::invalid_argument("To calculate submatrix, col must be in bounds");
+//
+//        return make_array<std::array<T, C-1>, R-1>([&m, row, col](int i) {
+//            return make_array<T, C-1>([&m, row, col, i](int j) {
+//                if (i < row  && j < col)  return m[i][j];
+//                if (i >= row && j < col)  return m[i+1][j];
+//                if (i < row && j >= col)  return m[i][j+1];
+//                if (i >= row && j >= col) return m[i+1][j+1];
+//            });
+//        });
+
+    template<typename T, size_t R, size_t C, size_t row, size_t col, size_t i, size_t j>
+    constexpr std::array<std::array<T, C-1>, R-1> array_submatrix_helper(const std::array<std::array<T, C>, R> &m) {
+
+    }
+
+    template<typename T, size_t R, size_t C, size_t row, size_t col>
+    constexpr std::array<std::array<T, C-1>, R-1> array_submatrix(const std::array<std::array<T, C>, R> &m) {
         static_assert(R > 1, "Submatrix requires that the matrix have more than one row");
         static_assert(C > 1, "Submatrix requires that the matrix have more than one column");
 
@@ -173,8 +258,8 @@ namespace raytracer::transformers {
         if (col < 0 || col >= C)
             throw std::invalid_argument("To calculate submatrix, col must be in bounds");
 
-        return make_array<std::array<T, C-1>, R-1>([&m, row, col](int i) {
-            return make_array<T, C-1>([&m, row, col, i](int j) {
+        return make_array<std::array<T, C-1>, R-1>([&m](int i) {
+            return make_array<T, C-1>([&m, i](int j) {
                 if (i < row  && j < col)  return m[i][j];
                 if (i >= row && j < col)  return m[i+1][j];
                 if (i < row && j >= col)  return m[i][j+1];
@@ -188,39 +273,77 @@ namespace raytracer::transformers {
      * Different cases for N=1, 2, and > 2.
      * Annoyingly, I can't seem to put these in Matrix, where they would be more useful due to access to cofactor.
      * The compiler complains about overloads there.
-     * We also need a lot of forward declarations due to the code making circular calls.
      */
+
+    // Forward declaration.
+    template<typename T, size_t N, size_t i, size_t j>
+    constexpr T array_cofactor(const std::array<std::array<T,N>,N> &m);
+
+    // TODO: For this to be genuinely constexpr, we need to make array_submatrix constexpr, which means eliminating
+    // TODO: the make_array calls and folding these up somehow into templates.
+    template<typename T, size_t N, size_t k>
+    struct ArrayDeterminantHelper {
+        constexpr static T value(const std::array<std::array<T,N>,N> &m) {
+            return m[0][k] * array_cofactor<T, N, 0, k>(m) + ArrayDeterminantHelper<T, N, k + 1>::value(m);
+        }
+    };
     template<typename T, size_t N>
-    constexpr T array_cofactor(const std::array<std::array<T,N>,N> &m, size_t i, size_t j);
+    struct ArrayDeterminantHelper<T,N,N> {
+        constexpr static T value(const std::array<std::array<T,N>,N> &m) {
+            return T{};
+        }
+    };
 
-    template<typename T, size_t N>// size_t k, typename = std::enable_if<k == 0>>
-    constexpr T array_determinant_helper(const std::array<std::array<T,N>,N> &m, int k) {
-        return (k < N) ? (m[0][k] * array_cofactor<T,N>(m, 0, k) + array_determinant_helper<T,N>(m, k+1)) : T{};
+    template<typename T, size_t N, size_t k>
+    constexpr T array_determinant_helper(const std::array<std::array<T,N>,N> &m) {
+        if constexpr (N == k) return T{};
+        return m[0][k] * array_cofactor<T,N,0,k>(m) + array_determinant_helper<T,N,k+1>(m);
     }
 
-    template<typename T, size_t N, typename = std::enable_if<(N > 2)>>
+    // TODO: Apparently, we don't need enable_if here either. I guess the compiler picks the most specific impl.
+    template<typename T, size_t N> //typename = typename std::enable_if<(N > 2)>>
     constexpr T array_determinant(const std::array<std::array<T,N>,N> &m) {
-        return array_determinant_helper<T,N>(m, 0);
+        return ArrayDeterminantHelper<T,N,0>::value(m);
     }
 
-    template<typename T, size_t N, typename = std::enable_if<N == 2>>
+    // TODO: We don't actually need the enable_ifs here, as the function parameters are unique.
+    template<typename T, size_t N>//, typename = typename std::enable_if<N == 2>>
     constexpr T array_determinant(const std::array<std::array<T,2>,2> &m) {
         return m[0][0] * m[1][1] - m[1][0] * m[0][1];
     }
 
-    template<typename T, size_t N, typename = std::enable_if<N == 1>>
+    template<typename T, size_t N>//, typename = typename std::enable_if<N == 1>>
     constexpr T array_determinant(const std::array<std::array<T,1>,1> &m) {
         return m[0][0];
     }
 
     /// Minor and cofactor so we can use them and don't have to redefine them in matrix.h
-    template<typename T, size_t N>
-    constexpr T array_minor(const std::array<std::array<T,N>,N> &m, size_t i, size_t j) {
-        return array_determinant<T,N-1>(array_submatrix<T,N,N>(m, i, j));
+    template<typename T, size_t N, size_t i, size_t j>
+    constexpr T array_minor(const std::array<std::array<T,N>,N> &m) {
+        return array_determinant<T,N-1>(array_submatrix<T,N,N,i,j>(m));
     }
 
+    template<typename T, size_t N, size_t i, size_t j>
+    constexpr T array_cofactor(const std::array<std::array<T,N>,N> &m) {
+        return ((i + j) % 2 ? -1 : 1) * array_minor<T,N,i,j>(m);
+    }
+
+    /// Checked for constexpr.
     template<typename T, size_t N>
-    constexpr T array_cofactor(const std::array<std::array<T,N>,N> &m, size_t i, size_t j) {
-        return ((i + j) % 2 ? -1 : 1) * array_minor<T,N>(m, i, j);
+    constexpr T dot_product(const std::array<T,N> &a1, const std::array<T,N> &a2) {
+        T t{};
+        for (int i=0; i < N; ++i)
+            t += a1[i] * a2[i];
+        return t;
+    }
+
+    /// Checked for constexpr.
+    template<typename T, size_t N, size_t... Indices>
+    constexpr std::array<T,N> initializer_list_to_array_helper(const std::initializer_list<T> lst, std::index_sequence<Indices...>) {
+        return {{lst.begin()[Indices]...}};
+    }
+    template<typename T, size_t N>
+    constexpr std::array<T,N> initializer_list_to_array(const std::initializer_list<T> lst) {
+        return initializer_list_to_array_helper<T,N>(lst, std::make_index_sequence<N>{});
     }
 }

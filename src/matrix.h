@@ -128,28 +128,32 @@ namespace raytracer {
             return rows;
         }
 
-        constexpr T determinant() {
+        T determinant() {
             static_assert(rows == cols, "Matrix::determinant() only for use with square matrices");
             return array_determinant<T,rows>(contents);
         }
 
         /// Omit row i and column j to get a submatrix of one dimension less in rows and cols.
-        Matrix<T, rows-1, cols-1> submatrix(size_t i, size_t j) {
-            return array_submatrix<T,rows,cols>(contents, i, j);
+        template<size_t i, size_t j>
+        Matrix<T, rows-1, cols-1> submatrix() {
+            //constexpr auto res = array_submatrix<T,rows,cols, i, j>(contents);
+            return array_submatrix<T,rows,cols,i,j>(contents);
         }
 
         /// Calculate the minor(i,j) of a matrix, i.e. the determinant of the submatrix(i,j).
-        T minor(size_t i, size_t j) {
+        template<size_t i, size_t j>
+        T minor() {
             static_assert(rows == cols, "Matrix::minor() only for use with square matrices");
-            //return submatrix(i, j).determinant();
-            return array_minor<T,rows>(contents, i, j);
+            //constexpr auto res = array_minor<T,rows>(contents, i, j);
+            return array_minor<T,rows,i,j>(contents);
         }
 
         /// Calculate the cofactor(i,j) of a matrix, which is just (i+j)^(-1) * minor(i,j).
-        T cofactor(size_t i, size_t j) {
+        template<size_t i, size_t j>
+        T cofactor() {
             static_assert(rows == cols, "Matrix::cofactor() only for use with square matrices");
-            //return ((i + j) % 2 == 0 ? 1 : -1) * submatrix(i, j).determinant();
-            return array_cofactor<T,rows>(contents, i, j);
+            //constexpr auto res = array_cofactor<T,rows,i,j>(contents);
+            return array_cofactor<T,rows,i,j>(contents);
         }
 
         /// Multiply by factor on the left.

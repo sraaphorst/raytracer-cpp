@@ -130,7 +130,7 @@ TEST_CASE("Matrix of size 2x2 should be able to calculate its determinant", "[Ma
 TEST_CASE("Matric of size 2x2 should be able to get submatrix", "[Matrix][submatrix]") {
     Matrix<double, 2, 2> m = {{0, 1},
                               {2, 3}};
-    REQUIRE(m.submatrix(0,0) == Matrix<double, 1, 1>{{3}});
+    REQUIRE(m.submatrix<0,0>() == Matrix<double, 1, 1>{{3}});
 }
 
 TEST_CASE("Matrix of size 3x3 should be able to get submatrix", "[Matrix][submatrix]") {
@@ -141,7 +141,7 @@ TEST_CASE("Matrix of size 3x3 should be able to get submatrix", "[Matrix][submat
     Matrix<double, 2, 2> sm = {{-3, 2},
                                {0, 6}};
 
-    REQUIRE(m.submatrix(0, 2) == sm);
+    REQUIRE(m.submatrix<0, 2>() == sm);
 }
 
 TEST_CASE("Matrix of size 4x4 should be able to get submatrix", "[Matrix][submatrix]") {
@@ -154,7 +154,7 @@ TEST_CASE("Matrix of size 4x4 should be able to get submatrix", "[Matrix][submat
                                {-8,  8, 6},
                                {-7, -1, 1}};
 
-    REQUIRE(m.submatrix(2, 1) == sm);
+    REQUIRE(m.submatrix<2, 1>() == sm);
 }
 
 TEST_CASE("Matrix of non-square size should be able to get submatrix", "[Matrix][submatrix]") {
@@ -167,7 +167,7 @@ TEST_CASE("Matrix of non-square size should be able to get submatrix", "[Matrix]
                                {3, 4},
                                {6, 7}};
 
-    REQUIRE(m.submatrix(3, 2) == sm);
+    REQUIRE(m.submatrix<3, 2>() == sm);
 }
 
 TEST_CASE("Matrix of size 3x3 should be able to calculate its minors", "[Matrix][minor]") {
@@ -175,15 +175,15 @@ TEST_CASE("Matrix of size 3x3 should be able to calculate its minors", "[Matrix]
                               {2, -1, -7},
                               {6, -1,  5}};
 
-    REQUIRE(m.minor(0, 0) == -12);
-    REQUIRE(m.minor(0, 1) ==  52);
-    REQUIRE(m.minor(0, 2) ==   4);
-    REQUIRE(m.minor(1, 0) ==  25);
-    REQUIRE(m.minor(1, 1) ==  15);
-    REQUIRE(m.minor(1, 2) == -33);
-    REQUIRE(m.minor(2, 0) == -35);
-    REQUIRE(m.minor(2, 1) == -21);
-    REQUIRE(m.minor(2, 2) == -13);
+    REQUIRE(m.minor<0, 0>() == -12);
+    REQUIRE(m.minor<0, 1>() ==  52);
+    REQUIRE(m.minor<0, 2>() ==   4);
+    REQUIRE(m.minor<1, 0>() ==  25);
+    REQUIRE(m.minor<1, 1>() ==  15);
+    REQUIRE(m.minor<1, 2>() == -33);
+    REQUIRE(m.minor<2, 0>() == -35);
+    REQUIRE(m.minor<2, 1>() == -21);
+    REQUIRE(m.minor<2, 2>() == -13);
 }
 
 TEST_CASE("Matrix of size 3x3 should be able to calculate its cofactors", "[Matrix][cofactors]") {
@@ -191,15 +191,15 @@ TEST_CASE("Matrix of size 3x3 should be able to calculate its cofactors", "[Matr
                               {2, -1, -7},
                               {6, -1,  5}};
 
-    REQUIRE(m.cofactor(0, 0) == -12);
-    REQUIRE(m.cofactor(0, 1) == -52);
-    REQUIRE(m.cofactor(0, 2) ==   4);
-    REQUIRE(m.cofactor(1, 0) == -25);
-    REQUIRE(m.cofactor(1, 1) ==  15);
-    REQUIRE(m.cofactor(1, 2) ==  33);
-    REQUIRE(m.cofactor(2, 0) == -35);
-    REQUIRE(m.cofactor(2, 1) ==  21);
-    REQUIRE(m.cofactor(2, 2) == -13);
+    REQUIRE(m.cofactor<0, 0>() == -12);
+    REQUIRE(m.cofactor<0, 1>() == -52);
+    REQUIRE(m.cofactor<0, 2>() ==   4);
+    REQUIRE(m.cofactor<1, 0>() == -25);
+    REQUIRE(m.cofactor<1, 1>() ==  15);
+    REQUIRE(m.cofactor<1, 2>() ==  33);
+    REQUIRE(m.cofactor<2, 0>() == -35);
+    REQUIRE(m.cofactor<2, 1>() ==  21);
+    REQUIRE(m.cofactor<2, 2>() == -13);
 }
 
 TEST_CASE("Matrix of size 3x3 should be able to calculate its determinant", "[Matrix][determinant]") {
@@ -207,9 +207,9 @@ TEST_CASE("Matrix of size 3x3 should be able to calculate its determinant", "[Ma
                               {-5, 8, -4},
                               { 2, 6,  4}};
 
-    REQUIRE(m.cofactor(0, 0) ==   56);
-    REQUIRE(m.cofactor(0, 1) ==   12);
-    REQUIRE(m.cofactor(0, 2) ==  -46);
+    REQUIRE(m.cofactor<0, 0>() ==   56);
+    REQUIRE(m.cofactor<0, 1>() ==   12);
+    REQUIRE(m.cofactor<0, 2>() ==  -46);
     REQUIRE(m.determinant()  == -196);
 }
 
@@ -219,9 +219,9 @@ TEST_CASE("Matrix of size 4x4 should be able to calculate its determinant", "[Ma
                               { 1,  2, -9,  6},
                               {-6,  7,  7, -9}};
 
-    REQUIRE(m.cofactor(0, 0) ==   690);
-    REQUIRE(m.cofactor(0, 1) ==   447);
-    REQUIRE(m.cofactor(0, 2) ==   210);
-    REQUIRE(m.cofactor(0, 3) ==    51);
+    REQUIRE(m.cofactor<0, 0>() ==   690);
+    REQUIRE(m.cofactor<0, 1>() ==   447);
+    REQUIRE(m.cofactor<0, 2>() ==   210);
+    REQUIRE(m.cofactor<0, 3>() ==    51);
     REQUIRE(m.determinant()  == -4071);
 }

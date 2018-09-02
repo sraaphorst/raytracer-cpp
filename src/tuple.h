@@ -61,6 +61,7 @@ namespace raytracer {
         }
 
         constexpr Tuple operator*(const Tuple &other) const noexcept {
+            const vector_type a = contents * other.contents;
             return Tuple{contents * other.contents};
         }
 

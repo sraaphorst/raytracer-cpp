@@ -37,9 +37,10 @@ namespace raytracer {
         constexpr Vector(const Vector &other) noexcept = default;
         constexpr Vector(Vector &&other) noexcept = default;
 
-        constexpr Vector(std::initializer_list<T> lst): contents{
-            make_array<T,N>([&lst](int i) { return lst.begin()[i]; })
-        } {}
+//        constexpr Vector(std::initializer_list<T> lst): contents{
+//            make_array<T,N>([&lst](int i) { return lst.begin()[i]; })
+//        } {}
+        constexpr Vector(std::initializer_list<T> lst) : contents{initializer_list_to_array<T,N>(lst)} {}
 
         ~Vector() = default;
 
@@ -84,11 +85,12 @@ namespace raytracer {
             return !(rhs == *this);
         }
 
-        constexpr T dot_product(const Vector &t) const noexcept {
-            return transformers::Reducer<T, T, N>::result(
-                    [](T t1, T t2) { return t1 * t2; },
-                    [](const T &t1, const T &t2) { return t1 + t2; }, 0,
-                    contents, t.contents);
+        constexpr T dot_product(const Vector &v) const noexcept {
+//            return transformers::Reducer<T, T, N>::result(
+//                    [](T t1, T t2) { return t1 * t2; },
+//                    [](const T &t1, const T &t2) { return t1 + t2; }, 0,
+//                    contents, t.contents);
+            return transformers::dot_product<T, N>(contents, v.contents);
         }
 
         constexpr T magnitude() const noexcept {
@@ -119,5 +121,27 @@ namespace raytracer {
 
         template<typename S, size_t m, size_t n>
         friend constexpr Vector<S,n> operator*(const Vector<S,m>&, const Matrix<S,m,n,S>&);
+
+        /******************
+         * TUPLE SPECIFIC *
+         ******************/
+
+        /// Cross product
+        // TODO: Both of these template declaration lines work.
+        //template<typename = typename std::enable_if<N == 4>::type>
+        template<typename = typename std::enable_if_t<are_equal<N,4>::value>>
+        constexpr Vector cross_product(const Vector &other) const {
+            return Vector{
+                    (*this)[y] * other[z] - (*this)[z] * other[y],
+                    (*this)[z] * other[x] - (*this)[x] * other[z],
+                    (*this)[x] * other[y] - (*this)[y] * other[x],
+                    0
+            };
+        }
+
+        constexpr static int x = 0;
+        constexpr static int y = 0;
+        constexpr static int z = 0;
+        constexpr static int w = 0;
     };
 }
