@@ -98,8 +98,7 @@ TEST_CASE("Matrix multiplied with a vector should give a vector", "[Matrix][vect
 TEST_CASE("Matrix multiplied on the left by a vector should give a vector", "[Matrix][vector_multipication]") {
     Vector<double, 3> v = {1, 2, 3};
     Vector<double, 2> prod = {8, 26};
-    Vector<double, 2> vm2 = operator*(v,m2);
-    REQUIRE(vm2 == prod);
+    REQUIRE(v * m2 == prod);
 }
 
 TEST_CASE("Identity matrix should not change the value of a matrix, whether on left or right", "[Matrix][identity][multiplication]") {
@@ -201,4 +200,28 @@ TEST_CASE("Matrix of size 3x3 should be able to calculate its cofactors", "[Matr
     REQUIRE(m.cofactor(2, 0) == -35);
     REQUIRE(m.cofactor(2, 1) ==  21);
     REQUIRE(m.cofactor(2, 2) == -13);
+}
+
+TEST_CASE("Matrix of size 3x3 should be able to calculate its determinant", "[Matrix][determinant]") {
+    Matrix<double, 3, 3> m = {{ 1, 2,  6},
+                              {-5, 8, -4},
+                              { 2, 6,  4}};
+
+    REQUIRE(m.cofactor(0, 0) ==   56);
+    REQUIRE(m.cofactor(0, 1) ==   12);
+    REQUIRE(m.cofactor(0, 2) ==  -46);
+    REQUIRE(m.determinant()  == -196);
+}
+
+TEST_CASE("Matrix of size 4x4 should be able to calculate its determinant", "[Matrix][determinant]") {
+    Matrix<double, 4, 4> m = {{-2, -8,  3,  5},
+                              {-3,  1,  7,  3},
+                              { 1,  2, -9,  6},
+                              {-6,  7,  7, -9}};
+
+    REQUIRE(m.cofactor(0, 0) ==   690);
+    REQUIRE(m.cofactor(0, 1) ==   447);
+    REQUIRE(m.cofactor(0, 2) ==   210);
+    REQUIRE(m.cofactor(0, 3) ==    51);
+    REQUIRE(m.determinant()  == -4071);
 }

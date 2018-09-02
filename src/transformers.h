@@ -7,6 +7,8 @@
 #pragma once
 
 #include <array>
+#include <iomanip>
+#include <iostream>
 #include <functional>
 #include <stdexcept>
 #include <utility>
@@ -160,23 +162,6 @@ namespace raytracer::transformers {
     template<size_t m>
     struct are_equal<m,m> final: std::true_type {};
 
-    /// Auxiliary functions to find the determinant. Only for square matrices.
-    /// Different cases for N=1, 2, and > 2.
-    template<typename T, size_t N, typename = std::enable_if<(N > 2)>>
-    constexpr T array_determinant(const std::array<std::array<T,N>,N> &m) {
-        return {};
-    }
-
-    template<typename T, size_t N, typename = std::enable_if<N == 2>>
-    constexpr T array_determinant(const std::array<std::array<T,2>,2> &m) {
-        return m[0][0] * m[1][1] - m[1][0] * m[0][1];
-    }
-
-    template<typename T, size_t N, typename = std::enable_if<N == 1>>
-    constexpr T array_determinant(const std::array<std::array<T,1>,1> &m) {
-        return m[0][0];
-    }
-
     /// Auxiliary tools to find submatrices.
     template<typename T, size_t R, size_t C>
     constexpr std::array<std::array<T, C-1>, R-1> array_submatrix(const std::array<std::array<T, C>, R> &m, size_t row, size_t col) {
@@ -196,6 +181,46 @@ namespace raytracer::transformers {
                 if (i >= row && j >= col) return m[i+1][j+1];
             });
         });
+    }
 
-    };
+    /**
+     * Auxiliary functions to find the determinant. Only for square matrices.
+     * Different cases for N=1, 2, and > 2.
+     * Annoyingly, I can't seem to put these in Matrix, where they would be more useful due to access to cofactor.
+     * The compiler complains about overloads there.
+     * We also need a lot of forward declarations due to the code making circular calls.
+     */
+    template<typename T, size_t N>
+    constexpr T array_cofactor(const std::array<std::array<T,N>,N> &m, size_t i, size_t j);
+
+    template<typename T, size_t N>// size_t k, typename = std::enable_if<k == 0>>
+    constexpr T array_determinant_helper(const std::array<std::array<T,N>,N> &m, int k) {
+        return (k < N) ? (m[0][k] * array_cofactor<T,N>(m, 0, k) + array_determinant_helper<T,N>(m, k+1)) : T{};
+    }
+
+    template<typename T, size_t N, typename = std::enable_if<(N > 2)>>
+    constexpr T array_determinant(const std::array<std::array<T,N>,N> &m) {
+        return array_determinant_helper<T,N>(m, 0);
+    }
+
+    template<typename T, size_t N, typename = std::enable_if<N == 2>>
+    constexpr T array_determinant(const std::array<std::array<T,2>,2> &m) {
+        return m[0][0] * m[1][1] - m[1][0] * m[0][1];
+    }
+
+    template<typename T, size_t N, typename = std::enable_if<N == 1>>
+    constexpr T array_determinant(const std::array<std::array<T,1>,1> &m) {
+        return m[0][0];
+    }
+
+    /// Minor and cofactor so we can use them and don't have to redefine them in matrix.h
+    template<typename T, size_t N>
+    constexpr T array_minor(const std::array<std::array<T,N>,N> &m, size_t i, size_t j) {
+        return array_determinant<T,N-1>(array_submatrix<T,N,N>(m, i, j));
+    }
+
+    template<typename T, size_t N>
+    constexpr T array_cofactor(const std::array<std::array<T,N>,N> &m, size_t i, size_t j) {
+        return ((i + j) % 2 ? -1 : 1) * array_minor<T,N>(m, i, j);
+    }
 }
