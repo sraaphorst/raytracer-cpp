@@ -140,7 +140,14 @@ namespace raytracer {
 
         /// Calculate the minor(i,j) of a matrix, i.e. the determinant of the submatrix(i,j).
         T minor(size_t i, size_t j) {
+            static_assert(rows == cols, "Matrix::minor() only for use with square matrices");
             return submatrix(i, j).determinant();
+        }
+
+        /// Calculate the cofactor(i,j) of a matrix, which is just (i+j)^(-1) * minor(i,j).
+        T cofactor(size_t i, size_t j) {
+            static_assert(rows == cols, "Matrix::cofactor() only for use with square matrices");
+            return ((i + j) % 2 == 0 ? 1 : -1) * submatrix(i, j).determinant();
         }
 
         /// Multiply by factor on the left.
