@@ -122,3 +122,14 @@ TEST_CASE("Matrix of size 2x2 should be able to calculate its determinant", "[Ma
                               {-3, 2}};
     REQUIRE(m.determinant() == 17);
 }
+
+TEST_CASE("Matrix should be able to get submatrix", "[Matrix][submatrix]") {
+    Matrix<double, 3, 3> m = {{ 1, 5,  0},
+                              {-3, 2,  7},
+                              { 0, 6, -3}};
+
+    Matrix<double, 2, 2> sm = {{-3, 2},
+                               {0, 6}};
+
+    REQUIRE(m.submatrix(0, 2) == sm);
+}

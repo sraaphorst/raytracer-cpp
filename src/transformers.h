@@ -8,6 +8,7 @@
 
 #include <array>
 #include <functional>
+#include <stdexcept>
 #include <utility>
 
 #include "common.h"
@@ -159,15 +160,42 @@ namespace raytracer::transformers {
     template<size_t m>
     struct are_equal<m,m> final: std::true_type {};
 
-    /// Auxiliary tools to find the determinant. Only for square matrices.
-    template<typename T, size_t N>
-    T determinant_helper(const std::array<std::array<T,N>,N> &m) {
+    /// Auxiliary functions to find the determinant. Only for square matrices.
+    /// Different cases for N=1, 2, and > 2.
+    template<typename T, size_t N, typename = std::enable_if<(N > 2)>>
+    constexpr T array_determinant(const std::array<std::array<T,N>,N> &m) {
         return {};
     }
 
-    template<typename T>
-    T determinant_helper(const std::array<std::array<T,2>,2> &m) {
+    template<typename T, size_t N, typename = std::enable_if<N == 2>>
+    constexpr T array_determinant(const std::array<std::array<T,2>,2> &m) {
         return m[0][0] * m[1][1] - m[1][0] * m[0][1];
     }
 
+    template<typename T, size_t N, typename = std::enable_if<N == 1>>
+    constexpr T array_determinant(const std::array<std::array<T,1>,1> &m) {
+        return m[0][0];
+    }
+
+    /// Auxiliary tools to find submatrices.
+    template<typename T, size_t R, size_t C>
+    constexpr std::array<std::array<T, R-1>, C-1> array_submatrix(const std::array<std::array<T, R>, C> &m, size_t row, size_t col) {
+        static_assert(R > 1, "Submatrix requires that the matrix have more than one row");
+        static_assert(C > 1, "Submatrix requires that the matrix have more than one column");
+
+        if (row < 0 || row >= R)
+            throw std::invalid_argument("To calculate submatrix, row must be in bounds");
+        if (col < 0 || col >= C)
+            throw std::invalid_argument("To calculate submatrix, col must be in bounds");
+
+        return make_array<std::array<T, R-1>, R-1>([&m, row, col](int i) {
+            return make_array<T, C-1>([&m, row, col, i](int j) {
+                if (i < row  && j < col)  return m[i][j];
+                if (i >= row && j < col)  return m[i+1][j];
+                if (i < row && j >= col)  return m[i][j+1];
+                if (i >= row && j >= col) return m[i+1][j+1];
+            });
+        });
+
+    };
 }

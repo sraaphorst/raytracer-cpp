@@ -42,11 +42,11 @@ namespace raytracer {
         constexpr Matrix(const Matrix&) noexcept = default;
         constexpr Matrix(Matrix&&) noexcept = default;
 
-        constexpr Matrix(std::initializer_list<row_type> r):
+        constexpr Matrix(std::initializer_list<row_type> lst):
             contents{
-                make_array<row_type,rows>([&r](int i) {
-                    return make_array<T,cols>([&r,i](int j) {
-                        return r.begin()[i][j];
+                make_array<row_type,rows>([&lst](int i) {
+                    return make_array<T,cols>([&lst,i](int j) {
+                        return lst.begin()[i][j];
                     });
                 })
             } {}
@@ -129,7 +129,13 @@ namespace raytracer {
         }
 
         constexpr T determinant() {
-            return determinant_helper(contents);
+            static_assert(rows == cols, "Matrix::determinant() only for use with square matrices");
+            return array_determinant<T,rows>(contents);
+        }
+
+        /// Omit row i and column j to get a submatrix of one dimension less in rows and cols.
+        Matrix<T, rows-1, cols-1> submatrix(size_t i, size_t j) {
+            return array_submatrix<T,rows,cols>(contents, i, j);
         }
 
         /// Multiply by factor on the left.
