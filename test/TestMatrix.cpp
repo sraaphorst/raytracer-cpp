@@ -117,13 +117,24 @@ TEST_CASE("Identity matrix should not change the value of vectors, whether on le
     REQUIRE(v * matrix_constants::I<double, 4> == v);
 }
 
+TEST_CASE("Matrix of size 1x1 should be able to calculate its determinant", "[Matrix][determinant]") {
+    Matrix<double, 1, 1> m = {{5}};
+    REQUIRE(m.determinant() == 5);
+}
+
 TEST_CASE("Matrix of size 2x2 should be able to calculate its determinant", "[Matrix][determinant]") {
     Matrix<double, 2, 2> m = {{ 1, 5},
                               {-3, 2}};
     REQUIRE(m.determinant() == 17);
 }
 
-TEST_CASE("Matrix should be able to get submatrix", "[Matrix][submatrix]") {
+TEST_CASE("Matric of size 2x2 should be able to get submatrix", "[Matrix][submatrix]") {
+    Matrix<double, 2, 2> m = {{0, 1},
+                              {2, 3}};
+    REQUIRE(m.submatrix(0,0) == Matrix<double, 1, 1>{{3}});
+}
+
+TEST_CASE("Matrix of size 3x3 should be able to get submatrix", "[Matrix][submatrix]") {
     Matrix<double, 3, 3> m = {{ 1, 5,  0},
                               {-3, 2,  7},
                               { 0, 6, -3}};
@@ -132,4 +143,30 @@ TEST_CASE("Matrix should be able to get submatrix", "[Matrix][submatrix]") {
                                {0, 6}};
 
     REQUIRE(m.submatrix(0, 2) == sm);
+}
+
+TEST_CASE("Matrix of size 4x4 should be able to get submatrix", "[Matrix][submatrix]") {
+    Matrix<double, 4, 4> m = {{-6, 1,  1, 6},
+                              {-8, 5,  8, 6},
+                              {-1, 0,  8, 2},
+                              {-7, 1, -1, 1}};
+
+    Matrix<double, 3, 3> sm = {{-6,  1, 6},
+                               {-8,  8, 6},
+                               {-7, -1, 1}};
+
+    REQUIRE(m.submatrix(2, 1) == sm);
+}
+
+TEST_CASE("Matrix of non-square size should be able to get submatrix", "[Matrix][submatrix]") {
+    Matrix<double, 4, 3> m = {{0, 1,  2},
+                             {3,  4,  5},
+                             {6,  7,  8},
+                             {9, 10, 11}};
+
+    Matrix<double, 3, 2> sm = {{0, 1},
+                               {3, 4},
+                               {6, 7}};
+
+    REQUIRE(m.submatrix(3, 2) == sm);
 }

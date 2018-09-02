@@ -179,7 +179,7 @@ namespace raytracer::transformers {
 
     /// Auxiliary tools to find submatrices.
     template<typename T, size_t R, size_t C>
-    constexpr std::array<std::array<T, R-1>, C-1> array_submatrix(const std::array<std::array<T, R>, C> &m, size_t row, size_t col) {
+    constexpr std::array<std::array<T, C-1>, R-1> array_submatrix(const std::array<std::array<T, C>, R> &m, size_t row, size_t col) {
         static_assert(R > 1, "Submatrix requires that the matrix have more than one row");
         static_assert(C > 1, "Submatrix requires that the matrix have more than one column");
 
@@ -188,7 +188,7 @@ namespace raytracer::transformers {
         if (col < 0 || col >= C)
             throw std::invalid_argument("To calculate submatrix, col must be in bounds");
 
-        return make_array<std::array<T, R-1>, R-1>([&m, row, col](int i) {
+        return make_array<std::array<T, C-1>, R-1>([&m, row, col](int i) {
             return make_array<T, C-1>([&m, row, col, i](int j) {
                 if (i < row  && j < col)  return m[i][j];
                 if (i >= row && j < col)  return m[i+1][j];
