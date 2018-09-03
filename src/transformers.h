@@ -171,12 +171,22 @@ namespace raytracer::transformers {
     constexpr typename std::enable_if_t<std::is_arithmetic_v<F>, std::array<T,N>>
     operator*(F f, const std::array<T,N> &t) {
         return scalar_opmult_helper<F,T,N>(f, t, std::make_index_sequence<N>{});
-
+    }
+    template<typename F, typename T, size_t R, size_t C, size_t... Indices>
+    constexpr typename std::enable_if_t<std::is_arithmetic_v<F>, const std::array<std::array<T, C>, R>>
+    matrix_opmult_helper(F f, const std::array<std::array<T, C>, R> &m1, std::index_sequence<Indices...>) {
+        return {{ f * m1[Indices]... }};
+    }
+    template<typename F, typename T, size_t R, size_t C>
+    constexpr typename std::enable_if_t<std::is_arithmetic_v<F>, const std::array<std::array<T, C>, R>>
+    operator*(F f, const std::array<std::array<T, C>, R> &m) {
+        return matrix_opmult_helper<F,T,R,C>(f, m, std::make_index_sequence<R>{});
     }
 
     /// Checked for constexpr: ONLY WORKS IF T2 HAS NO ZEROES.
     template<typename T, size_t N, size_t... Indices>
-    constexpr std::array<T,N> vector_opdiv_helper(const std::array<T,N> &t1, const std::array<T,N> &t2, std::index_sequence<Indices...>) {
+    constexpr std::array<T,N>
+    vector_opdiv_helper(const std::array<T,N> &t1, const std::array<T,N> &t2, std::index_sequence<Indices...>) {
         return {{(t1[Indices] / t2[Indices])...}};
     }
     template<typename T, size_t N>

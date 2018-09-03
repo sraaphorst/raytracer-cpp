@@ -63,8 +63,9 @@ TEST_CASE("Matrix should be able to determine equality", "[Matrix][equality]") {
 }
 
 TEST_CASE("Matrix comparison equality should be able to tolerate slight offsets", "[Matrix][equality]") {
-    // Make sure expression is constexpr.
-    //constexpr auto res = EPSILON/2 * matrix_constants::I<double, 3>;
+    // Make sure expressions are constexpr.
+    constexpr auto res1 = matrix_constants::I<double, 3> + EPSILON/2 * matrix_constants::I<double, 3>;
+    constexpr auto res2 = m1 - EPSILON/2 * matrix_constants::ones<double, 2, 3>;
     REQUIRE(m1 == m1 - EPSILON/2 * matrix_constants::ones<double, 2, 3>);
     REQUIRE(matrix_constants::I<double, 3> == matrix_constants::I<double, 3> + EPSILON/2 * matrix_constants::I<double, 3>);
 }
