@@ -238,6 +238,18 @@ namespace raytracer::transformers {
 
     /// If an array, iterate. This will allow us to check multidimensional arrays.
     /// Checked for constexpr.
+    template<typename T, size_t N, size_t k>
+    struct Equaller {
+        static constexpr bool value(const std::array<T,N> &t1, const std::array<T,N> &t2) {
+            return t1[k] == t2[k] && Equaller<T,N,k+1>::value;
+        }
+    };
+    template<typename T, size_t N>
+    struct Equaller<T,N,N> {
+        static constexpr bool value(const std::array<T,N>&, const std::array<T,N>&) {
+            return true;
+        }
+    };
     // TODO: HELPER HERE NOT NEEDED
     template<typename T, size_t N, size_t... Indices>
     constexpr bool equals_helper(const std::array<T,N> &t1, const std::array<T,N> &t2, std::index_sequence<Indices...>) {
@@ -245,11 +257,12 @@ namespace raytracer::transformers {
     }
     template<typename T, size_t N>
     constexpr bool equals(const std::array<T,N> &t1, const std::array<T,N> &t2) {
-        bool same = true;
-        for (int i=0; i < N; ++i)
-            same = same && equals(t1[i], t2[i]);
-        return same;
-//        return equals_helper(t1, t2, std::make_index_sequence<N>{});
+//        bool same = true;
+//        for (int i=0; i < N; ++i)
+//            same = same && equals(t1[i], t2[i]);
+//        return same;
+        //return equals_helper<T,N>(t1, t2, std::make_index_sequence<N>{});
+        return Equaller<T,N,0>::value(t1, t2);
     }
 
     /// Create an array where the elements are determined by a supplied function invoked on index.
@@ -271,48 +284,19 @@ namespace raytracer::transformers {
 
 
     /// Auxiliary tools to find submatrices.
-//    template<typename T, size_t R, size_t C>
-//    constexpr std::array<std::array<T, C-1>, R-1> array_submatrix(const std::array<std::array<T, C>, R> &m, size_t row, size_t col) {
-//        static_assert(R > 1, "Submatrix requires that the matrix have more than one row");
-//        static_assert(C > 1, "Submatrix requires that the matrix have more than one column");
-//
-//        if (row < 0 || row >= R)
-//            throw std::invalid_argument("To calculate submatrix, row must be in bounds");
-//        if (col < 0 || col >= C)
-//            throw std::invalid_argument("To calculate submatrix, col must be in bounds");
-//
-//        return make_array<std::array<T, C-1>, R-1>([&m, row, col](int i) {
-//            return make_array<T, C-1>([&m, row, col, i](int j) {
-//                if (i < row  && j < col)  return m[i][j];
-//                if (i >= row && j < col)  return m[i+1][j];
-//                if (i < row && j >= col)  return m[i][j+1];
-//                if (i >= row && j >= col) return m[i+1][j+1];
-//            });
-//        });
-
-    template<typename T, size_t R, size_t C, size_t row, size_t col, size_t i, size_t j>
-    constexpr std::array<std::array<T, C-1>, R-1> array_submatrix_helper(const std::array<std::array<T, C>, R> &m) {
-
-    }
-
-    template<typename T, size_t R, size_t C, size_t row, size_t col>
+    /// TODO: why does this work in some cases, and not in others? 4x3 matrix is fine, but not 3x3.
+    template<typename T, size_t R, size_t C, size_t r, size_t c>
     constexpr std::array<std::array<T, C-1>, R-1> array_submatrix(const std::array<std::array<T, C>, R> &m) {
-        static_assert(R > 1, "Submatrix requires that the matrix have more than one row");
-        static_assert(C > 1, "Submatrix requires that the matrix have more than one column");
-
-        if (row < 0 || row >= R)
-            throw std::invalid_argument("To calculate submatrix, row must be in bounds");
-        if (col < 0 || col >= C)
-            throw std::invalid_argument("To calculate submatrix, col must be in bounds");
-
-        return make_array<std::array<T, C-1>, R-1>([&m](int i) {
-            return make_array<T, C-1>([&m, i](int j) {
-                if (i < row  && j < col)  return m[i][j];
-                if (i >= row && j < col)  return m[i+1][j];
-                if (i < row && j >= col)  return m[i][j+1];
-                if (i >= row && j >= col) return m[i+1][j+1];
-            });
-        });
+        std::array<std::array<T, C-1>, R-1> sm{};
+        for (int i=0; i < R-1; ++i) {
+            for (int j=0; j < C-1; ++j) {
+                if (i < r && j < c) sm[i][j] = m[i][j];
+                else if (i >= r && j < c) sm[i][j] = m[i+1][j];
+                else if (i < r && j >= c) sm[i][j] = m[i][j+1];
+                else sm[i][j] = m[i+1][j+1];
+            }
+        }
+        return sm;
     }
 
     /**
@@ -326,8 +310,6 @@ namespace raytracer::transformers {
     template<typename T, size_t N, size_t i, size_t j>
     constexpr T array_cofactor(const std::array<std::array<T,N>,N> &m);
 
-    // TODO: For this to be genuinely constexpr, we need to make array_submatrix constexpr, which means eliminating
-    // TODO: the make_array calls and folding these up somehow into templates.
     template<typename T, size_t N, size_t k>
     struct ArrayDeterminantHelper {
         constexpr static T value(const std::array<std::array<T,N>,N> &m) {
@@ -336,7 +318,7 @@ namespace raytracer::transformers {
     };
     template<typename T, size_t N>
     struct ArrayDeterminantHelper<T,N,N> {
-        constexpr static T value(const std::array<std::array<T,N>,N> &m) {
+        constexpr static T value(const std::array<std::array<T,N>,N>&) {
             return T{};
         }
     };
@@ -344,22 +326,20 @@ namespace raytracer::transformers {
     template<typename T, size_t N, size_t k>
     constexpr T array_determinant_helper(const std::array<std::array<T,N>,N> &m) {
         if constexpr (N == k) return T{};
-        return m[0][k] * array_cofactor<T,N,0,k>(m) + array_determinant_helper<T,N,k+1>(m);
+        else return m[0][k] * array_cofactor<T,N,0,k>(m) + array_determinant_helper<T,N,k+1>(m);
     }
 
-    // TODO: Apparently, we don't need enable_if here either. I guess the compiler picks the most specific impl.
-    template<typename T, size_t N> //typename = typename std::enable_if<(N > 2)>>
+    /// Note that we need the N in all templates or the requisite function does not match properly.
+    template<typename T, size_t N>
     constexpr T array_determinant(const std::array<std::array<T,N>,N> &m) {
-        return ArrayDeterminantHelper<T,N,0>::value(m);
+        //return ArrayDeterminantHelper<T,N,0>::value(m);
+        return array_determinant_helper<T,N,0>(m);
     }
-
-    // TODO: We don't actually need the enable_ifs here, as the function parameters are unique.
-    template<typename T, size_t N>//, typename = typename std::enable_if<N == 2>>
+    template<typename T, size_t N>
     constexpr T array_determinant(const std::array<std::array<T,2>,2> &m) {
         return m[0][0] * m[1][1] - m[1][0] * m[0][1];
     }
-
-    template<typename T, size_t N>//, typename = typename std::enable_if<N == 1>>
+    template<typename T, size_t N>
     constexpr T array_determinant(const std::array<std::array<T,1>,1> &m) {
         return m[0][0];
     }
@@ -372,7 +352,8 @@ namespace raytracer::transformers {
 
     template<typename T, size_t N, size_t i, size_t j>
     constexpr T array_cofactor(const std::array<std::array<T,N>,N> &m) {
-        return ((i + j) % 2 ? -1 : 1) * array_minor<T,N,i,j>(m);
+        if constexpr ((i + j) % 2) return -1 * array_minor<T,N,i,j>(m);
+        else return array_minor<T,N,i,j>(m);
     }
 
     /// Checked for constexpr.

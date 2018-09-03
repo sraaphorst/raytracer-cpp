@@ -80,9 +80,9 @@ namespace raytracer {
         };
 
         constexpr bool operator==(const Matrix &other) const {
-            bool same = true;
-            for (int i=0; i < contents.size(); ++i)
-                same = same && equals(contents[i], other.contents[i]);
+//            bool same = true;
+//            for (int i=0; i < contents.size(); ++i)
+//                same = same && equals(contents[i], other.contents[i]);
             return equals(contents, other.contents);
         }
 
@@ -104,31 +104,28 @@ namespace raytracer {
             return rows;
         }
 
-        T determinant() {
+        constexpr T determinant() const {
             static_assert(rows == cols, "Matrix::determinant() only for use with square matrices");
             return array_determinant<T,rows>(contents);
         }
 
         /// Omit row i and column j to get a submatrix of one dimension less in rows and cols.
         template<size_t i, size_t j>
-        Matrix<T, rows-1, cols-1> submatrix() {
-            //constexpr auto res = array_submatrix<T,rows,cols, i, j>(contents);
+        constexpr Matrix<T, rows-1, cols-1> submatrix() const {
             return array_submatrix<T,rows,cols,i,j>(contents);
         }
 
         /// Calculate the minor(i,j) of a matrix, i.e. the determinant of the submatrix(i,j).
         template<size_t i, size_t j>
-        T minor() {
+        constexpr T minor() const {
             static_assert(rows == cols, "Matrix::minor() only for use with square matrices");
-            //constexpr auto res = array_minor<T,rows>(contents, i, j);
             return array_minor<T,rows,i,j>(contents);
         }
 
         /// Calculate the cofactor(i,j) of a matrix, which is just (i+j)^(-1) * minor(i,j).
         template<size_t i, size_t j>
-        T cofactor() {
+        constexpr T cofactor() const {
             static_assert(rows == cols, "Matrix::cofactor() only for use with square matrices");
-            //constexpr auto res = array_cofactor<T,rows,i,j>(contents);
             return array_cofactor<T,rows,i,j>(contents);
         }
 
