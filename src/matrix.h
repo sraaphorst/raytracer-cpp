@@ -43,15 +43,7 @@ namespace raytracer {
         constexpr const row_type &operator[](size_t idx) const {
             return contents[idx];
         }
-
-        /**
-         * Despite my best efforts, I cannot make this genuinely constexpr due to the lambdas.
-         * You cannot, for example, set:
-         *     constexpr Matrix<T, cols, rows> m = transpose()
-         * without getting an error about transpose() not being constexpr.
-         * I even tried using templates to unroll without using a function, but have to then pass contents in, and
-         * "this" is not constexpr, so it didn't work either.
-         */
+        
         constexpr const Matrix<T, cols, rows> transpose() const {
             return transformers::transpose(contents);
         }
