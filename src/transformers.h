@@ -56,7 +56,7 @@ namespace raytracer::transformers {
         return t;
     }
 
-    /// TODO: Check.
+    /// Checked for constexpr.
     template<typename T, size_t R, size_t C, size_t... Indices>
     constexpr std::array<T, R> transpose_row_helper(const std::array<std::array<T, C>, R> &m, size_t col, std::index_sequence<Indices...>) {
         return {{m[Indices][col]...}};
@@ -70,6 +70,7 @@ namespace raytracer::transformers {
         return transpose_helper<T,R,C>(m, std::make_index_sequence<C>{});
     }
 
+    /// TODO: REWRITE
     /// Create simple 2-D arrays where the value at pos (i,i) is one value, and the value at position (i,j), i != j, is another.
     template <typename T, size_t R, size_t C>
     constexpr std::array<std::array<T, C>, R> make_diagonal_matrix(T nondiag, T diag) {
@@ -144,6 +145,20 @@ namespace raytracer::transformers {
     template<typename T, size_t N>
     constexpr std::array<T,N> operator*(const std::array<T,N> &t1, const std::array<T,N> &t2) {
         return vector_opmult_helper<T,N>(t1, t2, std::make_index_sequence<N>{});
+    }
+
+    /// NOT CHECKED. C1 must be R1 so omit.
+    template<typename T, size_t R, size_t C1, size_t C2, size_t... Indices>
+    constexpr std::array<T, C2> matrix_row_mult_helper(const std::array<std::array<T, C1>, R> &m1, const std::array<std::array<T, C1>, C2> &m2, size_t row, std::index_sequence<Indices...>) {
+        return {{ dot_product<T,C1>(m1[row], m2[Indices])...}};
+    }
+    template<typename T, size_t R, size_t C1, size_t C2, size_t... Indices>
+    constexpr std::array<std::array<T, C2>, R> matrix_mult_helper(const std::array<std::array<T, C1>, R> &m1, const std::array<std::array<T, C1>, C2> &m2t, std::index_sequence<Indices...>) {
+        return {{ matrix_row_mult_helper<T,R,C1,C2>(m1, m2t, Indices, std::make_index_sequence<C2>{})...}};
+    }
+    template<typename T, size_t R, size_t C1, size_t C2>
+    constexpr std::array<std::array<T, C2>, R> mat_mult(const std::array<std::array<T, C1>, R> &m1, const std::array<std::array<T, C2>, C1> &m2) {
+        return matrix_mult_helper<T, R, C1, C2>(m1, transpose<T, C1, C2>(m2), std::make_index_sequence<R>{});
     }
 
     /// Checked for constexpr.

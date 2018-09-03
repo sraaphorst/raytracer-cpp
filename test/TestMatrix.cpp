@@ -82,6 +82,9 @@ TEST_CASE("Matrix transpose should be self-inverting", "[Matrix][transpose]") {
 TEST_CASE("Matrix multiplication should multiply compatibly sized matrices", "[Matrx][multiplication]") {
     Matrix<double, 2, 2> prod = {{ 5, 14},
                                  {14, 50}};
+
+    // Make sure multiplication is constexpr.
+    constexpr auto res = m1 * m2;
     REQUIRE(m1 * m2 == prod);
 }
 

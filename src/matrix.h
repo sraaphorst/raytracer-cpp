@@ -43,7 +43,7 @@ namespace raytracer {
         constexpr const row_type &operator[](size_t idx) const {
             return contents[idx];
         }
-        
+
         constexpr const Matrix<T, cols, rows> transpose() const {
             return transformers::transpose(contents);
         }
@@ -56,15 +56,22 @@ namespace raytracer {
             return Matrix{contents - other.contents};
         }
 
-        /// I don't think this will be constexpr because transpose is never really constexpr.
-        constexpr Matrix<T, rows, rows> operator*(const Matrix<T, cols, rows> &other) const {
+        template<size_t C2>
+        constexpr Matrix<T, rows, C2> operator*(const Matrix<T, cols, C2> &other) const {
             // This cannot be declared constexpr.
-            const Matrix otherT = other.transpose();
-
-            return Matrix<T, rows, rows>{indextransform<std::array<T, rows>, rows>([this, otherT](int i) {
-                return indextransform<T, rows>([this, otherT, i](int j){ return dot_product(contents[i], otherT.contents[j]); });
-            })};
+//            const Matrix otherT = other.transpose();
+//
+//            return Matrix<T, rows, rows>{indextransform<std::array<T, rows>, rows>([this, otherT](int i) {
+//                return indextransform<T, rows>([this, otherT, i](int j){ return dot_product(contents[i], otherT.contents[j]); });
+//            })};
+            //return Matrix<T, rows, C2>{contents * other.contents};
+            auto a = mat_mult<T,rows,cols,C2>(contents, other.contents);
+            return Matrix<T, rows, C2>{mat_mult(contents, other.contents)};
         }
+
+        //template<typename S, size_t R1, size_t C1>
+        template<typename, size_t, size_t, typename>
+        friend class Matrix;
 
         /// This one, however, is constexpr, as checked by assigning the value to be returned to a constexpr variable.
         constexpr Vector<T, rows> operator*(const Vector<T, cols> &v) const {
