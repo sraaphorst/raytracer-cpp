@@ -183,6 +183,16 @@ namespace raytracer::transformers {
         return matrix_opmult_helper<F,T,R,C>(f, m, std::make_index_sequence<R>{});
     }
 
+    /// UNCHECKED
+    template<typename T, size_t R, size_t C, size_t... Indices>
+    constexpr std::array<T, R> matrix_vector_opmult_helper(const std::array<std::array<T, C>, R> &m, const std::array<T, C> &v, std::index_sequence<Indices...>) {
+        return {{ dot_product<T,C>(m[Indices], v)...}};
+    }
+    template<typename T, size_t R, size_t C>
+    constexpr std::array<T, R> operator*(const std::array<std::array<T, C>, R> &m, const std::array<T, C> &v) {
+        return matrix_vector_opmult_helper<T,R,C>(m, v, std::make_index_sequence<R>{});
+    }
+
     /// Checked for constexpr: ONLY WORKS IF T2 HAS NO ZEROES.
     template<typename T, size_t N, size_t... Indices>
     constexpr std::array<T,N>

@@ -67,7 +67,8 @@ namespace raytracer {
 
         /// This one, however, is constexpr, as checked by assigning the value to be returned to a constexpr variable.
         constexpr Vector<T, rows> operator*(const Vector<T, cols> &v) const {
-            return Vector<T, rows>{unitransform<T, row_type, rows>([&v] (const row_type &r) { return dot_product(r, v.contents); }, contents)};
+            //return Vector<T, rows>{unitransform<T, row_type, rows>([&v] (const row_type &r) { return dot_product(r, v.contents); }, contents)};
+            return Vector<T, rows>{contents * v.contents};
         }
 
         constexpr Matrix operator*(T factor) const {

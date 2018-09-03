@@ -55,7 +55,8 @@ TEST_CASE("Matrix should know its size", "[Matrix][size]") {
 
 TEST_CASE("Matrix should be able to determine equality", "[Matrix][equality]") {
     // Make sure equality is constexpr.
-    constexpr auto res = m1 == m1;
+    constexpr auto res1 = m1 == m1;
+    constexpr auto res2 = m1 != m1 + m1;
     REQUIRE(m1 == m1);
     REQUIRE(m2 == m2);
     REQUIRE(m1 != m1 + m1);
@@ -81,8 +82,8 @@ TEST_CASE("Matrix transpose should be self-inverting", "[Matrix][transpose]") {
 }
 
 TEST_CASE("Matrix multiplication should multiply compatibly sized matrices", "[Matrx][multiplication]") {
-    Matrix<double, 2, 2> prod = {{ 5, 14},
-                                 {14, 50}};
+    constexpr Matrix<double, 2, 2> prod = {{ 5, 14},
+                                           {14, 50}};
 
     // Make sure multiplication is constexpr.
     constexpr auto res = m1 * m2;
@@ -90,31 +91,35 @@ TEST_CASE("Matrix multiplication should multiply compatibly sized matrices", "[M
 }
 
 TEST_CASE("Matrix multiplication should multiply square matrices", "[Matrix][multiplication]") {
-    Matrix<double, 4, 4> m1 = {{1, 2, 3, 4},
-                               {2, 3, 4, 5},
-                               {3, 4, 5, 6},
-                               {4, 5, 6, 7}};
+    constexpr Matrix<double, 4, 4> m1 = {{1, 2, 3, 4},
+                                         {2, 3, 4, 5},
+                                         {3, 4, 5, 6},
+                                         {4, 5, 6, 7}};
 
-    Matrix<double, 4, 4> m2 = {{0, 1,  2,  4},
-                               {1, 2,  4,  8},
-                               {2, 4,  8, 16},
-                               {4, 8, 16, 32}};
+    constexpr Matrix<double, 4, 4> m2 = {{0, 1,  2,  4},
+                                         {1, 2,  4,  8},
+                                         {2, 4,  8, 16},
+                                         {4, 8, 16, 32}};
 
-    Matrix<double, 4, 4> m3 = {{24, 49,  98, 196},
-                               {31, 64, 128, 256},
-                               {38, 79, 158, 316},
-                               {45, 94, 188, 376}};
+    constexpr Matrix<double, 4, 4> m3 = {{24, 49,  98, 196},
+                                         {31, 64, 128, 256},
+                                         {38, 79, 158, 316},
+                                         {45, 94, 188, 376}};
 
+    // Make sure large multiplication is constexpr.
+    const auto res = m1 * m2;
     REQUIRE(m1 * m2 == m3);
 }
 
 TEST_CASE("Matrix multiplied with a vector should give a vector", "[Matrix][vector_multiplication]") {
-    Matrix<double, 3, 4> m = {{1, 2, 3, 4},
-                              {2, 4, 4, 2},
-                              {8, 6, 4, 1}};
+    constexpr Matrix<double, 3, 4> m = {{1, 2, 3, 4},
+                                        {2, 4, 4, 2},
+                                        {8, 6, 4, 1}};
+    constexpr Vector<double, 4> v = {1, 2, 3, 1};
+    constexpr Vector<double, 3> prod = {18, 24, 33};
 
-    Vector<double, 4> v = {1, 2, 3, 1};
-    Vector<double, 3> prod = {18, 24, 33};
+    // Make sure matrix-vector multiplication is constexpr.
+    constexpr auto res = m * v;
     REQUIRE(m * v == prod);
 }
 
