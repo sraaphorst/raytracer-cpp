@@ -37,9 +37,6 @@ namespace raytracer {
         constexpr Vector(const Vector &other) noexcept = default;
         constexpr Vector(Vector &&other) noexcept = default;
 
-//        constexpr Vector(std::initializer_list<T> lst): contents{
-//            make_array<T,N>([&lst](int i) { return lst.begin()[i]; })
-//        } {}
         constexpr Vector(std::initializer_list<T> lst) : contents{initializer_list_to_array<T,N>(lst)} {}
 
         ~Vector() = default;
@@ -86,10 +83,6 @@ namespace raytracer {
         }
 
         constexpr T dot_product(const Vector &v) const noexcept {
-//            return transformers::Reducer<T, T, N>::result(
-//                    [](T t1, T t2) { return t1 * t2; },
-//                    [](const T &t1, const T &t2) { return t1 + t2; }, 0,
-//                    contents, t.contents);
             return transformers::dot_product<T, N>(contents, v.contents);
         }
 
@@ -127,10 +120,10 @@ namespace raytracer {
          ******************/
 
         /// Cross product
-        // TODO: Both of these template declaration lines work.
-        //template<typename = typename std::enable_if<N == 4>::type>
-        template<typename = typename std::enable_if_t<are_equal<N,4>::value>>
-        constexpr Vector cross_product(const Vector &other) const {
+        /// Seems like we need a template declaration of enable_if here. If we do a type declaration, the compiler
+        /// complains that std::enable_if has no ::type.
+        template<typename = typename std::enable_if_t<are_equal_v<N,4>>>
+        constexpr Vector cross_product(const Vector &other) const noexcept {
             return Vector{
                     (*this)[y] * other[z] - (*this)[z] * other[y],
                     (*this)[z] * other[x] - (*this)[x] * other[z],

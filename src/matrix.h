@@ -17,23 +17,15 @@ namespace raytracer {
 
     template<typename T, size_t rows, size_t cols,
             typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
-    class Matrix {
+    class Matrix final {
     public:
         using type = T;
         using row_type = std::array<T, cols>;
         using col_type = std::array<T, rows>;
         using matrix_type = std::array<row_type, rows>;
 
-    protected:
+    private:
         const matrix_type contents;
-
-        /// Used in matrix multiplication.
-        static constexpr T dot_product(const row_type &r1, const row_type &r2) noexcept {
-            return transformers::Reducer<T, T, cols>::result(
-                    [](T t1, T t2) { return t1 * t2; },
-                    [](const T &t1, const T &t2) { return t1 + t2; }, 0,
-                    r1, r2);
-        }
 
     public:
         constexpr Matrix() noexcept {};
@@ -41,15 +33,7 @@ namespace raytracer {
         constexpr Matrix(matrix_type&& contents) noexcept : contents{contents} {}
         constexpr Matrix(const Matrix&) noexcept = default;
         constexpr Matrix(Matrix&&) noexcept = default;
-
-        constexpr Matrix(std::initializer_list<row_type> lst):
-            contents{
-                make_array<row_type,rows>([&lst](int i) {
-                    return make_array<T,cols>([&lst,i](int j) {
-                        return lst.begin()[i][j];
-                    });
-                })
-            } {}
+        constexpr Matrix(std::initializer_list<row_type> lst) : contents{initializer_list_to_array<row_type, rows>(lst)} {}
 
         ~Matrix() = default;
 
@@ -69,11 +53,7 @@ namespace raytracer {
          * "this" is not constexpr, so it didn't work either.
          */
         constexpr const Matrix<T, cols, rows> transpose() const {
-            using column_type = std::array<T, rows>;
-
-            return Matrix<T, cols, rows>{indextransform<column_type, cols>([this](int c) {
-                return indextransform<T, rows>([this, c](int r){ return this->contents[r][c]; });
-            })};
+            return transformers::transpose(contents);
         }
 
         constexpr Matrix operator+(const Matrix &other) const {
@@ -108,6 +88,9 @@ namespace raytracer {
         };
 
         constexpr bool operator==(const Matrix &other) const {
+            bool same = true;
+            for (int i=0; i < contents.size(); ++i)
+                same = same && equals(contents[i], other.contents[i]);
             return equals(contents, other.contents);
         }
 
@@ -123,7 +106,8 @@ namespace raytracer {
             return cols;
         }
 
-        static constexpr size_t size() {
+        static constexpr typename std::enable_if_t<are_equal_v<rows,cols>, size_t>
+        size() {
             static_assert(rows == cols, "Matrix::size() only for use with square matrices");
             return rows;
         }

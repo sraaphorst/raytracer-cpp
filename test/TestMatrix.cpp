@@ -12,18 +12,23 @@
 using namespace raytracer;
 
 /// Matrices we will reuse multiple times.
-const Matrix<double, 2, 3> m1 = {{0, 1, 2},
-                                 {3, 4, 5}};
-const Matrix<double, 3, 2> m2 = {{0, 3},
-                                 {1, 4},
-                                 {2, 5}};
+constexpr Matrix<double, 2, 3> m1 = {{0, 1, 2},
+                                     {3, 4, 5}};
+constexpr Matrix<double, 3, 2> m2 = {{0, 3},
+                                     {1, 4},
+                                     {2, 5}};
+constexpr Matrix<double, 3, 3> m3 = {{1, 2, 3},
+                                     {4, 5, 6},
+                                     {7, 8, 9}};
 
 TEST_CASE("Matrix should be constructible via initializer list and indexable", "[Matrix][initializer_list][index]") {
-    Matrix<double,4,4> m = {{ 1,    2,    3,    4},
-                            { 5.1,  6.1,  7.1,  8.1},
-                            { 9,   10,   11,   12},
-                            {13.5, 14.5, 15.5, 16.5}};
+    constexpr Matrix<double,4,4> m = {{ 1,    2,    3,    4},
+                                      { 5.1,  6.1,  7.1,  8.1},
+                                      { 9,   10,   11,   12},
+                                      {13.5, 14.5, 15.5, 16.5}};
 
+    // Make sure indexing is constexpr.
+    constexpr auto res = m[0][0];
     REQUIRE(ALMOST_EQUALS(m[0][0],  1));
     REQUIRE(ALMOST_EQUALS(m[0][3],  4));
     REQUIRE(ALMOST_EQUALS(m[1][0],  5.1));
@@ -34,13 +39,23 @@ TEST_CASE("Matrix should be constructible via initializer list and indexable", "
 }
 
 TEST_CASE("Matrix should know its size", "[Matrix][size]") {
+    // Make sure size elements are constexpr.
+    constexpr auto res1 = m1.row_count();
+    constexpr auto res2 = m1.column_count();
+    constexpr auto res3 = m3.size();
     REQUIRE(m1.row_count() == 2);
     REQUIRE(m1.column_count() == 3);
     REQUIRE(m2.row_count() == 3);
     REQUIRE(m2.column_count() == 2);
+
+    // Only m3 has size as it is square.
+    constexpr auto res4 = m3.size();
+    REQUIRE(m3.size() == 3);
 }
 
 TEST_CASE("Matrix should be able to determine equality", "[Matrix][equality]") {
+    // Make sure equality is constexpr.
+    constexpr auto res = m1 == m1;
     REQUIRE(m1 == m1);
     REQUIRE(m2 == m2);
     REQUIRE(m1 != m1 + m1);
@@ -48,11 +63,15 @@ TEST_CASE("Matrix should be able to determine equality", "[Matrix][equality]") {
 }
 
 TEST_CASE("Matrix comparison equality should be able to tolerate slight offsets", "[Matrix][equality]") {
+    // Make sure expression is constexpr.
+    //constexpr auto res = EPSILON/2 * matrix_constants::I<double, 3>;
     REQUIRE(m1 == m1 - EPSILON/2 * matrix_constants::ones<double, 2, 3>);
     REQUIRE(matrix_constants::I<double, 3> == matrix_constants::I<double, 3> + EPSILON/2 * matrix_constants::I<double, 3>);
 }
 
 TEST_CASE("Matrix should be transposable", "[Matrix][transpose]") {
+    // Make sure transpose is constexpr.
+    constexpr auto res = m1.transpose();
     REQUIRE(m1.transpose() == m2);
 }
 

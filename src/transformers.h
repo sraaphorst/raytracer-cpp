@@ -17,37 +17,6 @@
 
 namespace raytracer::transformers {
     namespace details {
-        /// Reduce two arrays by applying a function for each index and combining the terms.
-        template<class T, class R, size_t N, size_t k>
-        struct ReducerAux {
-            static constexpr inline R result(std::function<R(T, T)> f, std::function<R(R, R)> r, R defaultval, const std::array<T, N> &a, const std::array<T, N> &b) {
-                return r(f(a[k-1], b[k-1]), ReducerAux<T, R, N, k - 1>::result(f, r, defaultval, a, b));
-            }
-        };
-
-        template<class T, class R, size_t N>
-        struct ReducerAux<T, R, N, 0> {
-            static constexpr inline R result(std::function<R(T, T)> f, std::function<R(R, R)> r, R defaultval, const std::array<T, N>&, const std::array<T, N>&) {
-                return defaultval;
-            }
-        };
-
-        // TODO:  Not sure how we can pack these into an array?
-        template<typename T, size_t N, T nondiag, T diag, size_t idx>
-        struct DiagonalizerRow {
-            static constexpr T value() {
-                if constexpr (idx == N) return diag;
-                else return nondiag;
-            }
-        };
-
-        template<typename T, size_t N, T nondiag, T diag>
-        struct DiagonalizerRow<T, N, nondiag, diag, N> {
-            static constexpr T value() {
-                return 0;
-            }
-        };
-
         /// Fill a row with values. Two parameters are provided: one for elements on the diagonal, and one for all others.
         template <typename T, unsigned long C, size_t... Indices>
         constexpr std::array<T, C> make_diagonal_matrix_helper(T nondiag, T diag, size_t row, std::index_sequence<Indices...>) {
@@ -78,12 +47,28 @@ namespace raytracer::transformers {
         }
     }
 
-    template<class T, class R, size_t N>
-    struct Reducer {
-        static constexpr inline R result(std::function<R(T, T)> f, std::function<R(R, R)> r, R defaultval, const std::array<T, N> &a, const std::array<T, N> &b) {
-            return details::ReducerAux<T, R, N, N>::result(f, r, defaultval, a, b);
-        }
-    };
+    /// Checked for constexpr.
+    template<typename T, size_t N>
+    constexpr T dot_product(const std::array<T,N> &a1, const std::array<T,N> &a2) {
+        T t{};
+        for (int i=0; i < N; ++i)
+            t += a1[i] * a2[i];
+        return t;
+    }
+
+    /// TODO: Check.
+    template<typename T, size_t R, size_t C, size_t... Indices>
+    constexpr std::array<T, R> transpose_row_helper(const std::array<std::array<T, C>, R> &m, size_t col, std::index_sequence<Indices...>) {
+        return {{m[Indices][col]...}};
+    }
+    template<typename T, size_t R, size_t C, size_t... Indices>
+    constexpr std::array<std::array<T, R>, C> transpose_helper(const std::array<std::array<T, C>, R> &m, std::index_sequence<Indices...>) {
+        return {{transpose_row_helper<T,R,C>(m, Indices, std::make_index_sequence<R>{})...}};
+    }
+    template<typename T, size_t R, size_t C>
+    constexpr std::array<std::array<T, R>, C> transpose(const std::array<std::array<T, C>, R> &m) {
+        return transpose_helper<T,R,C>(m, std::make_index_sequence<C>{});
+    }
 
     /// Create simple 2-D arrays where the value at pos (i,i) is one value, and the value at position (i,j), i != j, is another.
     template <typename T, size_t R, size_t C>
@@ -123,7 +108,16 @@ namespace raytracer::transformers {
     constexpr std::array<T,N> operator+(const std::array<T,N> &t1, const std::array<T,N> &t2) {
         return vector_opadd_helper<T,N>(t1, t2, std::make_index_sequence<N>{});
     }
+    template<typename T, size_t R, size_t C, size_t... Indices>
+    constexpr std::array<std::array<T, C>, R> matrix_opadd_helper(const std::array<std::array<T, C>, R> &m1, const std::array<std::array<T, C>, R> &m2, std::index_sequence<Indices...>) {
+        return {{m1[Indices] + m2[Indices]...}};
+    }
+    template<typename T, size_t R, size_t C>
+    constexpr std::array<std::array<T, C>, R> operator+(const std::array<std::array<T, C>, R> &m1, const std::array<std::array<T, C>, R> &m2) {
+        return matrix_opadd_helper<T,R,C>(m1, m2, std::make_index_sequence<R>{});
+    }
 
+    /// Checked for constexpr.
     template<typename T, size_t N, size_t... Indices>
     constexpr std::array<T,N> vector_opdiff_helper(const std::array<T,N> &t1, const std::array<T,N> &t2, std::index_sequence<Indices...>) {
         return {{t1[Indices] - t2[Indices]...}};
@@ -132,6 +126,14 @@ namespace raytracer::transformers {
     constexpr std::array<T,N> operator-(const std::array<T,N> &t1, const std::array<T,N> &t2) {
         //return bitransform<T,T,N>([](const T &a, const T &b) { return a - b; }, t1, t2);
         return vector_opdiff_helper<T,N>(t1, t2, std::make_index_sequence<N>{});
+    }
+    template<typename T, size_t R, size_t C, size_t... Indices>
+    constexpr std::array<std::array<T, C>, R> matrix_opdiff_helper(const std::array<std::array<T, C>, R> &m1, const std::array<std::array<T, C>, R> &m2, std::index_sequence<Indices...>) {
+        return {{m1[Indices] - m2[Indices]...}};
+    }
+    template<typename T, size_t R, size_t C>
+    constexpr std::array<std::array<T, C>, R> operator-(const std::array<std::array<T, C>, R> &m1, const std::array<std::array<T, C>, R> &m2) {
+        return matrix_opdiff_helper<T,R,C>(m1, m2, std::make_index_sequence<R>{});
     }
 
     /// Checked for constexpr.
@@ -201,17 +203,22 @@ namespace raytracer::transformers {
 
     /// If an array, iterate. This will allow us to check multidimensional arrays.
     /// Checked for constexpr.
+    // TODO: HELPER HERE NOT NEEDED
     template<typename T, size_t N, size_t... Indices>
     constexpr bool equals_helper(const std::array<T,N> &t1, const std::array<T,N> &t2, std::index_sequence<Indices...>) {
-        return (ALMOST_EQUALS(t1[Indices], t2[Indices]) && ...);
+        return (equals(t1[Indices], t2[Indices]) && ...);
     }
     template<typename T, size_t N>
     constexpr bool equals(const std::array<T,N> &t1, const std::array<T,N> &t2) {
-        return equals_helper(t1, t2, std::make_index_sequence<N>{});
+        bool same = true;
+        for (int i=0; i < N; ++i)
+            same = same && equals(t1[i], t2[i]);
+        return same;
+//        return equals_helper(t1, t2, std::make_index_sequence<N>{});
     }
 
     /// Create an array where the elements are determined by a supplied function invoked on index.
-    template<class T, unsigned long int N>
+    template<class T, size_t N>
     static constexpr std::array<T, N> make_array(const std::function<T(int)> f) {
         return indextransform<T,N>(f);
     }
@@ -222,6 +229,11 @@ namespace raytracer::transformers {
 
     template<size_t m>
     struct are_equal<m,m> final: std::true_type {};
+
+    template<size_t m, size_t n>
+    inline constexpr bool are_equal_v = are_equal<m,n>::value;
+
+
 
     /// Auxiliary tools to find submatrices.
 //    template<typename T, size_t R, size_t C>
@@ -329,15 +341,6 @@ namespace raytracer::transformers {
     }
 
     /// Checked for constexpr.
-    template<typename T, size_t N>
-    constexpr T dot_product(const std::array<T,N> &a1, const std::array<T,N> &a2) {
-        T t{};
-        for (int i=0; i < N; ++i)
-            t += a1[i] * a2[i];
-        return t;
-    }
-
-    /// Checked for constexpr.
     template<typename T, size_t N, size_t... Indices>
     constexpr std::array<T,N> initializer_list_to_array_helper(const std::initializer_list<T> lst, std::index_sequence<Indices...>) {
         return {{lst.begin()[Indices]...}};
@@ -345,5 +348,15 @@ namespace raytracer::transformers {
     template<typename T, size_t N>
     constexpr std::array<T,N> initializer_list_to_array(const std::initializer_list<T> lst) {
         return initializer_list_to_array_helper<T,N>(lst, std::make_index_sequence<N>{});
+    }
+
+    template<typename T, size_t R, size_t C, size_t... Indices>
+    constexpr std::array<std::array<T, C>, R> initializer_list_to_matrix_helper(const std::initializer_list<std::initializer_list<T>> &lst) {
+        return {{initializer_list_to_array<T,C>(lst.begin()[Indices])...}};
+    }
+
+    template<typename T, size_t R, size_t C>
+    constexpr std::array<std::array<T, C>, R> initializer_list_to_matrix(const std::initializer_list<std::initializer_list<T>> &lst) {
+        return initializer_list_to_matrix_helper(lst, std::make_index_sequence<R>{});
     }
 }

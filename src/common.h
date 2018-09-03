@@ -14,9 +14,9 @@
 #define EPSILON 1e-5
 
 namespace raytracer {
-    template<typename T>
-    constexpr typename std::enable_if_t<std::is_floating_point_v<T>, bool>
-    ALMOST_EQUALS(T x, T y) {
+    template<typename S, typename T>
+    constexpr typename std::enable_if_t<std::is_floating_point_v<S> || std::is_floating_point_v<T>, bool>
+    ALMOST_EQUALS(S x, T y) {
         return (absd(x - y) < EPSILON);
     }
 }
