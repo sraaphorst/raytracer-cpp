@@ -55,7 +55,7 @@ TEST_CASE("Matrix should know its size", "[Matrix][size]") {
 
 TEST_CASE("Matrix should be able to determine equality", "[Matrix][equality]") {
     // Make sure equality is constexpr.
-    constexpr auto res1 = m1 == m1;
+    constexpr auto res1 = (m1 == m1);
     constexpr auto res2 = m1 != m1 + m1;
     REQUIRE(m1 == m1);
     REQUIRE(m2 == m2);

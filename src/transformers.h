@@ -257,12 +257,12 @@ namespace raytracer::transformers {
     }
     template<typename T, size_t N>
     constexpr bool equals(const std::array<T,N> &t1, const std::array<T,N> &t2) {
-//        bool same = true;
-//        for (int i=0; i < N; ++i)
-//            same = same && equals(t1[i], t2[i]);
-//        return same;
+        bool same = true;
+        for (int i=0; i < N; ++i)
+            same = same && equals(t1[i], t2[i]);
+        return same;
         //return equals_helper<T,N>(t1, t2, std::make_index_sequence<N>{});
-        return Equaller<T,N,0>::value(t1, t2);
+        //return Equaller<T,N,0>::value(t1, t2);
     }
 
     /// Create an array where the elements are determined by a supplied function invoked on index.

@@ -80,9 +80,15 @@ namespace raytracer {
         };
 
         constexpr bool operator==(const Matrix &other) const {
-//            bool same = true;
-//            for (int i=0; i < contents.size(); ++i)
-//                same = same && equals(contents[i], other.contents[i]);
+//            for (auto it1 = contents.cbegin(), it2 = other.contents.cbegin(); it1 != contents.cend(); ++it1, ++it2) {
+//                for (auto ot1 = it1->cbegin(), ot2 = it2->cbegin(); ot1 != it1->cend(); ++ot1, ++ot2) {
+//                    if constexpr(!ALMOST_EQUALS(*ot1, *ot2)) return false;
+//                }
+//            }
+//            return true;
+            bool same = true;
+            for (int i=0; i < contents.size(); ++i)
+                same = same && equals(contents[i], other.contents[i]);
             return equals(contents, other.contents);
         }
 
