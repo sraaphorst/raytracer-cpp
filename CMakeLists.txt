@@ -3,7 +3,7 @@ project(raytracer_top)
 
 set(CMAKE_CXX_STANDARD 17)
 
-SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-narrowing")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-narrowing -std=c++17")
 
 include_directories("${PROJECT_SOURCE_DIR}/src")
 

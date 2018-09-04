@@ -67,7 +67,7 @@ namespace raytracer {
 
         /// This one, however, is constexpr, as checked by assigning the value to be returned to a constexpr variable.
         constexpr Vector<T, rows> operator*(const Vector<T, cols> &v) const {
-            //return Vector<T, rows>{unitransform<T, row_type, rows>([&v] (const row_type &r) { return dot_product(r, v.contents); }, contents)};
+            //return Vector<T, rows>{unitransform<T, row_type, rows>([&v] (const row_type &r) constexpr { return dot_product(r, v.contents); }, contents)};
             return Vector<T, rows>{contents * v.contents};
         }
 
@@ -86,9 +86,10 @@ namespace raytracer {
 //                }
 //            }
 //            return true;
-            bool same = true;
-            for (int i=0; i < contents.size(); ++i)
-                same = same && equals(contents[i], other.contents[i]);
+            // TODO: this is clearly not right.
+//            bool same = true;
+//            for (int i=0; i < contents.size(); ++i)
+//                same = same && equals(contents[i], other.contents[i]);
             return equals(contents, other.contents);
         }
 
