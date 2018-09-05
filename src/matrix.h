@@ -15,6 +15,70 @@
 namespace raytracer {
     using namespace transformers;
 
+    namespace details {
+        /**
+         * Auxiliary functions to find the determinant. Only for square matrices.
+         * Different cases for N=1, 2, and > 2.
+         * Annoyingly, I can't seem to put these in Matrix, where they would be more useful due to access to cofactor.
+         * The compiler complains about overloads there.
+         */
+        template<typename T, size_t rows, size_t cols>
+        using mtxarray = std::array<std::array<T, cols>, rows>;
+
+        template<typename T, size_t N>
+        using mtxsqarray = std::array<std::array<T, N>, N>;
+
+        template<typename T, size_t N, size_t i, size_t j>
+        constexpr T array_cofactor(const mtxsqarray<T, N> &contents);
+
+        template<typename T, size_t N, size_t i>
+        struct array_determinant_helper {
+            static constexpr T value(const mtxsqarray<T, N> &contents) {
+                return array_cofactor<T, N , 0, i>(contents) + array_determinant_helper<T, N, i+1>::value(contents);
+            }
+        };
+
+        template<typename T, size_t N>
+        struct array_determinant_helper<T, N, N> {
+            static constexpr T value(const mtxsqarray<T, N>&) {
+                return 0;
+            }
+        };
+
+        template<typename T, size_t N>
+        constexpr T array_determinant(const mtxsqarray<T, N> &contents) {
+            if constexpr(N == 1)      return contents[0][0];
+            else if constexpr(N == 2) return contents[0][0] * contents[1][1] - contents[0][1] * contents[1][0];
+            else                      return array_determinant_helper<T, N, 0>::value(contents);
+        }
+
+        /// Omit row i and column j to get a submatrix of one dimension less in rows and cols.
+        template<typename T, size_t rows, size_t cols, size_t i, size_t j>
+        constexpr mtxarray<T, rows-1, cols-1> array_submatrix(const mtxarray<T, rows, cols> &contents) {
+            std::array<std::array<T, cols-1>, rows-1> newContents{};
+            for (size_t r = 0; r < rows-1; ++r) {
+                const size_t ridx = r >= i ? r + 1 : r;
+                for (size_t c = 0; c < cols-1; ++c) {
+                    const size_t cidx = c >= j ? c + 1 : c;
+                    newContents[r][c] = contents[ridx][cidx];
+                }
+            }
+            return newContents;
+        }
+
+        /// Calculate the minor(i,j) of a matrix, i.e. the determinant of the submatrix(i,j).
+        template<typename T, size_t N, size_t i, size_t j>
+        constexpr T array_minor(const mtxsqarray<T, N> &contents) {
+            return array_determinant<T, N-1>(array_submatrix<T, N, N, i, j>(contents));
+        }
+
+        /// Calculate the cofactor(i,j) of a matrix, which is just (i+j)^(-1) * minor(i,j).
+        template<typename T, size_t N, size_t i, size_t j>
+        constexpr T array_cofactor(const mtxsqarray<T, N> &contents) {
+            return ((i + j) % 2 ? -1 : 1) * contents[i][j] * array_minor<T, N, i, j>(contents);
+        }
+    }
+
     template<typename T, size_t rows, size_t cols,
             typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
     class Matrix final {
@@ -107,23 +171,23 @@ namespace raytracer {
         /// Calculate the minor(i,j) of a matrix, i.e. the determinant of the submatrix(i,j).
         template<size_t i, size_t j>
         constexpr T minor() const {
-            return array_minor<T, rows, i, j>(contents);
+            return details::array_minor<T, rows, i, j>(contents);
         }
 
         /// Calculate the cofactor(i,j) of a matrix, which is just (i+j)^(-1) * minor(i,j).
         template<size_t i, size_t j>
         constexpr T cofactor() const {
-            return array_cofactor<T, rows, i, j>(contents);
+            return details::array_cofactor<T, rows, i, j>(contents);
         }
 
         constexpr T determinant() const {
-            return array_determinant<T, rows>(contents);
+            return details::array_determinant<T, rows>(contents);
         }
 
         /// Omit row i and column j to get a submatrix of one dimension less in rows and cols.
         template<size_t i, size_t j>
         constexpr Matrix<T, rows-1, cols-1> submatrix() const {
-            return Matrix<T, rows-1, cols-1>{{array_submatrix<T, rows, cols, i, j>(contents)}};
+            return Matrix<T, rows-1, cols-1>{{details::array_submatrix<T, rows, cols, i, j>(contents)}};
         }
 
 
