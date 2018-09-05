@@ -109,7 +109,7 @@ namespace raytracer {
         }
 
         constexpr const Matrix<T, cols, rows> transpose() const {
-            return transformers::transpose(contents);
+            return transformer_details::transpose(contents);
         }
 
         constexpr Matrix operator+(const Matrix &other) const {
@@ -122,7 +122,7 @@ namespace raytracer {
 
         template<size_t C2>
         constexpr Matrix<T, rows, C2> operator*(const Matrix<T, cols, C2> &other) const {
-            return Matrix<T, rows, C2>{mat_mult<T,rows,cols,C2>(contents, other.contents)};
+            return Matrix<T, rows, C2>{transformer_details::mat_mult<T, rows, cols, C2>(contents, other.contents)};
         }
 
         template<typename, size_t, size_t, typename>
@@ -213,10 +213,10 @@ namespace raytracer {
          * use any std::function.
          */
         template<typename T, size_t R, size_t C>
-        static constexpr Matrix<T, R, C> ones = make_uniform_matrix<T, R, C>(1);
+        static constexpr Matrix<T, R, C> ones = transformer_details::make_uniform_matrix<T, R, C>(1);
 
         /// Identity matrix, only defined as a square matrix.
         template<typename T, size_t N>
-        static constexpr Matrix<T, N, N> I = make_diagonal_matrix<T, N, N>(0, 1);
+        static constexpr Matrix<T, N, N> I = transformer_details::make_diagonal_matrix<T, N, N>(0, 1);
     };
 }
