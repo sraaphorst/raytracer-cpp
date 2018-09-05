@@ -141,6 +141,9 @@ TEST_CASE("Tuple subtraction should not be commutative", "[Tuple][subtraction][c
     constexpr Tuple t1{1, 2, 3, Tuple::vector_flag};
     constexpr Tuple t2{2, 4, 6, Tuple::vector_flag};
 
+    constexpr auto res1 = t1 - t2;
+    constexpr auto res2 = t2 - t1;
+    constexpr auto res3 = t1 - t2 != t2 - t1;
     REQUIRE(t1 - t2 != t2 - t1);
 }
 

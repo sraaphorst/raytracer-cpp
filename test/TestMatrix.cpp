@@ -109,7 +109,7 @@ TEST_CASE("Matrix multiplication should multiply square matrices", "[Matrix][mul
 
     // Make sure large multiplication is constexpr.
     constexpr auto res1 = m1 * m2;
-    constexpr auto res2 = res1 == m3;
+    constexpr auto res2 = m1 * m2 == m3;
     REQUIRE(m1 * m2 == m3);
 }
 

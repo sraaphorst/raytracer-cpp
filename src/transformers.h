@@ -248,85 +248,34 @@ namespace raytracer::transformers {
      * Annoyingly, I can't seem to put these in Matrix, where they would be more useful due to access to cofactor.
      * The compiler complains about overloads there.
      */
-
-//    // Forward declaration.
-//    template<typename T, size_t N, size_t i, size_t j>
-//    constexpr T array_cofactor(const std::array<std::array<T,N>,N> &m);
-//
-//    template<typename T, size_t N, size_t k>
-//    struct ArrayDeterminantHelper {
-//        constexpr static T value(const std::array<std::array<T,N>,N> &m) {
-//            return m[0][k] * array_cofactor<T, N, 0, k>(m) + ArrayDeterminantHelper<T, N, k + 1>::value(m);
-//        }
-//    };
-//    template<typename T, size_t N>
-//    struct ArrayDeterminantHelper<T,N,N> {
-//        constexpr static T value(const std::array<std::array<T,N>,N>&) {
-//            return T{};
-//        }
-//    };
-//
-//    template<typename T, size_t N, size_t k>
-//    constexpr T array_determinant_helper(const std::array<std::array<T,N>,N> &m) {
-//        if constexpr (N == k) return T{};
-//        else return m[0][k] * array_cofactor<T,N,0,k>(m) + array_determinant_helper<T,N,k+1>(m);
-//    }
-//
-//    /// Note that we need the N in all templates or the requisite function does not match properly.
-//    template<typename T, size_t N>
-//    constexpr T array_determinant(const std::array<std::array<T,N>,N> &m) {
-//        //return ArrayDeterminantHelper<T,N,0>::value(m);
-//        return array_determinant_helper<T,N,0>(m);
-//    }
-//    template<typename T, size_t N>
-//    constexpr T array_determinant(const std::array<std::array<T,2>,2> &m) {
-//        return m[0][0] * m[1][1] - m[1][0] * m[0][1];
-//    }
-//    template<typename T, size_t N>
-//    constexpr T array_determinant(const std::array<std::array<T,1>,1> &m) {
-//        return m[0][0];
-//    }
-
-    /// Minor and cofactor so we can use them and don't have to redefine them in matrix.h
-//    template<typename T, size_t N, size_t i, size_t j>
-//    constexpr T array_minor(const std::array<std::array<T,N>,N> &m) {
-//        return array_determinant<T,N-1>(array_submatrix<T,N,N,i,j>(m));
-//    }
-
-//    template<typename T, size_t N, size_t i, size_t j>
-//    constexpr T array_cofactor(const std::array<std::array<T,N>,N> &m) {
-//        if constexpr ((i + j) % 2) return -1 * array_minor<T,N,i,j>(m);
-//        else return array_minor<T,N,i,j>(m);
-//    }
-
     template<typename T, size_t rows, size_t cols>
     using mtxarray = std::array<std::array<T, cols>, rows>;
 
-    template<typename T, size_t rows, size_t cols, size_t i, size_t j>
-    constexpr T array_cofactor(const mtxarray<T, rows, cols> &contents);
+    template<typename T, size_t N>
+    using mtxsqarray = std::array<std::array<T, N>, N>;
 
-    template<typename T, size_t mx, size_t i>
+    template<typename T, size_t N, size_t i, size_t j>
+    constexpr T array_cofactor(const mtxsqarray<T, N> &contents);
+
+    template<typename T, size_t N, size_t i>
     struct array_determinant_helper {
-        static constexpr T value(const mtxarray<T, mx, mx> &contents) {
-            return array_cofactor<T, mx, mx , 0, i>(contents) + array_determinant_helper<T, mx, i+1>::value(contents);
+        static constexpr T value(const mtxsqarray<T, N> &contents) {
+            return array_cofactor<T, N , 0, i>(contents) + array_determinant_helper<T, N, i+1>::value(contents);
         }
     };
 
-    template<typename T, size_t mx>
-    struct array_determinant_helper<T, mx, mx> {
-        static constexpr T value(const mtxarray<T, mx, mx>&) {
+    template<typename T, size_t N>
+    struct array_determinant_helper<T, N, N> {
+        static constexpr T value(const mtxsqarray<T, N>&) {
             return 0;
         }
     };
 
-    template<typename T, size_t rows, size_t cols>
-    constexpr T array_determinant(const mtxarray<T, rows, cols> &contents) {
-        static_assert(rows == cols, "Matrix::determinant() only for use with square matrices");
-        if constexpr(rows == 1)
-            return contents[0][0];
-        else if constexpr(rows == 2)
-            return contents[0][0] * contents[1][1] - contents[0][1] * contents[1][0];
-        else return array_determinant_helper<T, rows, 0>::value(contents);
+    template<typename T, size_t N>
+    constexpr T array_determinant(const mtxsqarray<T, N> &contents) {
+        if constexpr(N == 1)      return contents[0][0];
+        else if constexpr(N == 2) return contents[0][0] * contents[1][1] - contents[0][1] * contents[1][0];
+        else                      return array_determinant_helper<T, N, 0>::value(contents);
     }
 
     /// Omit row i and column j to get a submatrix of one dimension less in rows and cols.
@@ -344,18 +293,15 @@ namespace raytracer::transformers {
     }
 
     /// Calculate the minor(i,j) of a matrix, i.e. the determinant of the submatrix(i,j).
-    template<typename T, size_t rows, size_t cols, size_t i, size_t j>
-    constexpr T array_minor(const mtxarray<T, rows, cols> &contents) {
-        static_assert(rows == cols, "Matrix::minor() only for use with square matrices");
-        //return array_minor<T,rows,i,j>(contents);
-        return array_determinant<T, rows-1, cols-1>(array_submatrix<T, rows, cols, i, j>(contents));
+    template<typename T, size_t N, size_t i, size_t j>
+    constexpr T array_minor(const mtxsqarray<T, N> &contents) {
+        return array_determinant<T, N-1>(array_submatrix<T, N, N, i, j>(contents));
     }
 
     /// Calculate the cofactor(i,j) of a matrix, which is just (i+j)^(-1) * minor(i,j).
-    template<typename T, size_t rows, size_t cols, size_t i, size_t j>
-    constexpr T array_cofactor(const mtxarray<T, rows, cols> &contents) {
-        static_assert(rows == cols, "Matrix::cofactor() only for use with square matrices");
-        return ((i + j) % 2 ? -1 : 1) * contents[i][j] * array_minor<T, rows, cols, i, j>(contents);
+    template<typename T, size_t N, size_t i, size_t j>
+    constexpr T array_cofactor(const mtxsqarray<T, N> &contents) {
+        return ((i + j) % 2 ? -1 : 1) * contents[i][j] * array_minor<T, N, i, j>(contents);
     }
 
 
@@ -367,15 +313,5 @@ namespace raytracer::transformers {
     template<typename T, size_t N>
     constexpr std::array<T,N> initializer_list_to_array(const std::initializer_list<T> lst) {
         return initializer_list_to_array_helper<T,N>(lst, std::make_index_sequence<N>{});
-    }
-
-    template<typename T, size_t R, size_t C, size_t... Indices>
-    constexpr std::array<std::array<T, C>, R> initializer_list_to_matrix_helper(const std::initializer_list<std::initializer_list<T>> &lst) {
-        return {{initializer_list_to_array<T,C>(lst.begin()[Indices])...}};
-    }
-
-    template<typename T, size_t R, size_t C>
-    constexpr std::array<std::array<T, C>, R> initializer_list_to_matrix(const std::initializer_list<std::initializer_list<T>> &lst) {
-        return initializer_list_to_matrix_helper(lst, std::make_index_sequence<R>{});
     }
 }
