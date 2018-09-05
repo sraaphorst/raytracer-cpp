@@ -241,15 +241,15 @@ TEST_CASE("Matrix of size 3x3 should be able to calculate its cofactors", "[Matr
 
     // Check that cofactor is constexpr.
     constexpr auto res = m.cofactor<0, 0>();
-    REQUIRE(m.cofactor<0, 0>() == -12);
-    REQUIRE(m.cofactor<0, 1>() == -52);
-    REQUIRE(m.cofactor<0, 2>() ==   4);
-    REQUIRE(m.cofactor<1, 0>() == -25);
-    REQUIRE(m.cofactor<1, 1>() ==  15);
-    REQUIRE(m.cofactor<1, 2>() ==  33);
-    REQUIRE(m.cofactor<2, 0>() == -35);
-    REQUIRE(m.cofactor<2, 1>() ==  21);
-    REQUIRE(m.cofactor<2, 2>() == -13);
+    REQUIRE(m.cofactor<0, 0>() ==  -36);
+    REQUIRE(m.cofactor<0, 1>() == -260);
+    REQUIRE(m.cofactor<0, 2>() ==    0);
+    REQUIRE(m.cofactor<1, 0>() ==  -50);
+    REQUIRE(m.cofactor<1, 1>() ==  -15);
+    REQUIRE(m.cofactor<1, 2>() == -231);
+    REQUIRE(m.cofactor<2, 0>() == -210);
+    REQUIRE(m.cofactor<2, 1>() ==  -21);
+    REQUIRE(m.cofactor<2, 2>() ==  -65);
 }
 
 TEST_CASE("Matrix of size 3x3 should be able to calculate its determinant", "[Matrix][determinant]") {
@@ -261,8 +261,8 @@ TEST_CASE("Matrix of size 3x3 should be able to calculate its determinant", "[Ma
     constexpr auto res1 = m.determinant();
     constexpr auto res2 = m.cofactor<0,0>();
     REQUIRE(m.cofactor<0, 0>() ==   56);
-    REQUIRE(m.cofactor<0, 1>() ==   12);
-    REQUIRE(m.cofactor<0, 2>() ==  -46);
+    REQUIRE(m.cofactor<0, 1>() ==   24);
+    REQUIRE(m.cofactor<0, 2>() ==  -276);
     REQUIRE(m.determinant()  == -196);
 }
 
@@ -275,10 +275,10 @@ TEST_CASE("Matrix of size 4x4 should be able to calculate its determinant", "[Ma
     // Check that determinant is constexpr.
     constexpr auto res1 = m == m;
     constexpr auto res2 = m.determinant();
-    constexpr auto res3 = m.minor<0,0>();
-    REQUIRE(m.cofactor<0, 0>() ==   690);
-    REQUIRE(m.cofactor<0, 1>() ==   447);
-    REQUIRE(m.cofactor<0, 2>() ==   210);
-    REQUIRE(m.cofactor<0, 3>() ==    51);
-    REQUIRE(m.determinant()  == -4071);
+    constexpr auto res3 = m.cofactor<0,0>();
+    REQUIRE(m.cofactor<0, 0>() == -1380);
+    REQUIRE(m.cofactor<0, 1>() == -3576);
+    REQUIRE(m.cofactor<0, 2>() ==   630);
+    REQUIRE(m.cofactor<0, 3>() ==   255);
+    REQUIRE(m.determinant()    == -4071);
 }

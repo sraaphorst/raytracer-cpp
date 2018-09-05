@@ -355,7 +355,7 @@ namespace raytracer::transformers {
     template<typename T, size_t rows, size_t cols, size_t i, size_t j>
     constexpr T array_cofactor(const mtxarray<T, rows, cols> &contents) {
         static_assert(rows == cols, "Matrix::cofactor() only for use with square matrices");
-        return ((i + j) % 2 ? -1 : 1) * array_minor<T, rows, cols, i, j>(contents);
+        return ((i + j) % 2 ? -1 : 1) * contents[i][j] * array_minor<T, rows, cols, i, j>(contents);
     }
 
 
