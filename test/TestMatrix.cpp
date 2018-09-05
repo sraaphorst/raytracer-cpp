@@ -8,8 +8,11 @@
 
 #include "common.h"
 #include "matrix.h"
+#include "vector.h"
+#include "transformers.h"
 
 using namespace raytracer;
+using namespace raytracer::transformers;
 
 /// Matrices we will reuse multiple times.
 constexpr Matrix<double, 2, 3> m1 = {{0, 1, 2},
@@ -56,7 +59,7 @@ TEST_CASE("Matrix should know its size", "[Matrix][size]") {
 TEST_CASE("Matrix should be able to determine equality", "[Matrix][equality]") {
     // Make sure equality is constexpr.
     constexpr auto res1 = (m1 == m1);
-    constexpr auto res2 = m1 != m1 + m1;
+
     REQUIRE(m1 == m1);
     REQUIRE(m2 == m2);
     REQUIRE(m1 != m1 + m1);

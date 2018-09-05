@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include <ostream>
 
-#include "tuple.h"
+#include "vector.h"
 
 namespace raytracer {
     class Projectile;

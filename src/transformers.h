@@ -95,13 +95,13 @@ namespace raytracer::transformers {
 
         template<typename F, typename T, size_t N, size_t... Indices>
         constexpr std::array<T,N>
-        scalar_opmult_helper(F f, const std::array<T,N> &t, std::index_sequence<Indices...>) {
+        scalar_opmult_helper(const F f, const std::array<T,N> &t, std::index_sequence<Indices...>) {
             return {{f * t[Indices]...}};
         }
 
         template<typename F, typename T, size_t R, size_t C, size_t... Indices>
         constexpr typename std::enable_if_t<std::is_arithmetic_v<F>, const std::array<std::array<T, C>, R>>
-        matrix_opmult_helper(F f, const std::array<std::array<T, C>, R> &m1, std::index_sequence<Indices...>) {
+        matrix_opmult_helper(const F f, const std::array<std::array<T, C>, R> &m1, std::index_sequence<Indices...>) {
             return {{ f * m1[Indices]... }};
         }
 
@@ -117,8 +117,9 @@ namespace raytracer::transformers {
         }
 
         template<typename F, typename T, size_t N, size_t... Indices>
-        constexpr std::array<T,N> scalar_opdiv_helper(const std::array<T,N> &t, F f, std::index_sequence<Indices...>) {
-            return {{t[Indices] / f...}};
+        constexpr std::array<T,N>
+        scalar_opdiv_helper(const std::array<T,N> &t, const F f, std::index_sequence<Indices...>) {
+            return {{(t[Indices] / f)...}};
         }
 
         template<typename T, size_t N, size_t... Indices>
@@ -133,8 +134,8 @@ namespace raytracer::transformers {
     }
 
     template<typename T, size_t R, size_t C>
-    constexpr std::array<std::array<T, C>, R> operator+(const std::array<std::array<T, C>, R> &m1, const std::array<std::array<T, C>, R> &m2) {
-        return transformer_details::matrix_opadd_helper<T,R,C>(m1, m2, std::make_index_sequence<R>{});
+    constexpr std::array<std::array<T, C>, R> operator+(const std::array<std::array<T, C>, R> &t1, const std::array<std::array<T, C>, R> &t2) {
+        return transformer_details::matrix_opadd_helper<T,R,C>(t1, t2, std::make_index_sequence<R>{});
     }
 
     template<typename T, size_t N>
@@ -154,13 +155,13 @@ namespace raytracer::transformers {
 
     template<typename F, typename T, size_t N>
     constexpr typename std::enable_if_t<std::is_arithmetic_v<F>, std::array<T,N>>
-    operator*(F f, const std::array<T,N> &t) {
+    operator*(const F f, const std::array<T,N> &t) {
         return transformer_details::scalar_opmult_helper<F,T,N>(f, t, std::make_index_sequence<N>{});
     }
 
     template<typename F, typename T, size_t R, size_t C>
     constexpr typename std::enable_if_t<std::is_arithmetic_v<F>, const std::array<std::array<T, C>, R>>
-    operator*(F f, const std::array<std::array<T, C>, R> &m) {
+    operator*(const F f, const std::array<std::array<T, C>, R> &m) {
         return transformer_details::matrix_opmult_helper<F,T,R,C>(f, m, std::make_index_sequence<R>{});
     }
 
@@ -176,7 +177,7 @@ namespace raytracer::transformers {
 
     template<typename F, typename T, size_t N>
     constexpr typename std::enable_if_t<std::is_arithmetic_v<F>, std::array<T,N>>
-    operator/(const std::array<T,N> &t, F f) {
+    operator/(const std::array<T,N> &t,const F f) {
         return transformer_details::scalar_opdiv_helper<F,T,N>(t, f, std::make_index_sequence<N>{});
     }
 
@@ -194,10 +195,20 @@ namespace raytracer::transformers {
     template<size_t m, size_t n>
     inline constexpr bool are_equal_v = are_equal<m,n>::value;
 
+    template<typename T, typename U>
+    struct is_same : std::false_type {};
+
+    template<typename T>
+    struct is_same<T, T> : std::true_type {};
+
+    template<typename T, typename R>
+    inline constexpr bool is_same_v = is_same<T,R>::value;
+
     template<typename T, size_t N, size_t... Indices>
     constexpr std::array<T,N> initializer_list_to_array_helper(const std::initializer_list<T> lst, std::index_sequence<Indices...>) {
         return {{lst.begin()[Indices]...}};
     }
+
     template<typename T, size_t N>
     constexpr std::array<T,N> initializer_list_to_array(const std::initializer_list<T> lst) {
         return initializer_list_to_array_helper<T,N>(lst, std::make_index_sequence<N>{});

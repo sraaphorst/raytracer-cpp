@@ -20,9 +20,18 @@ namespace raytracer {
     template<typename, size_t, size_t, typename>
     class Matrix;
 
+    struct tuple_constants {
+        constexpr static int x = 0;
+        constexpr static int y = 1;
+        constexpr static int z = 2;
+        constexpr static int w = 3;
+        constexpr static double point_flag = 1;
+        constexpr static double vector_flag = 0;
+    };
+
     template<typename T, size_t N,
             typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
-    class Vector {
+    class Vector final: private tuple_constants {
     public:
         using type        = T;
         using vector_type = std::array<T, N>;
@@ -67,7 +76,7 @@ namespace raytracer {
         }
 
         constexpr Vector operator/(const T t) const noexcept {
-            return Vector{t / contents};
+            return Vector{contents / t};
         }
 
         constexpr Vector operator-() const noexcept {
@@ -124,21 +133,40 @@ namespace raytracer {
          ******************/
 
         /// Cross product
-        /// Seems like we need a template declaration of enable_if here. If we do a type declaration, the compiler
-        /// complains that std::enable_if has no ::type.
+        /// It would be nice if we could limit this strictly to vectors with w = vector_flag and throw otherwise,
+        /// but that would not be constexpr.
         template<typename = typename std::enable_if_t<are_equal_v<N,4>>>
         constexpr Vector cross_product(const Vector &other) const noexcept {
             return Vector{
-                    (*this)[y] * other[z] - (*this)[z] * other[y],
-                    (*this)[z] * other[x] - (*this)[x] * other[z],
-                    (*this)[x] * other[y] - (*this)[y] * other[x],
-                    0
+                    contents[y] * other[z] - contents[z] * other[y],
+                    contents[z] * other[x] - contents[x] * other[z],
+                    contents[x] * other[y] - contents[y] * other[x],
+                    vector_flag
             };
         }
 
-        constexpr static int x = 0;
-        constexpr static int y = 0;
-        constexpr static int z = 0;
-        constexpr static int w = 0;
+        template<typename = typename std::enable_if_t<are_equal_v<N,4>>>
+        constexpr bool isPoint() const noexcept { return contents[w] == point_flag; }
+
+        template<typename = typename std::enable_if_t<are_equal_v<N,4>>>
+        constexpr bool isVector() const noexcept { return contents[w] == vector_flag; }
+    };
+
+    using Tuple = Vector<double, 4>;
+
+    /// Factory methods:
+    constexpr Tuple make_point(double dx, double dy, double dz) {
+        return Tuple{dx, dy, dz, tuple_constants::point_flag};
+    }
+    constexpr Tuple make_vector(double dx, double dy, double dz) {
+        return Tuple{dx, dy, dz, tuple_constants::vector_flag};
+    }
+
+    struct predefined_tuples {
+        static constexpr Tuple zero_point{0, 0, 0, tuple_constants::point_flag};
+        static constexpr Tuple zero_vector{0, 0, 0, tuple_constants::vector_flag};
+        static constexpr Tuple x1{1, 0, 0, tuple_constants::vector_flag};
+        static constexpr Tuple y1{0, 1, 0, tuple_constants::vector_flag};
+        static constexpr Tuple z1{0, 0, 1, tuple_constants::vector_flag};
     };
 }

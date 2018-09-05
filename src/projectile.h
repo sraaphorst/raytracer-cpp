@@ -10,7 +10,7 @@
 #include <ostream>
 #include <stdexcept>
 
-#include "tuple.h"
+#include "vector.h"
 #include "world.h"
 
 namespace raytracer {
@@ -42,7 +42,7 @@ namespace raytracer {
         }
 
         constexpr bool inAir() const {
-            return position[Tuple::y] >= 0;
+            return position[tuple_constants::y] >= 0;
         }
 
         friend std::ostream &operator<<(std::ostream &os, const Projectile &projectile);
