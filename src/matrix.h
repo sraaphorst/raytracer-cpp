@@ -34,7 +34,7 @@ namespace raytracer {
         template<typename T, size_t N, size_t i>
         struct array_determinant_helper {
             static constexpr T value(const mtxsqarray<T, N> &contents) {
-                return array_cofactor<T, N , 0, i>(contents) + array_determinant_helper<T, N, i+1>::value(contents);
+                return contents[0][i] * array_cofactor<T, N , 0, i>(contents) + array_determinant_helper<T, N, i+1>::value(contents);
             }
         };
 
@@ -75,7 +75,31 @@ namespace raytracer {
         /// Calculate the cofactor(i,j) of a matrix, which is just (i+j)^(-1) * minor(i,j).
         template<typename T, size_t N, size_t i, size_t j>
         constexpr T array_cofactor(const mtxsqarray<T, N> &contents) {
-            return ((i + j) % 2 ? -1 : 1) * contents[i][j] * array_minor<T, N, i, j>(contents);
+            return ((i + j) % 2 ? -1 : 1) * array_minor<T, N, i, j>(contents);
+        }
+
+        template<typename T, size_t N, size_t r, size_t c>
+        struct array_cofactor_helper {
+            constexpr static void modifier(const mtxsqarray<T, N> &contents, mtxsqarray<T, N> &inv) {
+                inv[r][c] = array_cofactor<T, N, r, c>(contents);
+                array_cofactor_helper<T, N, r, c+1>::modifier(contents, inv);
+            }
+        };
+
+        template<typename T, size_t N, size_t r>
+        struct array_cofactor_helper<T, N, r, N> {
+            constexpr static void modifier(const mtxsqarray<T, N> &contents, mtxsqarray<T, N> &inv) {
+                if constexpr(r < N-1)
+                    array_cofactor_helper<T, N, r+1, 0>::modifier(contents, inv);
+            }
+        };
+
+        /// Calculate the matrix of cofactors.
+        template <typename T, size_t N>
+        constexpr mtxsqarray<T, N> array_cofactors(const mtxsqarray<T, N> &contents) {
+            mtxsqarray<T, N> inv{};
+            array_cofactor_helper<T, N, 0, 0>::modifier(contents, inv);
+            return inv;
         }
     }
 
@@ -171,17 +195,27 @@ namespace raytracer {
         /// Calculate the minor(i,j) of a matrix, i.e. the determinant of the submatrix(i,j).
         template<size_t i, size_t j>
         constexpr T minor() const {
+            static_assert(rows == cols, "Matrix::minor() only for use with square matrices");
             return details::array_minor<T, rows, i, j>(contents);
         }
 
         /// Calculate the cofactor(i,j) of a matrix, which is just (i+j)^(-1) * minor(i,j).
         template<size_t i, size_t j>
         constexpr T cofactor() const {
+            static_assert(rows == cols, "Matrix::cofactor() only for use with square matrices");
             return details::array_cofactor<T, rows, i, j>(contents);
         }
 
         constexpr T determinant() const {
+            static_assert(rows == cols, "Matrix::determinant() only for use with square matrices");
             return details::array_determinant<T, rows>(contents);
+        }
+
+        constexpr Matrix invert() const {
+            static_assert(rows == cols, "Matrix::invert() only for use with square matrices");
+            static_assert(std::is_floating_point_v<T> && std::is_signed_v<T>,
+                    "Matrix::invert() only for use with signed float and double matrices");
+            return Matrix{details::array_cofactors<T, rows>(contents)}.transpose() / details::array_determinant<T,rows>(contents);
         }
 
         /// Omit row i and column j to get a submatrix of one dimension less in rows and cols.
@@ -207,7 +241,10 @@ namespace raytracer {
         return matrix.transpose() * v;
     }
 
-    struct matrix_constants {
+    template<size_t N>
+    using SquareMatrix = Matrix<double, N, N>;
+
+    struct predefined_matrices {
         /**
          * Unlike make_array, make_uniform_matrix and make_diagonal matrix allow us to be constexpr as they don't
          * use any std::function.
