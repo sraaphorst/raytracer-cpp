@@ -86,7 +86,8 @@ TEST_CASE("Matrix multiplication should multiply compatibly sized matrices", "[M
                                            {14, 50}};
 
     // Make sure multiplication is constexpr.
-    constexpr auto res = m1 * m2;
+    constexpr auto res1 = m1 * m2;
+    constexpr auto res2 = res1 == prod;
     REQUIRE(m1 * m2 == prod);
 }
 
@@ -107,7 +108,8 @@ TEST_CASE("Matrix multiplication should multiply square matrices", "[Matrix][mul
                                          {45, 94, 188, 376}};
 
     // Make sure large multiplication is constexpr.
-    const auto res = m1 * m2;
+    constexpr auto res1 = m1 * m2;
+    constexpr auto res2 = res1 == m3;
     REQUIRE(m1 * m2 == m3);
 }
 
@@ -166,33 +168,34 @@ TEST_CASE("Matrix of size 2x2 should be able to calculate its determinant", "[Ma
 TEST_CASE("Matrix of size 2x2 should be able to get submatrix", "[Matrix][submatrix]") {
     constexpr Matrix<double, 2, 2> m = {{0, 1},
                                         {2, 3}};
+    constexpr auto res = m.submatrix<0,0>();
     REQUIRE(m.submatrix<0,0>() == Matrix<double, 1, 1>{{3}});
 }
 
 TEST_CASE("Matrix of size 3x3 should be able to get submatrix", "[Matrix][submatrix]") {
-    Matrix<double, 3, 3> m = {{ 1, 5,  0},
-                              {-3, 2,  7},
-                              { 0, 6, -3}};
+    constexpr Matrix<double, 3, 3> m = {{ 1, 5,  0},
+                                        {-3, 2,  7},
+                                        { 0, 6, -3}};
 
-    Matrix<double, 2, 2> sm = {{-3, 2},
-                               {0, 6}};
+    constexpr Matrix<double, 2, 2> sm = {{-3, 2},
+                                         {0, 6}};
 
-    //constexpr auto res = m.submatrix<0,2>();
+    constexpr auto res = m.submatrix<0,2>();
     REQUIRE(m.submatrix<0, 2>() == sm);
 }
 
 TEST_CASE("Matrix of size 4x4 should be able to get submatrix", "[Matrix][submatrix]") {
-    Matrix<double, 4, 4> m = {{-6, 1,  1, 6},
-                              {-8, 5,  8, 6},
-                              {-1, 0,  8, 2},
-                              {-7, 1, -1, 1}};
+    constexpr Matrix<double, 4, 4> m = {{-6, 1,  1, 6},
+                                        {-8, 5,  8, 6},
+                                        {-1, 0,  8, 2},
+                                        {-7, 1, -1, 1}};
 
-    Matrix<double, 3, 3> sm = {{-6,  1, 6},
-                               {-8,  8, 6},
-                               {-7, -1, 1}};
+    constexpr Matrix<double, 3, 3> sm = {{-6,  1, 6},
+                                         {-8,  8, 6},
+                                         {-7, -1, 1}};
 
     // Check that submatrix is constexpr.
-    //constexpr auto res = m.submatrix<2,1>();
+    constexpr auto res = m.submatrix<2,1>();
     REQUIRE(m.submatrix<2, 1>() == sm);
 }
 
@@ -250,13 +253,13 @@ TEST_CASE("Matrix of size 3x3 should be able to calculate its cofactors", "[Matr
 }
 
 TEST_CASE("Matrix of size 3x3 should be able to calculate its determinant", "[Matrix][determinant]") {
-    Matrix<double, 3, 3> m = {{ 1, 2,  6},
-                              {-5, 8, -4},
-                              { 2, 6,  4}};
+    constexpr Matrix<double, 3, 3> m = {{ 1, 2,  6},
+                                        {-5, 8, -4},
+                                        { 2, 6,  4}};
 
     // Check that determinant is constexpr.
-    //constexpr auto res = m.determinant();
-    //constexpr auto res = m.cofactor<0,0>();
+    constexpr auto res1 = m.determinant();
+    constexpr auto res2 = m.cofactor<0,0>();
     REQUIRE(m.cofactor<0, 0>() ==   56);
     REQUIRE(m.cofactor<0, 1>() ==   12);
     REQUIRE(m.cofactor<0, 2>() ==  -46);
@@ -264,15 +267,15 @@ TEST_CASE("Matrix of size 3x3 should be able to calculate its determinant", "[Ma
 }
 
 TEST_CASE("Matrix of size 4x4 should be able to calculate its determinant", "[Matrix][determinant]") {
-    Matrix<double, 4, 4> m = {{-2, -8,  3,  5},
-                              {-3,  1,  7,  3},
-                              { 1,  2, -9,  6},
-                              {-6,  7,  7, -9}};
+    constexpr Matrix<double, 4, 4> m = {{-2, -8,  3,  5},
+                                        {-3,  1,  7,  3},
+                                        { 1,  2, -9,  6},
+                                        {-6,  7,  7, -9}};
 
     // Check that determinant is constexpr.
-    //constexpr auto res = m == m;
-    //constexpr auto res = m.determinant();
-    //constexpr auto res = m.minor<0,0>();
+    constexpr auto res1 = m == m;
+    constexpr auto res2 = m.determinant();
+    constexpr auto res3 = m.minor<0,0>();
     REQUIRE(m.cofactor<0, 0>() ==   690);
     REQUIRE(m.cofactor<0, 1>() ==   447);
     REQUIRE(m.cofactor<0, 2>() ==   210);

@@ -225,46 +225,6 @@ namespace raytracer::transformers {
         return vector_neg_helper<T,N>(t, std::make_index_sequence<N>{});
     }
 
-    /// Array partial equality.
-    /// If floating point, use ALMOST_EQUALS.
-    template<typename T>
-    constexpr typename std::enable_if_t<std::is_floating_point_v<T>, bool>
-    equals(T t1, T t2) { return ALMOST_EQUALS(t1, t2); }
-
-    /// If integral, just use ==.
-    template<typename T>
-    constexpr typename std::enable_if_t<std::is_integral_v<T>, bool>
-    equals(T t1, T t2) { return t1 == t2; }
-
-    /// If an array, iterate. This will allow us to check multidimensional arrays.
-    /// Checked for constexpr.
-    template<typename T, size_t N, size_t k>
-    struct Equaller {
-        static constexpr bool value(const std::array<T,N> &t1, const std::array<T,N> &t2) {
-            return t1[k] == t2[k] && Equaller<T,N,k+1>::value;
-        }
-    };
-    template<typename T, size_t N>
-    struct Equaller<T,N,N> {
-        static constexpr bool value(const std::array<T,N>&, const std::array<T,N>&) {
-            return true;
-        }
-    };
-    // TODO: HELPER HERE NOT NEEDED
-    template<typename T, size_t N, size_t... Indices>
-    constexpr bool equals_helper(const std::array<T,N> &t1, const std::array<T,N> &t2, std::index_sequence<Indices...>) {
-        return (equals(t1[Indices], t2[Indices]) && ...);
-    }
-    template<typename T, size_t N>
-    constexpr bool equals(const std::array<T,N> &t1, const std::array<T,N> &t2) {
-        bool same = true;
-        for (int i=0; i < N; ++i)
-            same = same && equals(t1[i], t2[i]);
-        return same;
-        //return equals_helper<T,N>(t1, t2, std::make_index_sequence<N>{});
-        //return Equaller<T,N,0>::value(t1, t2);
-    }
-
     /// Create an array where the elements are determined by a supplied function invoked on index.
     template<class T, size_t N>
     static constexpr std::array<T, N> make_array(const std::function<T(int)> f) {
@@ -282,23 +242,6 @@ namespace raytracer::transformers {
     inline constexpr bool are_equal_v = are_equal<m,n>::value;
 
 
-
-    /// Auxiliary tools to find submatrices.
-    /// TODO: why does this work in some cases, and not in others? 4x3 matrix is fine, but not 3x3.
-    template<typename T, size_t R, size_t C, size_t r, size_t c>
-    constexpr std::array<std::array<T, C-1>, R-1> array_submatrix(const std::array<std::array<T, C>, R> &m) {
-        std::array<std::array<T, C-1>, R-1> sm{};
-        for (int i=0; i < R-1; ++i) {
-            for (int j=0; j < C-1; ++j) {
-                if (i < r && j < c) sm[i][j] = m[i][j];
-                else if (i >= r && j < c) sm[i][j] = m[i+1][j];
-                else if (i < r && j >= c) sm[i][j] = m[i][j+1];
-                else sm[i][j] = m[i+1][j+1];
-            }
-        }
-        return sm;
-    }
-
     /**
      * Auxiliary functions to find the determinant. Only for square matrices.
      * Different cases for N=1, 2, and > 2.
@@ -306,55 +249,115 @@ namespace raytracer::transformers {
      * The compiler complains about overloads there.
      */
 
-    // Forward declaration.
-    template<typename T, size_t N, size_t i, size_t j>
-    constexpr T array_cofactor(const std::array<std::array<T,N>,N> &m);
-
-    template<typename T, size_t N, size_t k>
-    struct ArrayDeterminantHelper {
-        constexpr static T value(const std::array<std::array<T,N>,N> &m) {
-            return m[0][k] * array_cofactor<T, N, 0, k>(m) + ArrayDeterminantHelper<T, N, k + 1>::value(m);
-        }
-    };
-    template<typename T, size_t N>
-    struct ArrayDeterminantHelper<T,N,N> {
-        constexpr static T value(const std::array<std::array<T,N>,N>&) {
-            return T{};
-        }
-    };
-
-    template<typename T, size_t N, size_t k>
-    constexpr T array_determinant_helper(const std::array<std::array<T,N>,N> &m) {
-        if constexpr (N == k) return T{};
-        else return m[0][k] * array_cofactor<T,N,0,k>(m) + array_determinant_helper<T,N,k+1>(m);
-    }
-
-    /// Note that we need the N in all templates or the requisite function does not match properly.
-    template<typename T, size_t N>
-    constexpr T array_determinant(const std::array<std::array<T,N>,N> &m) {
-        //return ArrayDeterminantHelper<T,N,0>::value(m);
-        return array_determinant_helper<T,N,0>(m);
-    }
-    template<typename T, size_t N>
-    constexpr T array_determinant(const std::array<std::array<T,2>,2> &m) {
-        return m[0][0] * m[1][1] - m[1][0] * m[0][1];
-    }
-    template<typename T, size_t N>
-    constexpr T array_determinant(const std::array<std::array<T,1>,1> &m) {
-        return m[0][0];
-    }
+//    // Forward declaration.
+//    template<typename T, size_t N, size_t i, size_t j>
+//    constexpr T array_cofactor(const std::array<std::array<T,N>,N> &m);
+//
+//    template<typename T, size_t N, size_t k>
+//    struct ArrayDeterminantHelper {
+//        constexpr static T value(const std::array<std::array<T,N>,N> &m) {
+//            return m[0][k] * array_cofactor<T, N, 0, k>(m) + ArrayDeterminantHelper<T, N, k + 1>::value(m);
+//        }
+//    };
+//    template<typename T, size_t N>
+//    struct ArrayDeterminantHelper<T,N,N> {
+//        constexpr static T value(const std::array<std::array<T,N>,N>&) {
+//            return T{};
+//        }
+//    };
+//
+//    template<typename T, size_t N, size_t k>
+//    constexpr T array_determinant_helper(const std::array<std::array<T,N>,N> &m) {
+//        if constexpr (N == k) return T{};
+//        else return m[0][k] * array_cofactor<T,N,0,k>(m) + array_determinant_helper<T,N,k+1>(m);
+//    }
+//
+//    /// Note that we need the N in all templates or the requisite function does not match properly.
+//    template<typename T, size_t N>
+//    constexpr T array_determinant(const std::array<std::array<T,N>,N> &m) {
+//        //return ArrayDeterminantHelper<T,N,0>::value(m);
+//        return array_determinant_helper<T,N,0>(m);
+//    }
+//    template<typename T, size_t N>
+//    constexpr T array_determinant(const std::array<std::array<T,2>,2> &m) {
+//        return m[0][0] * m[1][1] - m[1][0] * m[0][1];
+//    }
+//    template<typename T, size_t N>
+//    constexpr T array_determinant(const std::array<std::array<T,1>,1> &m) {
+//        return m[0][0];
+//    }
 
     /// Minor and cofactor so we can use them and don't have to redefine them in matrix.h
-    template<typename T, size_t N, size_t i, size_t j>
-    constexpr T array_minor(const std::array<std::array<T,N>,N> &m) {
-        return array_determinant<T,N-1>(array_submatrix<T,N,N,i,j>(m));
+//    template<typename T, size_t N, size_t i, size_t j>
+//    constexpr T array_minor(const std::array<std::array<T,N>,N> &m) {
+//        return array_determinant<T,N-1>(array_submatrix<T,N,N,i,j>(m));
+//    }
+
+//    template<typename T, size_t N, size_t i, size_t j>
+//    constexpr T array_cofactor(const std::array<std::array<T,N>,N> &m) {
+//        if constexpr ((i + j) % 2) return -1 * array_minor<T,N,i,j>(m);
+//        else return array_minor<T,N,i,j>(m);
+//    }
+
+    template<typename T, size_t rows, size_t cols>
+    using mtxarray = std::array<std::array<T, cols>, rows>;
+
+    template<typename T, size_t rows, size_t cols, size_t i, size_t j>
+    constexpr T array_cofactor(const mtxarray<T, rows, cols> &contents);
+
+    template<typename T, size_t mx, size_t i>
+    struct array_determinant_helper {
+        static constexpr T value(const mtxarray<T, mx, mx> &contents) {
+            return array_cofactor<T, mx, mx , 0, i>(contents) + array_determinant_helper<T, mx, i+1>::value(contents);
+        }
+    };
+
+    template<typename T, size_t mx>
+    struct array_determinant_helper<T, mx, mx> {
+        static constexpr T value(const mtxarray<T, mx, mx>&) {
+            return 0;
+        }
+    };
+
+    template<typename T, size_t rows, size_t cols>
+    constexpr T array_determinant(const mtxarray<T, rows, cols> &contents) {
+        static_assert(rows == cols, "Matrix::determinant() only for use with square matrices");
+        if constexpr(rows == 1)
+            return contents[0][0];
+        else if constexpr(rows == 2)
+            return contents[0][0] * contents[1][1] - contents[0][1] * contents[1][0];
+        else return array_determinant_helper<T, rows, 0>::value(contents);
     }
 
-    template<typename T, size_t N, size_t i, size_t j>
-    constexpr T array_cofactor(const std::array<std::array<T,N>,N> &m) {
-        if constexpr ((i + j) % 2) return -1 * array_minor<T,N,i,j>(m);
-        else return array_minor<T,N,i,j>(m);
+    /// Omit row i and column j to get a submatrix of one dimension less in rows and cols.
+    template<typename T, size_t rows, size_t cols, size_t i, size_t j>
+    constexpr mtxarray<T, rows-1, cols-1> array_submatrix(const mtxarray<T, rows, cols> &contents) {
+        std::array<std::array<T, cols-1>, rows-1> newContents{};
+        for (size_t r = 0; r < rows-1; ++r) {
+            const size_t ridx = r >= i ? r + 1 : r;
+            for (size_t c = 0; c < cols-1; ++c) {
+                const size_t cidx = c >= j ? c + 1 : c;
+                newContents[r][c] = contents[ridx][cidx];
+            }
+        }
+        return newContents;
     }
+
+    /// Calculate the minor(i,j) of a matrix, i.e. the determinant of the submatrix(i,j).
+    template<typename T, size_t rows, size_t cols, size_t i, size_t j>
+    constexpr T array_minor(const mtxarray<T, rows, cols> &contents) {
+        static_assert(rows == cols, "Matrix::minor() only for use with square matrices");
+        //return array_minor<T,rows,i,j>(contents);
+        return array_determinant<T, rows-1, cols-1>(array_submatrix<T, rows, cols, i, j>(contents));
+    }
+
+    /// Calculate the cofactor(i,j) of a matrix, which is just (i+j)^(-1) * minor(i,j).
+    template<typename T, size_t rows, size_t cols, size_t i, size_t j>
+    constexpr T array_cofactor(const mtxarray<T, rows, cols> &contents) {
+        static_assert(rows == cols, "Matrix::cofactor() only for use with square matrices");
+        return ((i + j) % 2 ? -1 : 1) * array_minor<T, rows, cols, i, j>(contents);
+    }
+
 
     /// Checked for constexpr.
     template<typename T, size_t N, size_t... Indices>

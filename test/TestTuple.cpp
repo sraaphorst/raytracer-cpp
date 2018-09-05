@@ -66,7 +66,8 @@ TEST_CASE("Tuple should be able to be multiplied by a factor on the right", "[Tu
     constexpr Tuple t2{2, 4, 6, Tuple::vector_flag};
 
     // Make sure scalar multiplication is constexpr.
-    constexpr auto res = t1 * 2;
+    constexpr auto res1 = t1 * 2;
+    constexpr auto res2 = res1 == t2;
     REQUIRE(t1 * 2 == t2);
 }
 
@@ -75,7 +76,8 @@ TEST_CASE("Tuple should be able to calculate Hadamard product", "[Tuple][hadamar
     constexpr Tuple t2{2, 4, 6, Tuple::vector_flag};
 
     // Make sure hadamard product is constexpr.
-    constexpr auto res = t1 * t2;
+    constexpr auto res1 = t1 * t2;
+    constexpr auto res2 = t1 * t2 == Tuple(2, 8, 18, Tuple::vector_flag);
     REQUIRE(t1 * t2 == Tuple(2, 8, 18, Tuple::vector_flag));
 }
 
@@ -116,6 +118,7 @@ TEST_CASE("Tuple addition should be commutative", "[Tuple][addition][commutativi
     constexpr Tuple t1{1, 2, 3, Tuple::vector_flag};
     constexpr Tuple t2{2, 4, 6, Tuple::vector_flag};
 
+    constexpr auto res = t1 + t2 == t2 + t1;
     REQUIRE(t1 + t2 == t2 + t1);
 }
 
@@ -124,6 +127,7 @@ TEST_CASE("Tuple addition should be associative", "[Tuple][addition][associativi
     const Tuple &ty = tuple_constants::y1;
     const Tuple &tz = tuple_constants::z1;
 
+    constexpr auto res = tx + (ty + tz) == (tx + ty) + tz;
     REQUIRE(tx + (ty + tz) == (tx + ty) + tz);
 }
 

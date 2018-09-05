@@ -74,8 +74,12 @@ namespace raytracer {
             return Vector{-contents};
         }
 
+        /// Tested for constexpr.
         constexpr bool operator==(const Vector &t) const noexcept {
-            return equals(contents, t.contents);
+            for (auto it1 = contents.cbegin(), it2 = t.contents.cbegin(); it1 != contents.cend(); ++it1, ++it2)
+                if (!ALMOST_EQUALS(*it1, *it2))
+                    return false;
+            return true;
         }
 
         constexpr bool operator!=(const Vector &rhs) const noexcept {
