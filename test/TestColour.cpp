@@ -7,15 +7,15 @@
 #include "catch.hpp"
 
 #include "common.h"
-#include "colour.h"
+#include "vector.h"
 
 using namespace raytracer;
 
 TEST_CASE("Colours are RGB tuples", "[Colour][rgb]") {
     Colour rgb{-0.5, 0.4, 1.7};
-    REQUIRE(ALMOST_EQUALS(rgb[Colour::r], -0.5));
-    REQUIRE(ALMOST_EQUALS(rgb[Colour::g],  0.4));
-    REQUIRE(ALMOST_EQUALS(rgb[Colour::b],  1.7));
+    REQUIRE(ALMOST_EQUALS(rgb[colour_constants::r], -0.5));
+    REQUIRE(ALMOST_EQUALS(rgb[colour_constants::g],  0.4));
+    REQUIRE(ALMOST_EQUALS(rgb[colour_constants::b],  1.7));
 }
 
 TEST_CASE("Colours can be added", "[Colour][addition]") {

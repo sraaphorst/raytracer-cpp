@@ -13,17 +13,18 @@
 #include <ostream>
 
 #include "constmath.h"
-#include "colour.h"
+#include "vector.h"
 
 namespace raytracer {
     using colour_ptr_t = std::shared_ptr<const Colour>;
+
     template<size_t width, size_t height>
     class Canvas final {
     private:
         using col  = std::array<colour_ptr_t, height>;
         using grid = std::array<col, width>;
 
-        std::shared_ptr<const Colour> black = std::make_shared<const Colour>(0, 0, 0);
+        std::shared_ptr<const Colour> black{new Colour{0, 0, 0}};
 
         /// Use shared_ptrs so that we can reuse colours, like black on initialization.
         grid pixels;
@@ -46,7 +47,7 @@ namespace raytracer {
 
         /// Create a stream representing this as a PPM file.
         friend std::ostream &operator<<(std::ostream &ostr, const Canvas<width, height> &c) {
-            ostr << "P3\n" << width << ' ' << height << '\n' << Colour::maxvalue << '\n';
+            ostr << "P3\n" << width << ' ' << height << '\n' << colour_constants::maxvalue << '\n';
 
             int linewidth = 0;
             for (auto j=0; j < height; ++j) {
@@ -54,8 +55,8 @@ namespace raytracer {
 
                 for (auto i=0; i < width; ++i) {
                     for (auto rgb = 0; rgb < 3; ++rgb) {
-                        auto cval = (int) ((*c[i][j])[rgb] * Colour::maxvalue + 0.5);
-                        auto val = std::max(0, std::min(cval, Colour::maxvalue));
+                        auto cval = (int) ((*c[i][j])[rgb] * colour_constants::maxvalue + 0.5);
+                        auto val = std::max(0, std::min(cval, colour_constants::maxvalue));
 
                         // Constrain lines to 70 characters as per PPM specifications.
                         auto valwidth = numDigits(val);

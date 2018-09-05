@@ -29,12 +29,21 @@ namespace raytracer {
         constexpr static double vector_flag = 0;
     };
 
+    struct colour_constants {
+        static constexpr int r = 0;
+        static constexpr int g = 1;
+        static constexpr int b = 2;
+        static constexpr int maxvalue = 255;
+    };
+
     template<typename T, size_t N,
             typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
-    class Vector final: private tuple_constants {
+    class Vector final: private tuple_constants, private colour_constants {
     public:
         using type        = T;
         using vector_type = std::array<T, N>;
+
+        using Colour = Vector<double, 3>;
 
     protected:
         const vector_type contents;
@@ -135,8 +144,8 @@ namespace raytracer {
         /// Cross product
         /// It would be nice if we could limit this strictly to vectors with w = vector_flag and throw otherwise,
         /// but that would not be constexpr.
-        template<typename = typename std::enable_if_t<are_equal_v<N,4>>>
         constexpr Vector cross_product(const Vector &other) const noexcept {
+            static_assert(N == 4 && is_same_v<T, double>, "Cross product can only be performed on Vectors");
             return Vector{
                     contents[y] * other[z] - contents[z] * other[y],
                     contents[z] * other[x] - contents[x] * other[z],
@@ -145,11 +154,26 @@ namespace raytracer {
             };
         }
 
-        template<typename = typename std::enable_if_t<are_equal_v<N,4>>>
-        constexpr bool isPoint() const noexcept { return contents[w] == point_flag; }
+        constexpr bool isPoint() const noexcept {
+            static_assert(N == 4 && is_same_v<T, double>, "isPoint can only be called on Vectors");
+            return contents[w] == point_flag;
+        }
 
-        template<typename = typename std::enable_if_t<are_equal_v<N,4>>>
-        constexpr bool isVector() const noexcept { return contents[w] == vector_flag; }
+        constexpr bool isVector() const noexcept {
+            static_assert(N == 4 && is_same_v<T, double>, "isVector can only be called on Vectors");
+            return contents[w] == vector_flag;
+        }
+
+        /*******************
+         * COLOUR SPECIFIC *
+         *******************/
+        constexpr bool isValidColour() const {
+            static_assert(N == 3, "isValidColour only available to colours");
+            static_assert(is_same_v<T, double>, "Colours must be doubles");
+            return 0 <= (*this)[r] && (*this)[r] <= 1
+                   && 0 <= (*this)[g] && (*this)[g] <= 1
+                   && 0 <= (*this)[b] && (*this)[b] <= 1;
+        }
     };
 
     using Tuple = Vector<double, 4>;
@@ -168,5 +192,20 @@ namespace raytracer {
         static constexpr Tuple x1{1, 0, 0, tuple_constants::vector_flag};
         static constexpr Tuple y1{0, 1, 0, tuple_constants::vector_flag};
         static constexpr Tuple z1{0, 0, 1, tuple_constants::vector_flag};
+    };
+
+    using Colour = Vector<double, 3>;
+
+    /// Factory method:
+    constexpr Colour make_colour(double dr, double dg, double db) {
+        return Colour{dr, dg, db};
+    }
+
+    struct predefined_colours {
+        static constexpr Colour black{0, 0, 0};
+        static constexpr Colour white{1, 1, 1};
+        static constexpr Colour red  {1, 0, 0};
+        static constexpr Colour green{0, 1, 0};
+        static constexpr Colour blue {0, 0, 1};
     };
 }
