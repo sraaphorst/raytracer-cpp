@@ -20,11 +20,10 @@ int main() {
     std::unique_ptr<Projectile> ptr = std::make_unique<Projectile>(
             make_point(0, 1, 0),
             make_vector(1, 1.8, 0).normalize() * 11.25);
-
     colour_ptr_t colour_ptr{new Colour{1, 1, 0}};
 
     Canvas<900, 550> c{};
-    for (; ptr->inAir(); ptr = ptr->tick(w)) {
+    for (; ptr->inAir(); ptr = std::move(ptr->tick(w))) {
         auto pos = ptr->getPosition();
         auto x = (int) pos[tuple_constants::x];
         auto y = 550 - (int) pos[tuple_constants::y];
@@ -35,7 +34,7 @@ int main() {
         c[x][y] = colour_ptr;
     }
 
-    std::ofstream str("cannon.ppm");
-    str << c;
-    str.close();
+    std::ofstream out("cannon.ppm");
+    out << c;
+    out.close();
 }
