@@ -31,9 +31,7 @@ TEST_CASE("factorial should produce the correct result", "[math][factorial]") {
 TEST_CASE("max_factorial should produce the largest factorial value possible", "[math][factorial]") {
     // Current implementation of max_factorial is not constexpr.
     constexpr auto mf = max_factorial();
-//    bool fac1inf = std::isinf(factorial(mf));
-//    bool fac2inf = std::isinf(factorial(mf + 1));
-//    REQUIRE(!fac1inf);
-//    REQUIRE(fac2inf);
-     REQUIRE(factorial(mf) - factorial(mf + 1) < factorial(mf));
+    constexpr auto fmf = factorial(mf);
+    constexpr auto fmfp1 = factorial(mf + 1);
+    REQUIRE(factorial(mf) - factorial(mf + 1) < factorial(mf));
 }

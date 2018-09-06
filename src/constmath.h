@@ -14,19 +14,26 @@
 namespace raytracer {
     namespace math_details {
         /// Caclulates factorials.
-//        constexpr long double factorial_helper(size_t sz, long double accum) {
-//            if (sz == 0)
-//                return accum;
-//            else
-//                return factorial_helper(sz-1, sz * accum);
-//        }
-
         constexpr size_t factorial_helper(size_t sz, size_t accum) {
             if (sz == 0)
                 return accum;
             else
                 return factorial_helper(sz-1, sz * accum);
         }
+
+        /// max factorial methods: could not figure out how to make this C++14 constexpr with loops, so had to revert
+        /// to C++11 struct technique.
+        template<size_t val, size_t i>
+        struct MaxFactorial {
+            static constexpr size_t value() {
+                if (i > 1 && val - i * val < val) return i - 1;
+                else return MaxFactorial<i * val, i + 1>::value();
+            }
+        };
+        template<size_t val>
+        struct MaxFactorial<val,2000> {
+            static constexpr size_t value() { return 2000; }
+        };
 
         /// Inverse of a floating point number.
         template<class T,class dcy = std::decay_t<T>>
@@ -40,6 +47,7 @@ namespace raytracer {
                    ? curr
                    : sqrtNewtonRaphson(x, 0.5 * (curr + x / curr), curr);
         }
+
 
         /// Trigonometric types.
         template<typename T> constexpr T pi = 3.14159265358979323846264338327L;
@@ -77,58 +85,10 @@ namespace raytracer {
         return math_details::factorial_helper(n, 1);
     }
 
-    /// 1755?
-    template<size_t i>
-    struct MF {
-        static constexpr size_t value(long double val) {
-            const auto newval = val * i;
-            if (std::isinf(newval)) return i - 1;
-            //if constexpr(factorial(i+1) < factorial(i)) return i-1;
-            else return MF<i+1>::value(newval);
-        }
-    };
-
-    template<>
-    struct MF<20000> {
-        static constexpr size_t value(long double) { return 20000; }
-    };
-
     /// Return the largest factorial we can calculate.
-//    constexpr size_t max_factorial() {
-//        size_t i = 1;
-//        while (factorial(i) < std::numeric_limits<long double>::max()) { ++i; }
-//        return i-1;
-//        return MF<1>::value(1.0L);
-//    }
-
-    template<size_t val, size_t i>
-    struct MF2 {
-        static constexpr size_t value() {
-            if (i > 1 && val - i * val < val) return i - 1;
-                //if constexpr(factorial(i+1) < factorial(i)) return i-1;
-            else return MF2<i * val, i + 1>::value();
-        }
-    };
-
-    template<size_t val>
-    struct MF2<val,2000> {
-        static constexpr size_t value() { return 2000; }
-    };
-
-    /// Overloads template instantiation depth.
-    template<size_t i>
-    constexpr size_t max_factorial_helper(const long double current) {
-        std::cout << i << ": " << current << '\n';
-        if (i < 200) return max_factorial_helper<i+1>(current * i);// || current < std::numeric_limits<long double>::max()) return max_factorial_helper<i+1>(current * i);
-        else return i - 1;
-    }
-
     constexpr size_t max_factorial() {
-        return MF2<1,1>::value();
+        return math_details::MaxFactorial<1,1>::value();
     }
-//    constexpr size_t max_factorial() {
-//        return max_factorial_helper<1>(1);
-//    }
 
     /**
      * Working to implement constexpr trigonometry operations:
