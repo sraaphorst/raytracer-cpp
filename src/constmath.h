@@ -61,6 +61,7 @@ namespace raytracer {
             while (val > pi<T>) val -= two_pi<T>;
             return val;
         }
+
     }
 
     /// constexpr sqrt of a double.
@@ -98,8 +99,8 @@ namespace raytracer {
         return math_details::MaxFactorial<1,1>::value();
     }
 
-    constexpr double normalize_radians(double val) {
-        //return val - static_cast<int>(val / math_details::pi) * math_details::pi;
+    template<typename T>
+    constexpr double normalize_radians(T val) {
         return math_details::normalize_radians(val);
     }
 
@@ -107,4 +108,17 @@ namespace raytracer {
      * Working to implement constexpr trigonometry operations:
      * https://codereview.stackexchange.com/questions/133668/constexpr-sin-function-c-14
      */
+    template<typename T>
+    constexpr std::enable_if_t<std::is_floating_point_v<T>, T>
+    sinc(T value) {
+        const T x = normalize_radians(value);
+
+        T numerator = x;
+        T result = 0;
+        for (size_t i = 0; i < 8; ++i) {
+            result = result + numerator / factorial(2 * i + 1);
+            numerator = -numerator * x * x;
+        }
+        return result;
+    }
 }

@@ -8,6 +8,7 @@
 
 #include <cmath>
 
+#include "common.h"
 #include "constmath.h"
 
 using namespace raytracer;
@@ -36,6 +37,34 @@ TEST_CASE("max_factorial should produce the largest factorial value possible", "
     REQUIRE(factorial(mf) - factorial(mf + 1) < factorial(mf));
 }
 
-TEST_CASE("Check rads") {
-    constexpr double xyz = normalize_radians(math_details::two_pi<double>);
+TEST_CASE("normalize_radians should map radians to appropriate value in [-pi,pi]") {
+    constexpr auto pi = math_details::pi<double>;
+    constexpr auto res1 = normalize_radians(pi);
+    REQUIRE(ALMOST_EQUALS(normalize_radians(pi), pi));
+
+    constexpr auto res2 = normalize_radians(-pi);
+    REQUIRE(ALMOST_EQUALS(normalize_radians(-pi), -pi));
+
+    constexpr auto res3 = normalize_radians(2 * pi + pi / 2);
+    REQUIRE(ALMOST_EQUALS(normalize_radians(2 * pi + pi / 2), pi / 2));
+
+    constexpr auto res4 = normalize_radians(-(2 * pi + pi / 2));
+    REQUIRE(ALMOST_EQUALS(normalize_radians(-(2 * pi + pi / 2)), -pi / 2));
+}
+
+TEST_CASE("Check sinc approximation is off by most EPSILON") {
+    constexpr double res1 = sinc(math_details::pi<double>);
+    REQUIRE(ALMOST_EQUALS(sinc(math_details::pi<double>), 0));
+
+    constexpr double res2 = sinc(-math_details::pi<double>);
+    REQUIRE(ALMOST_EQUALS(sinc(-math_details::pi<double>), 0));
+
+    constexpr double res3 = sinc(math_details::half_pi<double>);
+    REQUIRE(ALMOST_EQUALS(sinc(math_details::half_pi<double>), 1));
+
+    constexpr double res4 = sinc(-math_details::half_pi<double>);
+    REQUIRE(ALMOST_EQUALS(sinc(-math_details::half_pi<double>), -1));
+
+    constexpr double res5 = sinc<double>(0);
+    REQUIRE(sinc<double>(0) == 0);
 }
