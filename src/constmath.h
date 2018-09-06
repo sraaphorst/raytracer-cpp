@@ -104,10 +104,7 @@ namespace raytracer {
         return math_details::normalize_radians(val);
     }
 
-    /**
-     * Working to implement constexpr trigonometry operations:
-     * https://codereview.stackexchange.com/questions/133668/constexpr-sin-function-c-14
-     */
+    /// Taylor polynomial approximation of normalized value in [-pi, pi] with 8 terms.
     template<typename T>
     constexpr std::enable_if_t<std::is_floating_point_v<T>, T>
     sinc(T value) {
@@ -117,7 +114,21 @@ namespace raytracer {
         T result = 0;
         for (size_t i = 0; i < 8; ++i) {
             result = result + numerator / factorial(2 * i + 1);
-            numerator = -numerator * x * x;
+            numerator *= -1 * x * x;
+        }
+        return result;
+    }
+
+    template<typename T>
+    constexpr std::enable_if_t<std::is_floating_point_v<T>, T>
+    cosc(T value) {
+        const T x = normalize_radians(value);
+
+        T numerator = 1;
+        T result = 0;
+        for (size_t i = 0; i < 8; ++i) {
+            result = result + numerator / factorial(2 * i);
+            numerator *= -1 * x * x;
         }
         return result;
     }

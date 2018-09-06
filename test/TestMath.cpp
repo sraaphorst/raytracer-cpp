@@ -68,3 +68,20 @@ TEST_CASE("Check sinc approximation is off by most EPSILON") {
     constexpr double res5 = sinc<double>(0);
     REQUIRE(sinc<double>(0) == 0);
 }
+
+TEST_CASE("Check cosc approximation is off by most EPSILON") {
+    constexpr double res1 = cosc(math_details::pi<double>);
+    REQUIRE(ALMOST_EQUALS(cosc(math_details::pi<double>), -1));
+
+    constexpr double res2 = cosc(-math_details::pi<double>);
+    REQUIRE(ALMOST_EQUALS(cosc(-math_details::pi<double>), -1));
+
+    constexpr double res3 = cosc(math_details::half_pi<double>);
+    REQUIRE(ALMOST_EQUALS(cosc(math_details::half_pi<double>), 0));
+
+    constexpr double res4 = cosc(-math_details::half_pi<double>);
+    REQUIRE(ALMOST_EQUALS(cosc(-math_details::half_pi<double>), 0));
+
+    constexpr double res5 = cosc<double>(0);
+    REQUIRE(cosc<double>(0) == 1);
+}
