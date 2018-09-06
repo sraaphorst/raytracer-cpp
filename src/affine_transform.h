@@ -97,4 +97,26 @@ namespace raytracer {
                 else m[i][j] == 0;
         return Transformation{m};
     }
+
+    constexpr Transformation skew(double x_y, double x_z, double y_x, double y_z, double z_x, double z_y) {
+        Transformation::matrix_type m{};
+        for (size_t i = 0; i < 4; ++i)
+            for (size_t j = 0; j < 4; ++j)
+                if (i == 0 && j == 1)
+                    m[i][j] = x_y;
+                else if (i == 0 && j == 2)
+                    m[i][j] = x_z;
+                else if (i == 1 && j == 0)
+                    m[i][j] = y_x;
+                else if (i == 1 && j == 2)
+                    m[i][j] = y_z;
+                else if (i == 2 && j == 0)
+                    m[i][j] = z_x;
+                else if (i == 2 && j == 1)
+                    m[i][j] = z_y;
+                else if (i == j)
+                    m[i][j] = 1;
+                else m[i][j] == 0;
+        return Transformation{m};
+    }
 }

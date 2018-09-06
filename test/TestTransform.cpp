@@ -112,3 +112,39 @@ TEST_CASE("rotation_z should rotate a point around the z axis", "[Transformation
     REQUIRE(half_quarter * p == make_point(-sqrt2_by_2, sqrt2_by_2, 0));
     REQUIRE(full_quarter * p == make_point(-1, 0, 0));
 }
+
+TEST_CASE("skew should move x in proportion to y", "[Transformation][skew]") {
+    constexpr auto m = skew(1, 0, 0, 0, 0, 0);
+    constexpr auto p = make_point(2, 3, 4);
+    REQUIRE(m * p == make_point(5, 3, 4));
+}
+
+TEST_CASE("skew should move x in proportion to z", "[Transformation][skew]") {
+    constexpr auto m = skew(0, 1, 0, 0, 0, 0);
+    constexpr auto p = make_point(2, 3, 4);
+    REQUIRE(m * p == make_point(6, 3, 4));
+}
+
+TEST_CASE("skew should move y in proportion to x", "[Transformation][skew]") {
+    constexpr auto m = skew(0, 0, 1, 0, 0, 0);
+    constexpr auto p = make_point(2, 3, 4);
+    REQUIRE(m * p == make_point(2, 5, 4));
+}
+
+TEST_CASE("skew should move y in proportion to z", "[Transformation][skew]") {
+    constexpr auto m = skew(0, 0, 0, 1, 0, 0);
+    constexpr auto p = make_point(2, 3, 4);
+    REQUIRE(m * p == make_point(2, 7, 4));
+}
+
+TEST_CASE("skew should move z in proportion to x", "[Transformation][skew]") {
+    constexpr auto m = skew(0, 0, 0, 0, 1, 0);
+    constexpr auto p = make_point(2, 3, 4);
+    REQUIRE(m * p == make_point(2, 3, 6));
+}
+
+TEST_CASE("skew should move z in proportion to y", "[Transformation][skew]") {
+    constexpr auto m = skew(0, 0, 0, 0, 0, 1);
+    constexpr auto p = make_point(2, 3, 4);
+    REQUIRE(m * p == make_point(2, 3, 7));
+}
