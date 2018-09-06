@@ -35,3 +35,7 @@ TEST_CASE("max_factorial should produce the largest factorial value possible", "
     constexpr auto fmfp1 = factorial(mf + 1);
     REQUIRE(factorial(mf) - factorial(mf + 1) < factorial(mf));
 }
+
+TEST_CASE("Check rads") {
+    constexpr double xyz = normalize_radians(math_details::two_pi<double>);
+}

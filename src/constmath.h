@@ -53,6 +53,14 @@ namespace raytracer {
         template<typename T> constexpr T pi = 3.14159265358979323846264338327L;
         template<typename T> constexpr T two_pi = 2 * pi<T>;
         template<typename T> constexpr T half_pi = 0.5 * pi<T>;
+
+        /// Transform val into a value between (-pi, pi).
+        template<typename T>
+        constexpr T normalize_radians(T val) {
+            while (val < -pi<T>) val += two_pi<T>;
+            while (val > pi<T>) val -= two_pi<T>;
+            return val;
+        }
     }
 
     /// constexpr sqrt of a double.
@@ -88,6 +96,11 @@ namespace raytracer {
     /// Return the largest factorial we can calculate.
     constexpr size_t max_factorial() {
         return math_details::MaxFactorial<1,1>::value();
+    }
+
+    constexpr double normalize_radians(double val) {
+        //return val - static_cast<int>(val / math_details::pi) * math_details::pi;
+        return math_details::normalize_radians(val);
     }
 
     /**
