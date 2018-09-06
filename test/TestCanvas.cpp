@@ -12,7 +12,7 @@
 #include <sstream>
 
 #include "canvas.h"
-#include "colour.h"
+#include "vector.h"
 
 using namespace raytracer;
 
@@ -23,16 +23,16 @@ TEST_CASE("Canvas initializes to black", "[Canvas][initialization]") {
     Canvas<width, height> c;
     for (auto i=0; i < width; ++i)
         for (auto j=0; j < height; ++j)
-            REQUIRE(*(c[i][j]) == colour_constants::black);
+            REQUIRE(*(c[i][j]) == predefined_colours::black);
 }
 
 TEST_CASE("Canvas can be written to", "[Canvas][set]") {
     Canvas<width, height> c;
 
     std::array<const Colour, 3> colours{
-        colour_constants::red,
-        colour_constants::green,
-        colour_constants::blue
+        predefined_colours::red,
+        predefined_colours::green,
+        predefined_colours::blue
     };
 
     std::array<colour_ptr_t, 3> colour_ptrs;
@@ -55,7 +55,7 @@ TEST_CASE("Canvas outputs as PPM", "[Canvas][ppm]") {
     c[2][1] = colour_ptr_t{new Colour{ 0  , 0.5, 0}};
     c[4][2] = colour_ptr_t{new Colour{-0.5, 0  , 1}};
 
-    auto s = "P3\n5 3\n" + std::to_string(Colour::maxvalue) + '\n' +
+    auto s = "P3\n5 3\n" + std::to_string(colour_constants::maxvalue) + '\n' +
             "255 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n"
             "0 0 0 0 0 0 0 128 0 0 0 0 0 0 0\n"
             "0 0 0 0 0 0 0 0 0 0 0 0 0 0 255\n";
@@ -72,7 +72,7 @@ TEST_CASE("Canvas PPM file truncates at 70 characters", "[Canvas][ppm]") {
         for (auto j=0; j < 2; ++j)
             c[i][j] = colour_ptr;
 
-    auto s = "P3\n10 2\n" + std::to_string(Colour::maxvalue) + '\n' +
+    auto s = "P3\n10 2\n" + std::to_string(colour_constants::maxvalue) + '\n' +
             "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204\n"
             "153 255 204 153 255 204 153 255 204 153 255 204 153\n"
             "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204\n"

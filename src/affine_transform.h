@@ -14,7 +14,7 @@
 namespace raytracer {
     using Transformation = SquareMatrix<4>;
 
-    constexpr Transformation translate(double x, double y, double z) {
+    constexpr Transformation translation(double x, double y, double z) {
         std::array<double, 3> point{x, y, z};
 
         Transformation::matrix_type m{};
@@ -27,14 +27,6 @@ namespace raytracer {
                 else
                     m[i][j] = 0;
         return Transformation{m};
-    }
-
-    constexpr Transformation translate(const std::array<double, 3> &t) {
-        return translate(t[0], t[1], t[2]);
-    }
-
-    constexpr Transformation translate(const Tuple &t) {
-        return translate(t[0], t[1], t[2]);
     }
 
     constexpr Transformation scale(double x, double y, double z) {

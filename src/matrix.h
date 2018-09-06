@@ -211,8 +211,15 @@ namespace raytracer {
         constexpr Matrix invert() const {
             static_assert(rows == cols, "Matrix::invert() only for use with square matrices");
             static_assert(std::is_floating_point_v<T> && std::is_signed_v<T>,
-                    "Matrix::invert() only for use with signed float and double matrices");
+                    "Matrix::invert() only for use with signed floating point matrices");
             return Matrix{details::array_cofactors<T, rows>(contents)}.transpose() / details::array_determinant<T,rows>(contents);
+        }
+
+        constexpr Matrix andThen(const Matrix &other) const {
+            static_assert(rows == 4 && cols == 4, "Matrix::andThen() only for use with 4x4 matrices");
+            static_assert(std::is_floating_point_v<T> && std::is_signed_v<T>,
+                    "Matrix::andThen() only for use with signed floating point matrices");
+            return Matrix{transformer_details::mat_mult<T, 4, 4, 4>(other.contents, contents)};
         }
 
         /// Omit row i and column j to get a submatrix of one dimension less in rows and cols.
@@ -249,11 +256,11 @@ namespace raytracer {
          * Unlike make_array, make_uniform_matrix and make_diagonal matrix allow us to be constexpr as they don't
          * use any std::function.
          */
-        template<typename T, size_t R, size_t C>
+        template<typename T = double, size_t R = 4, size_t C = 4>
         static constexpr Matrix<T, R, C> ones = transformer_details::make_uniform_matrix<T, R, C>(1);
 
         /// Identity matrix, only defined as a square matrix.
-        template<typename T, size_t N>
+        template<typename T = double, size_t N = 4>
         static constexpr Matrix<T, N, N> I = transformer_details::make_diagonal_matrix<T, N, N>(0, 1);
     };
 }

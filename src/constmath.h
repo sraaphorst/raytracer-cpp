@@ -14,10 +14,10 @@
 namespace raytracer {
     namespace math_constants {
         /// Trigonometric types.
-        template<typename T> constexpr T pi = 3.14159265358979323846264338327L;
-        template<typename T> constexpr T two_pi = 2 * pi<T>;
-        template<typename T> constexpr T pi_by_two = pi<T> / 2;
-        template<typename T> constexpr T pi_by_four = pi<T> / 4;
+        template<typename T = double> constexpr T pi = 3.14159265358979323846264338327L;
+        template<typename T = double> constexpr T two_pi = 2 * pi<T>;
+        template<typename T = double> constexpr T pi_by_two = pi<T> / 2;
+        template<typename T = double> constexpr T pi_by_four = pi<T> / 4;
     }
 
     namespace math_details {
