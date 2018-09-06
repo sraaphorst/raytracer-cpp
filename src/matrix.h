@@ -149,9 +149,6 @@ namespace raytracer {
             return Matrix<T, rows, C2>{transformer_details::mat_mult<T, rows, cols, C2>(contents, other.contents)};
         }
 
-        template<typename, size_t, size_t, typename>
-        friend class Matrix;
-
         /// This one, however, is constexpr, as checked by assigning the value to be returned to a constexpr variable.
         constexpr Vector<T, rows> operator*(const Vector<T, cols> &v) const {
             return Vector<T, rows>{contents * v.contents};
@@ -224,6 +221,9 @@ namespace raytracer {
             return Matrix<T, rows-1, cols-1>{{details::array_submatrix<T, rows, cols, i, j>(contents)}};
         }
 
+        /// Make all matrices friends so they can access each others' contents.
+        template<typename, size_t, size_t, typename>
+        friend class Matrix;
 
         /// Multiply by factor on the left.
         friend constexpr Matrix operator*(T factor, const Matrix &m) {

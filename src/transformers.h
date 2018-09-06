@@ -195,15 +195,6 @@ namespace raytracer::transformers {
     template<size_t m, size_t n>
     inline constexpr bool are_equal_v = are_equal<m,n>::value;
 
-    template<typename T, typename U>
-    struct is_same : std::false_type {};
-
-    template<typename T>
-    struct is_same<T, T> : std::true_type {};
-
-    template<typename T, typename R>
-    inline constexpr bool is_same_v = is_same<T,R>::value;
-
     template<typename T, size_t N, size_t... Indices>
     constexpr std::array<T,N> initializer_list_to_array_helper(const std::initializer_list<T> lst, std::index_sequence<Indices...>) {
         return {{lst.begin()[Indices]...}};

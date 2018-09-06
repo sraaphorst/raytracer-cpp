@@ -145,7 +145,7 @@ namespace raytracer {
         /// It would be nice if we could limit this strictly to vectors with w = vector_flag and throw otherwise,
         /// but that would not be constexpr.
         constexpr Vector cross_product(const Vector &other) const noexcept {
-            static_assert(N == 4 && is_same_v<T, double>, "Cross product can only be performed on Vectors");
+            static_assert(N == 4, "Cross product can only be performed on Tuples");
             return Vector{
                     contents[y] * other[z] - contents[z] * other[y],
                     contents[z] * other[x] - contents[x] * other[z],
@@ -155,12 +155,12 @@ namespace raytracer {
         }
 
         constexpr bool isPoint() const noexcept {
-            static_assert(N == 4 && is_same_v<T, double>, "isPoint can only be called on Vectors");
+            static_assert(N == 4 && std::is_same_v<T, double>, "isPoint can only be called on Tuples");
             return contents[w] == point_flag;
         }
 
         constexpr bool isVector() const noexcept {
-            static_assert(N == 4 && is_same_v<T, double>, "isVector can only be called on Vectors");
+            static_assert(N == 4 && std::is_same_v<T, double>, "isVector can only be called on Tuples");
             return contents[w] == vector_flag;
         }
 
@@ -169,7 +169,7 @@ namespace raytracer {
          *******************/
         constexpr bool isValidColour() const {
             static_assert(N == 3, "isValidColour only available to colours");
-            static_assert(is_same_v<T, double>, "Colours must be doubles");
+            static_assert(std::is_same_v<T, double>, "Colours must be doubles");
             return 0 <= (*this)[r] && (*this)[r] <= 1
                    && 0 <= (*this)[g] && (*this)[g] <= 1
                    && 0 <= (*this)[b] && (*this)[b] <= 1;
