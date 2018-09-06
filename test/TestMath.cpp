@@ -37,8 +37,8 @@ TEST_CASE("max_factorial should produce the largest factorial value possible", "
     REQUIRE(factorial(mf) - factorial(mf + 1) < factorial(mf));
 }
 
-TEST_CASE("normalize_radians should map radians to appropriate value in [-pi,pi]") {
-    constexpr auto pi = math_details::pi<double>;
+TEST_CASE("normalize_radians should map radians to appropriate value in [-pi,pi]", "[math][radians]") {
+    constexpr auto pi = math_constants::pi<double>;
     constexpr auto res1 = normalize_radians(pi);
     REQUIRE(ALMOST_EQUALS(normalize_radians(pi), pi));
 
@@ -52,36 +52,44 @@ TEST_CASE("normalize_radians should map radians to appropriate value in [-pi,pi]
     REQUIRE(ALMOST_EQUALS(normalize_radians(-(2 * pi + pi / 2)), -pi / 2));
 }
 
-TEST_CASE("Check sinc approximation is off by most EPSILON") {
-    constexpr double res1 = sinc(math_details::pi<double>);
-    REQUIRE(ALMOST_EQUALS(sinc(math_details::pi<double>), 0));
+TEST_CASE("sinc approximation is off by most EPSILON", "[math][sin]") {
+    constexpr double res1 = sinc(math_constants::pi<double>);
+    REQUIRE(ALMOST_EQUALS(sinc(math_constants::pi<double>), 0));
 
-    constexpr double res2 = sinc(-math_details::pi<double>);
-    REQUIRE(ALMOST_EQUALS(sinc(-math_details::pi<double>), 0));
+    constexpr double res2 = sinc(-math_constants::pi<double>);
+    REQUIRE(ALMOST_EQUALS(sinc(-math_constants::pi<double>), 0));
 
-    constexpr double res3 = sinc(math_details::half_pi<double>);
-    REQUIRE(ALMOST_EQUALS(sinc(math_details::half_pi<double>), 1));
+    constexpr double res3 = sinc(math_constants::pi_by_two<double>);
+    REQUIRE(ALMOST_EQUALS(sinc(math_constants::pi_by_two<double>), 1));
 
-    constexpr double res4 = sinc(-math_details::half_pi<double>);
-    REQUIRE(ALMOST_EQUALS(sinc(-math_details::half_pi<double>), -1));
+    constexpr double res4 = sinc(-math_constants::pi_by_two<double>);
+    REQUIRE(ALMOST_EQUALS(sinc(-math_constants::pi_by_two<double>), -1));
 
     constexpr double res5 = sinc<double>(0);
     REQUIRE(sinc<double>(0) == 0);
 }
 
-TEST_CASE("Check cosc approximation is off by most EPSILON") {
-    constexpr double res1 = cosc(math_details::pi<double>);
-    REQUIRE(ALMOST_EQUALS(cosc(math_details::pi<double>), -1));
+TEST_CASE("cosc approximation is off by most EPSILON", "[math][cos]") {
+    constexpr double res1 = cosc(math_constants::pi<double>);
+    REQUIRE(ALMOST_EQUALS(cosc(math_constants::pi<double>), -1));
 
-    constexpr double res2 = cosc(-math_details::pi<double>);
-    REQUIRE(ALMOST_EQUALS(cosc(-math_details::pi<double>), -1));
+    constexpr double res2 = cosc(-math_constants::pi<double>);
+    REQUIRE(ALMOST_EQUALS(cosc(-math_constants::pi<double>), -1));
 
-    constexpr double res3 = cosc(math_details::half_pi<double>);
-    REQUIRE(ALMOST_EQUALS(cosc(math_details::half_pi<double>), 0));
+    constexpr double res3 = cosc(math_constants::pi_by_two<double>);
+    REQUIRE(ALMOST_EQUALS(cosc(math_constants::pi_by_two<double>), 0));
 
-    constexpr double res4 = cosc(-math_details::half_pi<double>);
-    REQUIRE(ALMOST_EQUALS(cosc(-math_details::half_pi<double>), 0));
+    constexpr double res4 = cosc(-math_constants::pi_by_two<double>);
+    REQUIRE(ALMOST_EQUALS(cosc(-math_constants::pi_by_two<double>), 0));
 
     constexpr double res5 = cosc<double>(0);
     REQUIRE(cosc<double>(0) == 1);
+}
+
+TEST_CASE("can convert from degrees to radians and result is normalized", "[math][degrees]") {
+    constexpr double res1 = deg_to_rad<double>(450);
+    REQUIRE(ALMOST_EQUALS(deg_to_rad<double>(450), math_constants::pi_by_two<double>));
+
+    constexpr double res2 = deg_to_rad<double>(-450);
+    REQUIRE(ALMOST_EQUALS(deg_to_rad<double>(-450), -math_constants::pi_by_two<double>));
 }

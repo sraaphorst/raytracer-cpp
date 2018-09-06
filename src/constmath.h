@@ -12,6 +12,14 @@
 #include <limits>
 
 namespace raytracer {
+    namespace math_constants {
+        /// Trigonometric types.
+        template<typename T> constexpr T pi = 3.14159265358979323846264338327L;
+        template<typename T> constexpr T two_pi = 2 * pi<T>;
+        template<typename T> constexpr T pi_by_two = pi<T> / 2;
+        template<typename T> constexpr T pi_by_four = pi<T> / 4;
+    }
+
     namespace math_details {
         /// Caclulates factorials.
         constexpr size_t factorial_helper(size_t sz, size_t accum) {
@@ -48,17 +56,11 @@ namespace raytracer {
                    : sqrtNewtonRaphson(x, 0.5 * (curr + x / curr), curr);
         }
 
-
-        /// Trigonometric types.
-        template<typename T> constexpr T pi = 3.14159265358979323846264338327L;
-        template<typename T> constexpr T two_pi = 2 * pi<T>;
-        template<typename T> constexpr T half_pi = 0.5 * pi<T>;
-
         /// Transform val into a value between (-pi, pi).
         template<typename T>
         constexpr T normalize_radians(T val) {
-            while (val < -pi<T>) val += two_pi<T>;
-            while (val > pi<T>) val -= two_pi<T>;
+            while (val < -math_constants::pi<T>) val += math_constants::two_pi<T>;
+            while (val > math_constants::pi<T>) val -= math_constants::two_pi<T>;
             return val;
         }
 
@@ -131,5 +133,11 @@ namespace raytracer {
             numerator *= -1 * x * x;
         }
         return result;
+    }
+
+    template<typename T>
+    constexpr std::enable_if_t<std::is_floating_point_v<T>, T>
+    deg_to_rad(T deg) {
+        return normalize_radians((deg * math_constants::pi<T>) / 180);
     }
 }
