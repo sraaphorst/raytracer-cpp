@@ -6,6 +6,8 @@
  * Draw a simplistic clock with pixels representing the hour markers.
  */
 
+#include <chrono>
+#include <ctime>
 #include <fstream>
 #include <functional>
 #include <memory>
@@ -18,24 +20,24 @@
 using namespace raytracer;
 
 int main() {
-    constexpr int width  = 300;
-    constexpr int height = 300;
+    constexpr int size  = 300;
     constexpr int border = 50;
 
     colour_ptr_t colour_ptr{new Colour{1, 1, 0}};
-    Canvas<width, height> c{};
+    Canvas<size, size> c{};
 
     // Calculate the rotation needed to advance one hour.
     constexpr auto rot = math_constants::pi<> / 6;
 
     // Scale to the desired height.
-    constexpr auto sc = scale((width - 2 * border) / 2, (height - 2 * border) / 2, 0);
+    constexpr auto sz = (size - 2 * border) / 2;
+    constexpr auto sc = scale(sz, sz, 0);
 
     // Calculate the translation to get to the middle of the canvas.
-    constexpr auto tr = translation(width / 2, height / 2, 0);
+    constexpr auto tr = translation(size / 2, size / 2, 0);
 
     // Start with a point pointing straight up to 12:00.
-    constexpr auto p = make_point(0, 1, 0);
+    constexpr auto p = make_point(0, -1, 0);
 
 //    // The first two techniques build up rotations.
 //    // In the first, we use pointers, since Matrix is immutable.
@@ -61,6 +63,35 @@ int main() {
     for (size_t i = 0; i < 12; ++i) {
         auto newp = rotation_z(i * rot).andThen(sc).andThen(tr) * p;
         c[newp[tuple_constants::x]][newp[tuple_constants::y]] = colour_ptr;
+    }
+
+    // Let's add hands to show the current time.
+    auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    auto now2 = std::localtime(&now);
+    int hour = now2->tm_hour % 12;
+    int min  = now2->tm_min;
+
+    // Colour of the hour and minute hand.
+    colour_ptr_t hour_colour_ptr{new Colour{1, 0, 0}};
+    colour_ptr_t min_colour_ptr{new Colour{0.5, 0.5, 1}};
+
+    // Angle per minute.
+    constexpr auto minuteangle = math_constants::pi<> / 30;
+
+    // Draw the hour hand.
+    for (int i = -10; i < sz - 20; ++i) {
+        auto newp = rotation_z((hour + min / 60.0) * rot)
+                .andThen(scale(i, i, i))
+                .andThen(tr) * p;
+        c[newp[tuple_constants::x]][newp[tuple_constants::y]] = hour_colour_ptr;
+    }
+
+    // Draw the minute hand.
+    for (int i = -10; i < sz; ++i) {
+        auto newp = rotation_z(min * minuteangle)
+                .andThen(scale(i, i, i))
+                .andThen(tr) * p;
+        c[newp[tuple_constants::x]][newp[tuple_constants::y]] = min_colour_ptr;
     }
 
     std::ofstream out("clock.ppm");
