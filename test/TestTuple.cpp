@@ -23,8 +23,6 @@ TEST_CASE("Tuple should be constructible via initializer list", "[Tuple][initial
 
     constexpr Tuple t1{1, 2, 3, tuple_constants::vector_flag};
     constexpr Tuple t2 = {1, 2, 3, tuple_constants::vector_flag};
-
-    // Make sure == is constexpr.
     constexpr auto res = t1 == t2;
     REQUIRE(t1 == t2);
 }
@@ -38,16 +36,12 @@ TEST_CASE("Tuple should be indexable", "[Tuple][index]") {
 
 TEST_CASE("Tuple with w=1 is a point", "[Tuple][point]") {
     constexpr Tuple t{1, 1, 1, tuple_constants::point_flag};
-
-    // Make sure isPoint is constexpr.
     constexpr auto res = t.isPoint();
     REQUIRE(t.isPoint());
 }
 
 TEST_CASE("Tuple with w=0 is a vector", "[Tuple][vector]") {
     constexpr Tuple t{1, 1, 1, tuple_constants::vector_flag};
-
-    // Make sure isVector is constexpr.
     constexpr auto res = t.isVector();
     REQUIRE(t.isVector());
 }
@@ -55,8 +49,6 @@ TEST_CASE("Tuple with w=0 is a vector", "[Tuple][vector]") {
 TEST_CASE("Tuple should be able to be multiplied by a factor on the left", "[Tuple][scalar_multiplication]") {
     constexpr Tuple t1{1, 2, 3, tuple_constants::vector_flag};
     constexpr Tuple t2{2, 4, 6, tuple_constants::vector_flag};
-
-    // Make sure scalar multiplication is constexpr.
     constexpr auto res = 2 * t1;
     REQUIRE(2 * t1 == t2);
 }
@@ -64,8 +56,6 @@ TEST_CASE("Tuple should be able to be multiplied by a factor on the left", "[Tup
 TEST_CASE("Tuple should be able to be multiplied by a factor on the right", "[Tuple][scalar_multiplication]") {
     constexpr Tuple t1{1, 2, 3, tuple_constants::vector_flag};
     constexpr Tuple t2{2, 4, 6, tuple_constants::vector_flag};
-
-    // Make sure scalar multiplication is constexpr.
     constexpr auto res1 = t1 * 2;
     constexpr auto res2 = res1 == t2;
     REQUIRE(t1 * 2 == t2);
@@ -74,8 +64,6 @@ TEST_CASE("Tuple should be able to be multiplied by a factor on the right", "[Tu
 TEST_CASE("Tuple should be able to calculate Hadamard product", "[Tuple][hadamard_prouct]") {
     constexpr Tuple t1{1, 2, 3, tuple_constants::vector_flag};
     constexpr Tuple t2{2, 4, 6, tuple_constants::vector_flag};
-
-    // Make sure hadamard product is constexpr.
     constexpr auto res1 = t1 * t2;
     constexpr auto res2 = t1 * t2 == Tuple{2, 8, 18, tuple_constants::vector_flag};
     REQUIRE(t1 * t2 == Tuple{2, 8, 18, tuple_constants::vector_flag});
@@ -83,8 +71,6 @@ TEST_CASE("Tuple should be able to calculate Hadamard product", "[Tuple][hadamar
 
 TEST_CASE("Tuple should be divisible by a scalar", "[Tuple][scalar_division") {
     constexpr Tuple t{2, 4, 6, tuple_constants::vector_flag};
-
-    // Make sure scalar division is constexpr.
     constexpr auto res = t / 2;
     REQUIRE(t / 2 == Tuple{1, 2, 3, tuple_constants::vector_flag});
 }
@@ -92,24 +78,18 @@ TEST_CASE("Tuple should be divisible by a scalar", "[Tuple][scalar_division") {
 TEST_CASE("Tuple should be divisible by a tuple", "[Tuple][division]") {
     constexpr Tuple t1{2, 8, 32, 128};
     constexpr Tuple t2{2, 4,  8,  16};
-
-    // Make sure vector division is constexpr.
     constexpr auto res = t1 / t2;
     REQUIRE(t1 / t2 == Tuple{1, 2, 4, 8});
 }
 
 TEST_CASE("Tuple should be able to be added to itself", "[Tuple][addition]") {
     constexpr Tuple t{1, 2, 3, tuple_constants::vector_flag};
-
-    // Make sure vector addition is constexpr.
     constexpr auto res = t + t;
     REQUIRE(2 * t == t + t);
 }
 
 TEST_CASE("Tuple should be able to be negated", "[Tuple][negation]") {
     constexpr Tuple t{1, 2, 3, tuple_constants::vector_flag};
-
-    // Make sure negation is constexpr.
     constexpr auto res = -t;
     REQUIRE(-t == -1 * t);
 }
@@ -117,7 +97,6 @@ TEST_CASE("Tuple should be able to be negated", "[Tuple][negation]") {
 TEST_CASE("Tuple addition should be commutative", "[Tuple][addition][commutativity]") {
     constexpr Tuple t1{1, 2, 3, tuple_constants::vector_flag};
     constexpr Tuple t2{2, 4, 6, tuple_constants::vector_flag};
-
     constexpr auto res = t1 + t2 == t2 + t1;
     REQUIRE(t1 + t2 == t2 + t1);
 }
@@ -126,14 +105,12 @@ TEST_CASE("Tuple addition should be associative", "[Tuple][addition][associativi
     const Tuple &tx = predefined_tuples::x1;
     const Tuple &ty = predefined_tuples::y1;
     const Tuple &tz = predefined_tuples::z1;
-
     constexpr auto res = tx + (ty + tz) == (tx + ty) + tz;
     REQUIRE(tx + (ty + tz) == (tx + ty) + tz);
 }
 
 TEST_CASE("Tuple should have inverses", "[Tuple][inverse]") {
     constexpr Tuple t{1, 2, 3, tuple_constants::vector_flag};
-
     constexpr auto res1 = t - t;
     constexpr auto res2 = t + (-t);
     REQUIRE(t - t == predefined_tuples::zero_vector);
@@ -143,7 +120,6 @@ TEST_CASE("Tuple should have inverses", "[Tuple][inverse]") {
 TEST_CASE("Tuple subtraction should not be commutative", "[Tuple][subtraction][commutativity]") {
     constexpr Tuple t1{1, 2, 3, tuple_constants::vector_flag};
     constexpr Tuple t2{2, 4, 6, tuple_constants::vector_flag};
-
     constexpr auto res1 = t1 - t2;
     constexpr auto res2 = t2 - t1;
     constexpr auto res3 = t1 - t2 != t2 - t1;
@@ -154,7 +130,6 @@ TEST_CASE("Tuple subtraction should not be associative", "[Tuple][subtraction][a
     const Tuple &tx = predefined_tuples::x1;
     const Tuple &ty = predefined_tuples::y1;
     const Tuple &tz = predefined_tuples::z1;
-
     REQUIRE(tx - (ty - tz) != (tx - ty) - tz);
 }
 
@@ -179,8 +154,6 @@ TEST_CASE("Tuple subtraction of two vectors should result in a vector", "[Tuple]
 TEST_CASE("Tuple should be able to calculate dot product", "[Tuple][dot_product][vector]") {
     constexpr Tuple t1{1, 1, 1, tuple_constants::vector_flag};
     constexpr Tuple t2{2, 4, 8, tuple_constants::vector_flag};
-
-    // Make sure dot product is constexpr.
     constexpr auto res = t1.dot_product(t2);
     REQUIRE(t1.dot_product(t2) == 14);
 }
@@ -203,7 +176,6 @@ TEST_CASE("Tuple should be able to calculate cross product", "[Tuple][cross_prod
     const Tuple &ty = predefined_tuples::y1;
     const Tuple &tz = predefined_tuples::z1;
 
-    // Make sure cross product is constexpr.
     constexpr auto res = tx.cross_product(ty);
     REQUIRE(tx.cross_product(ty) == tz);
     REQUIRE(ty.cross_product(tx) == -tz);
@@ -255,22 +227,17 @@ TEST_CASE("Tuple vector should create a vector", "[Tuple][vector]") {
 TEST_CASE("Tuple comparison equality should be able to tolerate slight offsets", "[Tuple][equality]") {
     constexpr Tuple t1 = make_point(1, 0, 0);
     constexpr Tuple t2 = make_point(1 - EPSILON/2, EPSILON/2, -EPSILON/2);
-
     REQUIRE(t1 == t2);
 }
 
 TEST_CASE("Tuple should calculate the magnitude of a vector", "[Tuple][magnitude]") {
     constexpr Tuple t = make_vector(1, 4, 8);
-
-    // Make sure magnitude is constexpr.
     constexpr auto res = t.magnitude();
     REQUIRE(t.magnitude() == 9);
 }
 
 TEST_CASE("Tuple normalization should produce a vector of magnitude 1", "[Tuple][normalization]") {
     constexpr Tuple t = make_vector(1, 4, 8);
-
-    // Make sure normalization is constexpr.
     constexpr auto res = t.normalize();
     REQUIRE(t.normalize().magnitude() == 1);
 }

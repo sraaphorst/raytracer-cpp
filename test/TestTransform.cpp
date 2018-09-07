@@ -177,3 +177,13 @@ TEST_CASE("andThen should allow us to apply transformations in the desired order
             .andThen(translation(10, 5, 7));
     REQUIRE(transform * p == make_point(15, 0, 7));
 }
+
+TEST_CASE("andThen should be the same as multiplying the transformation matrices in reverse order", "[Transfomation]") {
+    constexpr auto A = translation(1, 2, 3);
+    constexpr auto B = skew(1, 1.5, -2, -3, 1, -1);
+    constexpr auto C = rotation_x(math_constants::pi_by_four<>);
+    constexpr auto D = scale(0.1, -1.0, 2);
+    constexpr auto res1 = D * C * B * A;
+    constexpr auto res2 = D * C * B * A == A.andThen(B).andThen(C).andThen(D);
+    REQUIRE(D * C * B * A == A.andThen(B).andThen(C).andThen(D));
+}

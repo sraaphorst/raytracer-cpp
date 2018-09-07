@@ -29,7 +29,7 @@ TEST_CASE("Canvas initializes to black", "[Canvas][initialization]") {
 TEST_CASE("Canvas can be written to", "[Canvas][set]") {
     Canvas<width, height> c;
 
-    std::array<const Colour, 3> colours{
+    constexpr std::array<const Colour, 3> colours{
         predefined_colours::red,
         predefined_colours::green,
         predefined_colours::blue

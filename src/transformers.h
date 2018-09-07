@@ -126,6 +126,11 @@ namespace raytracer::transformers {
         constexpr std::array<T,N> vector_neg_helper(const std::array<T,N> &t, std::index_sequence<Indices...>) {
             return {{-t[Indices]...}};
         }
+
+        template<typename T, size_t N, size_t... Indices>
+        constexpr std::array<T,N> initializer_list_to_array_helper(const std::initializer_list<T> lst, std::index_sequence<Indices...>) {
+            return {{lst.begin()[Indices]...}};
+        }
     }
 
     template<typename T, size_t N>
@@ -195,13 +200,8 @@ namespace raytracer::transformers {
     template<size_t m, size_t n>
     inline constexpr bool are_equal_v = are_equal<m,n>::value;
 
-    template<typename T, size_t N, size_t... Indices>
-    constexpr std::array<T,N> initializer_list_to_array_helper(const std::initializer_list<T> lst, std::index_sequence<Indices...>) {
-        return {{lst.begin()[Indices]...}};
-    }
-
     template<typename T, size_t N>
     constexpr std::array<T,N> initializer_list_to_array(const std::initializer_list<T> lst) {
-        return initializer_list_to_array_helper<T,N>(lst, std::make_index_sequence<N>{});
+        return transformer_details::initializer_list_to_array_helper<T,N>(lst, std::make_index_sequence<N>{});
     }
 }
