@@ -34,7 +34,7 @@ namespace raytracer {
         template<typename T, size_t N, size_t i>
         struct array_determinant_helper {
             static constexpr T value(const mtxsqarray<T, N> &contents) {
-                return contents[0][i] * array_cofactor<T, N , 0, i>(contents) + array_determinant_helper<T, N, i+1>::value(contents);
+                return contents[0][i] * array_cofactor<T, N, 0, i>(contents) + array_determinant_helper<T, N, i+1>::value(contents);
             }
         };
 
@@ -149,7 +149,6 @@ namespace raytracer {
             return Matrix<T, rows, C2>{transformer_details::mat_mult<T, rows, cols, C2>(contents, other.contents)};
         }
 
-        /// This one, however, is constexpr, as checked by assigning the value to be returned to a constexpr variable.
         constexpr Vector<T, rows> operator*(const Vector<T, cols> &v) const {
             return Vector<T, rows>{contents * v.contents};
         }
@@ -162,8 +161,7 @@ namespace raytracer {
             return Matrix{contents / denom};
         };
 
-        /// NOTE: iterators work as constexpr here, but working with indices do not.
-        /// Tested for constexpr.
+        /// NOTE: working with iterators can be used as constexpr here, but working with indices cannot..
         constexpr bool operator==(const Matrix &other) const {
             for (auto it1 = contents.cbegin(), it2 = other.contents.cbegin(); it1 != contents.cend(); ++it1, ++it2)
                 for (auto ot1 = it1->cbegin(), ot2 = it2->cbegin(); ot1 != it1->cend(); ++ot1, ++ot2)
