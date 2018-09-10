@@ -14,4 +14,5 @@ add_library(raytracer SHARED
         vector.h
         world.h
         world.cpp
-        )
+        ray.h
+        sphere.h intersection.h)

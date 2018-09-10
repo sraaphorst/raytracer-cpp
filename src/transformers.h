@@ -204,4 +204,9 @@ namespace raytracer::transformers {
     constexpr std::array<T,N> initializer_list_to_array(const std::initializer_list<T> lst) {
         return transformer_details::initializer_list_to_array_helper<T,N>(lst, std::make_index_sequence<N>{});
     }
+
+    template<typename T>
+    constexpr T initializer_index(const std::initializer_list<T> lst, int idx) {
+        return lst.begin()[idx];
+    }
 }
