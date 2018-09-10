@@ -20,7 +20,7 @@ target_link_libraries(TestTuple Catch raytracer)
 add_executable(TestColour TestColour.cpp ${TEST_SOURCES})
 target_link_libraries(TestColour Catch raytracer)
 
-add_executable(TestCanvas TestCanvas.cpp ${TEST_SOURCES} TestSphere.cpp)
+add_executable(TestCanvas TestCanvas.cpp ${TEST_SOURCES} TestSphere.cpp TestIntersection.cpp)
 target_link_libraries(TestCanvas Catch raytracer)
 
 add_executable(TestMatrix TestMatrix.cpp ${TEST_SOURCES})
@@ -34,3 +34,9 @@ target_link_libraries(TestMath Catch raytracer)
 
 add_executable(TestRay TestRay.cpp ${TEST_SOURCES})
 target_link_libraries(TestRay Catch raytracer)
+
+add_executable(TestSphere TestSphere.cpp ${TEST_SOURCES})
+target_link_libraries(TestSphere Catch raytracer)
+
+add_executable(TestIntersection TestIntersection.cpp ${TEST_SOURCES})
+target_link_libraries(TestIntersection Catch raytracer)

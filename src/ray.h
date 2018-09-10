@@ -45,6 +45,14 @@ namespace raytracer {
         constexpr Tuple position(const double t) const noexcept {
             return origin + t * direction;
         }
+
+        constexpr const Tuple &getOrigin() const noexcept {
+            return origin;
+        }
+
+        constexpr const Tuple &getDirection() const noexcept {
+            return direction;
+        }
     };
 }
 

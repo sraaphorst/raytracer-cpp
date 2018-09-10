@@ -15,4 +15,4 @@ add_library(raytracer SHARED
         world.h
         world.cpp
         ray.h
-        sphere.h intersection.h)
+        sphere.h intersection.h object.h)
