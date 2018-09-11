@@ -16,7 +16,7 @@
 #include "vector.h"
 
 namespace raytracer {
-    class Sphere final: public object<Sphere> {
+    class Sphere final: public Object<Sphere> {
     public:
         constexpr bool operator==(const Sphere &other) const {
             return true;

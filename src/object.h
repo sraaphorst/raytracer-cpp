@@ -15,9 +15,9 @@ namespace raytracer {
     // We are using static polymorphism here. I'm not sure if this will help the issue of intersect needing a type,
     // but it probably won't hurt.
     template<typename T>
-    class object {
+    class Object {
     protected:
-        object() = default;
+        Object() = default;
 
     public:
         constexpr const std::optional<std::array<double, 2>> intersect(const Ray &r) const noexcept {
