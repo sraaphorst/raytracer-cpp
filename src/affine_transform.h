@@ -70,7 +70,7 @@ namespace raytracer {
                     m[i][j] = -sinc(theta);
                 else if (i == j)
                     m[i][j] = 1;
-                else m[i][j] == 0;
+                else m[i][j] = 0;
         return Transformation{m};
     }
 
@@ -86,7 +86,7 @@ namespace raytracer {
                     m[i][j] = sinc(theta);
                 else if (i == j)
                     m[i][j] = 1;
-                else m[i][j] == 0;
+                else m[i][j] = 0;
         return Transformation{m};
     }
 
@@ -108,7 +108,7 @@ namespace raytracer {
                     m[i][j] = z_y;
                 else if (i == j)
                     m[i][j] = 1;
-                else m[i][j] == 0;
+                else m[i][j] = 0;
         return Transformation{m};
     }
 }
