@@ -16,13 +16,13 @@
 #include "vector.h"
 
 namespace raytracer {
-    class Sphere final: public Object {
+    class Sphere final: public object<Sphere> {
     public:
+        constexpr bool operator==(const Sphere &other) const {
+            return true;
+        }
 
-        constexpr Sphere() noexcept = default;
-        ~Sphere() = default;
-
-        constexpr const std::optional<std::array<double, 2>> intersect(const Ray &r) const noexcept override {
+        constexpr const std::optional<std::array<double, 2>> intersect(const Ray &r) const noexcept {
             const auto sphere_to_ray = r.getOrigin() - predefined_tuples::zero_point;
             const auto &direction = r.getDirection();
 

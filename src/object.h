@@ -9,14 +9,19 @@
 #include <array>
 #include <optional>
 
-namespace raytracer {
-    class Ray;
+#include "ray.h"
 
-    class Object {
+namespace raytracer {
+    // We are using static polymorphism here. I'm not sure if this will help the issue of intersect needing a type,
+    // but it probably won't hurt.
+    template<typename T>
+    class object {
     protected:
-        Object() = default;
+        object() = default;
 
     public:
-        virtual const std::optional<std::array<double, 2>> intersect(const Ray&) const noexcept = 0;
+        constexpr const std::optional<std::array<double, 2>> intersect(const Ray &r) const noexcept {
+            return static_cast<T*>(this)->intersect(r);
+        }
     };
 }

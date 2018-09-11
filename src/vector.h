@@ -91,7 +91,7 @@ namespace raytracer {
         constexpr Vector operator-() const noexcept {
             return Vector{-contents};
         }
-        
+
         constexpr bool operator==(const Vector &t) const noexcept {
             for (auto it1 = contents.cbegin(), it2 = t.contents.cbegin(); it1 != contents.cend(); ++it1, ++it2)
                 if (!ALMOST_EQUALS(*it1, *it2))
