@@ -20,6 +20,7 @@ namespace raytracer {
         Object() = default;
 
     public:
+        // This is the curiously recurring template pattern.
         constexpr const std::optional<std::array<double, 2>> intersect(const Ray &r) const noexcept {
             return static_cast<T*>(this)->intersect(r);
         }
