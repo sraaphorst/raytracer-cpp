@@ -23,5 +23,9 @@ namespace raytracer {
         constexpr const std::optional<std::array<double, 2>> intersect(const Ray &r) const noexcept {
             return static_cast<T*>(this)->intersect(r);
         }
+
+        constexpr const T &actual() const {
+            return *(static_cast<const T* const>(this));
+        }
     };
 }
