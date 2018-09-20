@@ -9,7 +9,7 @@
 #include "transformers.h"
 
 namespace raytracer {
-    using namespace raytracer::transformers;
+    using namespace transformers;
 
     template<typename T>
     class Intersection final {

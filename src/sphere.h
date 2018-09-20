@@ -11,12 +11,11 @@
 #include <optional>
 #include <tuple>
 
-#include "object.h"
 #include "ray.h"
 #include "vector.h"
 
 namespace raytracer {
-    class Sphere final: public Object<Sphere> {
+    class Sphere final {
     public:
         constexpr bool operator==(const Sphere &other) const {
             return true;

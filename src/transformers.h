@@ -16,7 +16,7 @@
 #include "common.h"
 
 namespace raytracer::transformers {
-    namespace transformer_details {
+    namespace details {
         /** Transpose matrix helpers **/
         template<typename T, size_t R, size_t C, size_t... Indices>
         constexpr std::array<T, R> transpose_row_helper(const std::array<std::array<T, C>, R> &m, size_t col, std::index_sequence<Indices...>) {
@@ -38,7 +38,7 @@ namespace raytracer::transformers {
         /// Checked for constexpr.
         template<typename T, size_t R, size_t C>
         constexpr std::array<std::array<T, R>, C> transpose(const std::array<std::array<T, C>, R> &m) {
-            return transformer_details::transpose_helper<T,R,C>(m, std::make_index_sequence<C>{});
+            return details::transpose_helper<T,R,C>(m, std::make_index_sequence<C>{});
         }
 
         template <typename T, size_t R, size_t C>
@@ -82,7 +82,7 @@ namespace raytracer::transformers {
 
         template<typename T, size_t R, size_t C1, size_t C2, size_t... Indices>
         constexpr std::array<T, C2> matrix_row_mult_helper(const std::array<std::array<T, C1>, R> &m1, const std::array<std::array<T, C1>, C2> &m2, size_t row, std::index_sequence<Indices...>) {
-            return {{ transformer_details::dot_product<T,C1>(m1[row], m2[Indices])...}};
+            return {{ details::dot_product<T,C1>(m1[row], m2[Indices])...}};
         }
         template<typename T, size_t R, size_t C1, size_t C2, size_t... Indices>
         constexpr std::array<std::array<T, C2>, R> matrix_mult_helper(const std::array<std::array<T, C1>, R> &m1, const std::array<std::array<T, C1>, C2> &m2t, std::index_sequence<Indices...>) {
@@ -107,7 +107,7 @@ namespace raytracer::transformers {
 
         template<typename T, size_t R, size_t C, size_t... Indices>
         constexpr std::array<T, R> matrix_vector_opmult_helper(const std::array<std::array<T, C>, R> &m, const std::array<T, C> &v, std::index_sequence<Indices...>) {
-            return {{ transformer_details::dot_product<T,C>(m[Indices], v)...}};
+            return {{ details::dot_product<T,C>(m[Indices], v)...}};
         }
 
         template<typename T, size_t N, size_t... Indices>
@@ -135,60 +135,60 @@ namespace raytracer::transformers {
 
     template<typename T, size_t N>
     constexpr std::array<T,N> operator+(const std::array<T,N> &t1, const std::array<T,N> &t2) {
-        return transformer_details::vector_opadd_helper<T,N>(t1, t2, std::make_index_sequence<N>{});
+        return details::vector_opadd_helper<T,N>(t1, t2, std::make_index_sequence<N>{});
     }
 
     template<typename T, size_t R, size_t C>
     constexpr std::array<std::array<T, C>, R> operator+(const std::array<std::array<T, C>, R> &t1, const std::array<std::array<T, C>, R> &t2) {
-        return transformer_details::matrix_opadd_helper<T,R,C>(t1, t2, std::make_index_sequence<R>{});
+        return details::matrix_opadd_helper<T,R,C>(t1, t2, std::make_index_sequence<R>{});
     }
 
     template<typename T, size_t N>
     constexpr std::array<T,N> operator-(const std::array<T,N> &t1, const std::array<T,N> &t2) {
-        return transformer_details::vector_opdiff_helper<T,N>(t1, t2, std::make_index_sequence<N>{});
+        return details::vector_opdiff_helper<T,N>(t1, t2, std::make_index_sequence<N>{});
     }
 
     template<typename T, size_t R, size_t C>
     constexpr std::array<std::array<T, C>, R> operator-(const std::array<std::array<T, C>, R> &m1, const std::array<std::array<T, C>, R> &m2) {
-        return transformer_details::matrix_opdiff_helper<T,R,C>(m1, m2, std::make_index_sequence<R>{});
+        return details::matrix_opdiff_helper<T,R,C>(m1, m2, std::make_index_sequence<R>{});
     }
 
     template<typename T, size_t N>
     constexpr std::array<T,N> operator*(const std::array<T,N> &t1, const std::array<T,N> &t2) {
-        return transformer_details::vector_opmult_helper<T,N>(t1, t2, std::make_index_sequence<N>{});
+        return details::vector_opmult_helper<T,N>(t1, t2, std::make_index_sequence<N>{});
     }
 
     template<typename F, typename T, size_t N>
     constexpr typename std::enable_if_t<std::is_arithmetic_v<F>, std::array<T,N>>
     operator*(const F f, const std::array<T,N> &t) {
-        return transformer_details::scalar_opmult_helper<F,T,N>(f, t, std::make_index_sequence<N>{});
+        return details::scalar_opmult_helper<F,T,N>(f, t, std::make_index_sequence<N>{});
     }
 
     template<typename F, typename T, size_t R, size_t C>
     constexpr typename std::enable_if_t<std::is_arithmetic_v<F>, const std::array<std::array<T, C>, R>>
     operator*(const F f, const std::array<std::array<T, C>, R> &m) {
-        return transformer_details::matrix_opmult_helper<F,T,R,C>(f, m, std::make_index_sequence<R>{});
+        return details::matrix_opmult_helper<F,T,R,C>(f, m, std::make_index_sequence<R>{});
     }
 
     template<typename T, size_t R, size_t C>
     constexpr std::array<T, R> operator*(const std::array<std::array<T, C>, R> &m, const std::array<T, C> &v) {
-        return transformer_details::matrix_vector_opmult_helper<T,R,C>(m, v, std::make_index_sequence<R>{});
+        return details::matrix_vector_opmult_helper<T,R,C>(m, v, std::make_index_sequence<R>{});
     }
 
     template<typename T, size_t N>
     constexpr std::array<T,N> operator/(const std::array<T,N> &t1, const std::array<T,N> &t2) {
-        return transformer_details::vector_opdiv_helper<T,N>(t1, t2, std::make_index_sequence<N>{});
+        return details::vector_opdiv_helper<T,N>(t1, t2, std::make_index_sequence<N>{});
     }
 
     template<typename F, typename T, size_t N>
     constexpr typename std::enable_if_t<std::is_arithmetic_v<F>, std::array<T,N>>
     operator/(const std::array<T,N> &t,const F f) {
-        return transformer_details::scalar_opdiv_helper<F,T,N>(t, f, std::make_index_sequence<N>{});
+        return details::scalar_opdiv_helper<F,T,N>(t, f, std::make_index_sequence<N>{});
     }
 
     template<typename T, size_t N>
     constexpr std::array<T,N> operator-(const std::array<T,N> &t) {
-        return transformer_details::vector_neg_helper<T,N>(t, std::make_index_sequence<N>{});
+        return details::vector_neg_helper<T,N>(t, std::make_index_sequence<N>{});
     }
 
     template<size_t m, size_t n>
@@ -202,7 +202,7 @@ namespace raytracer::transformers {
 
     template<typename T, size_t N>
     constexpr std::array<T,N> initializer_list_to_array(const std::initializer_list<T> lst) {
-        return transformer_details::initializer_list_to_array_helper<T,N>(lst, std::make_index_sequence<N>{});
+        return details::initializer_list_to_array_helper<T,N>(lst, std::make_index_sequence<N>{});
     }
 
     template<typename T>

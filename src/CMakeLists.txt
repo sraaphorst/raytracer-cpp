@@ -8,6 +8,7 @@ add_library(raytracer SHARED
         common.h
         constmath.h
         matrix.h
+        meta.h
         projectile.h
         projectile.cpp
         transformers.h
@@ -16,4 +17,5 @@ add_library(raytracer SHARED
         world.cpp
         ray.h
         sphere.h
-        intersection.h)
+        intersection.h
+        variant_ops.h)

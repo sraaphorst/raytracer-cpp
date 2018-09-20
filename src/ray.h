@@ -14,7 +14,7 @@
 #include "vector.h"
 
 namespace raytracer {
-    using namespace raytracer::transformers;
+    using namespace transformers;
 
     class Ray final {
     private:
@@ -31,7 +31,7 @@ namespace raytracer {
                 throw std::invalid_argument("Ray requires a vector for the second argument");
         }
 
-        constexpr Ray(const Ray  &other) noexcept = default;
+        constexpr Ray(const Ray &other) noexcept = default;
         constexpr Ray(Ray&& other) noexcept = default;
 
         // Must use parentheses instead of braces or this constructor delegates to itself.

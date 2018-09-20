@@ -104,7 +104,7 @@ namespace raytracer {
         }
 
         constexpr T dot_product(const Vector &v) const noexcept {
-            return transformer_details::dot_product<T, N>(contents, v.contents);
+            return transformers::details::dot_product<T, N>(contents, v.contents);
         }
 
         constexpr T magnitude() const noexcept {
