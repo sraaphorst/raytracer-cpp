@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <type_traits>
+
 #include "transformers.h"
 
 namespace raytracer {
@@ -28,6 +30,14 @@ namespace raytracer {
         constexpr Intersection(Intersection&&) = default;
 
         ~Intersection() = default;
+
+        template<typename S>
+        constexpr bool operator==(const Intersection<S> &other) const {
+            if constexpr(!std::is_same_v<T, S>)
+                return false;
+            else
+                return t == other.t && o == other.o;
+        }
 
         constexpr double getT() const noexcept {
             return t;

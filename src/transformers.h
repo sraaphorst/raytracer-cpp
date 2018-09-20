@@ -209,4 +209,27 @@ namespace raytracer::transformers {
     constexpr T initializer_index(const std::initializer_list<T> lst, int idx) {
         return lst.begin()[idx];
     }
+
+
+    /***** TUPLE OPS *****/
+    template<typename... Tail>
+    constexpr size_t tup_size(const Tail...) {
+        return 0;
+    }
+    template<typename Head, typename... Tail>
+    constexpr size_t tup_size(const Head&, Tail... tail) {
+        return 1 + tup_size(tail...);
+    }
+
+//    template<typename... Tail>
+//    constexpr auto tup_elem_at(size_t, const Tail...) {
+//        throw std::invalid_argument("Tuple size out of bounds.");
+//    }
+//
+//    template<typename Head, typename... Tail>
+//    constexpr Head tup_elem_at(size_t idx, const Head &h, Tail... tail) {
+//        if (idx == 0)
+//            return h;
+//        else return tup_elem_at(idx - 1, tail...);
+//    }
 }
