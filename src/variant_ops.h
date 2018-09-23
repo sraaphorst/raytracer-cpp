@@ -15,6 +15,7 @@
 #pragma once
 
 #include <array>
+#include <type_traits>
 #include <variant>
 
 #include "meta.h"

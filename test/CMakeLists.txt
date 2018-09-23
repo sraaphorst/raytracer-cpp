@@ -40,3 +40,6 @@ target_link_libraries(TestSphere Catch raytracer)
 
 add_executable(TestIntersection TestIntersection.cpp ${TEST_SOURCES})
 target_link_libraries(TestIntersection Catch raytracer)
+
+add_executable(TestVariantOps TestVariantOps.cpp ${TEST_SOURCES})
+target_link_libraries(TestVariantOps Catch raytracer)
