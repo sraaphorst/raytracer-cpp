@@ -113,7 +113,7 @@ namespace raytracer {
         using matrix_type = std::array<row_type, rows>;
 
     private:
-        const matrix_type contents;
+        matrix_type contents;
 
     public:
         constexpr Matrix() noexcept {};
@@ -133,7 +133,7 @@ namespace raytracer {
         }
 
         constexpr const Matrix<T, cols, rows> transpose() const {
-            return transformer_details::transpose(contents);
+            return transformers::details::transpose(contents);
         }
 
         constexpr Matrix operator+(const Matrix &other) const {
@@ -146,7 +146,7 @@ namespace raytracer {
 
         template<size_t C2>
         constexpr Matrix<T, rows, C2> operator*(const Matrix<T, cols, C2> &other) const {
-            return Matrix<T, rows, C2>{transformer_details::mat_mult<T, rows, cols, C2>(contents, other.contents)};
+            return Matrix<T, rows, C2>{transformers::details::mat_mult<T, rows, cols, C2>(contents, other.contents)};
         }
 
         constexpr Vector<T, rows> operator*(const Vector<T, cols> &v) const {
@@ -191,39 +191,39 @@ namespace raytracer {
         template<size_t i, size_t j>
         constexpr T minor() const {
             static_assert(rows == cols, "Matrix::minor() only for use with square matrices");
-            return details::array_minor<T, rows, i, j>(contents);
+            return raytracer::details::array_minor<T, rows, i, j>(contents);
         }
 
         /// Calculate the cofactor(i,j) of a matrix, which is just (i+j)^(-1) * minor(i,j).
         template<size_t i, size_t j>
         constexpr T cofactor() const {
             static_assert(rows == cols, "Matrix::cofactor() only for use with square matrices");
-            return details::array_cofactor<T, rows, i, j>(contents);
+            return raytracer::details::array_cofactor<T, rows, i, j>(contents);
         }
 
         constexpr T determinant() const {
             static_assert(rows == cols, "Matrix::determinant() only for use with square matrices");
-            return details::array_determinant<T, rows>(contents);
+            return raytracer::details::array_determinant<T, rows>(contents);
         }
 
         constexpr Matrix invert() const {
             static_assert(rows == cols, "Matrix::invert() only for use with square matrices");
             static_assert(std::is_floating_point_v<T> && std::is_signed_v<T>,
                     "Matrix::invert() only for use with signed floating point matrices");
-            return Matrix{details::array_cofactors<T, rows>(contents)}.transpose() / details::array_determinant<T,rows>(contents);
+            return Matrix{raytracer::details::array_cofactors<T, rows>(contents)}.transpose() / raytracer::details::array_determinant<T,rows>(contents);
         }
 
         constexpr Matrix andThen(const Matrix &other) const {
             static_assert(rows == 4 && cols == 4, "Matrix::andThen() only for use with 4x4 matrices");
             static_assert(std::is_floating_point_v<T> && std::is_signed_v<T>,
                     "Matrix::andThen() only for use with signed floating point matrices");
-            return Matrix{transformer_details::mat_mult<T, 4, 4, 4>(other.contents, contents)};
+            return Matrix{transformers::details::mat_mult<T, 4, 4, 4>(other.contents, contents)};
         }
 
         /// Omit row i and column j to get a submatrix of one dimension less in rows and cols.
         template<size_t i, size_t j>
         constexpr Matrix<T, rows-1, cols-1> submatrix() const {
-            return Matrix<T, rows-1, cols-1>{{details::array_submatrix<T, rows, cols, i, j>(contents)}};
+            return Matrix<T, rows-1, cols-1>{{raytracer::details::array_submatrix<T, rows, cols, i, j>(contents)}};
         }
 
         /// Make all matrices friends so they can access each others' contents.
@@ -255,10 +255,10 @@ namespace raytracer {
          * use any std::function.
          */
         template<typename T = double, size_t R = 4, size_t C = 4>
-        static constexpr Matrix<T, R, C> ones = transformer_details::make_uniform_matrix<T, R, C>(1);
+        static constexpr Matrix<T, R, C> ones = transformers::details::make_uniform_matrix<T, R, C>(1);
 
         /// Identity matrix, only defined as a square matrix.
         template<typename T = double, size_t N = 4>
-        static constexpr Matrix<T, N, N> I = transformer_details::make_diagonal_matrix<T, N, N>(0, 1);
+        static constexpr Matrix<T, N, N> I = transformers::details::make_diagonal_matrix<T, N, N>(0, 1);
     };
 }

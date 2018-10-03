@@ -12,6 +12,7 @@
 
 #include "transformers.h"
 #include "vector.h"
+#include "affine_transform.h"
 
 namespace raytracer {
     using namespace transformers;
@@ -52,6 +53,10 @@ namespace raytracer {
 
         constexpr const Tuple &getDirection() const noexcept {
             return direction;
+        }
+
+        constexpr const Ray transform(const Transformation &t) const {
+            return Ray{t * origin, t * direction};
         }
     };
 }

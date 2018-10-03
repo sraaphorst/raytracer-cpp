@@ -18,4 +18,5 @@ add_library(raytracer SHARED
         ray.h
         sphere.h
         intersection.h
-        variant_ops.h)
+        variant_ops.h
+        shape.h)

@@ -10,18 +10,19 @@
 #include <constmath.h>
 #include <optional>
 #include <tuple>
+#include <vector>
 
+#include "intersection.h"
 #include "ray.h"
+#include "shape.h"
 #include "vector.h"
 
 namespace raytracer {
-    class Sphere final {
+    class Sphere final: public Shape {
     public:
-        constexpr bool operator==(const Sphere &other) const {
-            return true;
-        }
-
-        constexpr const std::optional<std::array<double, 2>> intersect(const Ray &r) const noexcept {
+        const std::vector<Intersection> intersect(const Ray &r0) const noexcept override {
+            // First transform the ray.
+            const Ray r = r0.transform(getTransformation().invert());
             const auto sphere_to_ray = r.getOrigin() - predefined_tuples::zero_point;
             const auto &direction = r.getDirection();
 
@@ -31,12 +32,18 @@ namespace raytracer {
 
             const auto discriminant = b * b - 4 * a * c;
             if (discriminant < 0)
-                return std::nullopt;
+                return {};
 
             const auto t1 = (-b - sqrtd(discriminant)) / (2 * a);
             const auto t2 = (-b + sqrtd(discriminant)) / (2 * a);
-            if (t1 < t2) return std::make_optional(std::array<double,2>{t1, t2});
-            else return std::make_optional(std::array<double,2>{t2, t1});
+            if (t1 < t2) return {Intersection{t1, *this}, Intersection{t2, *this}};
+            else return {Intersection{t2, *this}, Intersection{t1, *this}};
+        }
+
+    private:
+        bool doCompare(const Shape &other) const override {
+            const auto *s = dynamic_cast<const Sphere*>(&other);
+            return (s != nullptr);
         }
     };
 }
