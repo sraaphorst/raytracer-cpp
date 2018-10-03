@@ -33,7 +33,8 @@ int main() {
     Canvas<canvas_pixels, canvas_pixels> c{};
     colour_ptr_t colour_ptr{new Colour{1, 0, 0}};
 
-    const Sphere s;
+    Sphere s;
+    s.setTransformation(scale(0.5, 1, 1).andThen(rotation_z(M_PI_4)));
 
     // For each row of pixels in the canvas:
     for (auto y = 0; y < canvas_pixels; ++y) {
