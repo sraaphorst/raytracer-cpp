@@ -241,3 +241,19 @@ TEST_CASE("Tuple normalization should produce a vector of magnitude 1", "[Tuple]
     constexpr auto res = t.normalize();
     REQUIRE(t.normalize().magnitude() == 1);
 }
+
+TEST_CASE("Reflecting a vector approaching at 45 degrees") {
+    const auto v = make_vector(1, -1, 0);
+    const auto n = make_vector(0, 1, 0);
+    const auto r = v.reflect(n);
+    REQUIRE(r == make_vector(1, 1, 0));
+}
+
+TEST_CASE("Reflecting a vector off a slanted surface") {
+    const auto v = make_vector(0, -1, 0);
+    const auto sqrt2by2 = sqrtd(2) / 2;
+    const auto n = make_vector(sqrt2by2, sqrt2by2, 0);
+    const auto r = v.reflect(n);
+    REQUIRE(r == make_vector(1, 0, 0));
+
+}

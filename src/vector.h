@@ -122,6 +122,10 @@ namespace raytracer {
             return N;
         }
 
+        constexpr Vector reflect(const Vector &normal) const {
+            return *this - normal * 2 * dot_product(normal);
+        }
+
         friend constexpr Vector operator*(T factor, const Vector &t) noexcept {
             return t * factor;
         }
