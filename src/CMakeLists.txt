@@ -9,6 +9,7 @@ add_library(raytracer SHARED
         constmath.h
         matrix.h
         meta.h
+        pointlight.h
         projectile.h
         projectile.cpp
         transformers.h
@@ -16,7 +17,7 @@ add_library(raytracer SHARED
         world.h
         world.cpp
         ray.h
+        shape.h
         sphere.h
         intersection.h
-        variant_ops.h
-        shape.h)
+        variant_ops.h material.h)

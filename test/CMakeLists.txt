@@ -14,32 +14,25 @@ set(TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 add_executable(tests ${TEST_SOURCES})
 target_link_libraries(tests Catch)
 
-add_executable(TestTuple TestTuple.cpp ${TEST_SOURCES})
-target_link_libraries(TestTuple Catch raytracer)
+# Create a list of all tests
+set(TEST_LIST
+        TestCanvas
+        TestColour
+        TestIntersection
+        TestLights
+        TestMaterial
+        TestMath
+        TestMatrix
+        TestRay
+        TestSphere
+        TestTransform
+        TestTuple
+        TestVariantOps
+        )
 
-add_executable(TestColour TestColour.cpp ${TEST_SOURCES})
-target_link_libraries(TestColour Catch raytracer)
-
-add_executable(TestCanvas TestCanvas.cpp ${TEST_SOURCES} TestSphere.cpp TestIntersection.cpp)
-target_link_libraries(TestCanvas Catch raytracer)
-
-add_executable(TestMatrix TestMatrix.cpp ${TEST_SOURCES})
-target_link_libraries(TestMatrix Catch raytracer)
-
-add_executable(TestTransform TestTransform.cpp ${TEST_SOURCES})
-target_link_libraries(TestTransform Catch raytracer)
-
-add_executable(TestMath TestMath.cpp ${TEST_SOURCES})
-target_link_libraries(TestMath Catch raytracer)
-
-add_executable(TestRay TestRay.cpp ${TEST_SOURCES})
-target_link_libraries(TestRay Catch raytracer)
-
-add_executable(TestSphere TestSphere.cpp ${TEST_SOURCES})
-target_link_libraries(TestSphere Catch raytracer)
-
-add_executable(TestIntersection TestIntersection.cpp ${TEST_SOURCES})
-target_link_libraries(TestIntersection Catch raytracer)
-
-add_executable(TestVariantOps TestVariantOps.cpp ${TEST_SOURCES})
-target_link_libraries(TestVariantOps Catch raytracer)
+foreach(testname ${TEST_LIST})
+    set(testfile ${testname}.cpp)
+    message("Preparing to make ${testname} with ${testfile}")
+    add_executable(${testname} ${testfile} ${TEST_SOURCES})
+    target_link_libraries(${testname} Catch raytracer)
+endforeach()
