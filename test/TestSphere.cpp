@@ -132,7 +132,20 @@ TEST_CASE("The normal is a normalized vector") {
 }
 
 TEST_CASE("Computing the normal on a translated sphere") {
-    Sphere s{translation(0, 1, 0)};
+    const Sphere s{translation(0, 1, 0)};
     const auto n = s.normalAt(make_point(0, 1.70711, -0.70711));
     REQUIRE(n == make_vector(0, .70711, -0.70711));
+}
+
+TEST_CASE("Sphere has a default material") {
+    const Sphere s;
+    REQUIRE(s.getMaterial() == Material{});
+}
+
+TEST_CASE("A sphere may be assigned a material") {
+    Sphere s;
+    Material m;
+    m.setAmbient(1);
+    s.setMaterial(m);
+    REQUIRE(s.getMaterial() == m);
 }
