@@ -7,6 +7,8 @@
 #include <fstream>
 
 #include "canvas.h"
+#include "material.h"
+#include "pointlight.h"
 #include "ray.h"
 #include "sphere.h"
 #include "vector.h"
@@ -33,8 +35,16 @@ int main() {
     Canvas<canvas_pixels, canvas_pixels> c{};
     colour_ptr_t colour_ptr{new Colour{1, 0, 0}};
 
+    // Give the sphere a purple-ish colour.
     Sphere s;
-    s.setTransformation(scale(0.5, 1, 1).andThen(rotation_z(M_PI_4)));
+    Material m;
+    m.setColour(make_colour(1, 0.2, 1));
+    s.setMaterial(m);
+
+    //s.setTransformation(scale(0.5, 1, 1).andThen(rotation_z(M_PI_4)));
+
+    // Add a light source:
+    const PointLight light{make_point(-10, 10, -10), predefined_colours::white};
 
     // For each row of pixels in the canvas:
     for (auto y = 0; y < canvas_pixels; ++y) {
@@ -53,7 +63,13 @@ int main() {
             const auto xs = s.intersect(r);
             const auto hit = Intersection::hit(xs);
             if (hit.has_value()) {
-                c[x][y] = colour_ptr;
+                const auto intersection = hit.value();
+                const auto point = r.position(intersection.getT());
+                const auto normal = intersection.getObject().normalAt(point);
+                const auto eye = -r.getDirection();
+                const auto colour = intersection.getObject().getMaterial().lighting(light, point, eye, normal);
+                colour_ptr_t cp{new Colour{colour}};
+                c[x][y] = cp;
             }
         }
     }
