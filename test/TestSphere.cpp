@@ -9,6 +9,7 @@
 #include <optional>
 
 #include "affine_transform.h"
+#include "constmath.h"
 #include "ray.h"
 #include "sphere.h"
 #include "vector.h"
@@ -98,3 +99,40 @@ TEST_CASE("Intersecting a translated sphere with a ray") {
     REQUIRE(xs.size() == 0);
 }
 
+TEST_CASE("The normal on a sphere at a point on the x-axis") {
+    const Sphere s;
+    const auto n = s.normalAt(make_point(1, 0, 0));
+    REQUIRE(n == make_vector(1, 0, 0));
+}
+
+TEST_CASE("The normal on a sphere at a point on the y-axis") {
+    const Sphere s;
+    const auto n = s.normalAt(make_point(0, 1, 0));
+    REQUIRE(n == make_vector(0, 1, 0));
+}
+
+TEST_CASE("The normal on a sphere at a point on the z-axis") {
+    const Sphere s;
+    const auto n = s.normalAt(make_point(0, 0, 1));
+    REQUIRE(n == make_vector(0, 0, 1));
+}
+
+TEST_CASE("The normal on a sphere at a non-axial point") {
+    const Sphere s;
+    const auto i = sqrtd(3) / 3;
+    const auto n = s.normalAt(make_point(i, i, i));
+    REQUIRE(n == make_vector(i, i, i));
+}
+
+TEST_CASE("The normal is a normalized vector") {
+    const Sphere s;
+    const auto i = sqrtd(3) / 3;
+    const auto n = s.normalAt(make_point(i, i, i));
+    REQUIRE(n == n.normalize());
+}
+
+TEST_CASE("Computing the normal on a translated sphere") {
+    Sphere s{translation(0, 1, 0)};
+    const auto n = s.normalAt(make_point(0, 1.70711, -0.70711));
+    REQUIRE(n == make_vector(0, .70711, -0.70711));
+}

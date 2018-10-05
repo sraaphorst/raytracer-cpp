@@ -20,6 +20,10 @@
 namespace raytracer {
     class Sphere final: public Shape {
     public:
+        Sphere() = default;
+        explicit Sphere(const Transformation &t): Shape{t} {}
+        explicit Sphere(Transformation&& t): Shape{t} {}
+
         const std::vector<Intersection> intersect(const Ray &r0) const noexcept override {
             // First transform the ray.
             const Ray r = r0.transform(getTransformation().invert());
@@ -38,6 +42,16 @@ namespace raytracer {
             const auto t2 = (-b + sqrtd(discriminant)) / (2 * a);
             if (t1 < t2) return {Intersection{t1, *this}, Intersection{t2, *this}};
             else return {Intersection{t2, *this}, Intersection{t1, *this}};
+        }
+
+        const Tuple normalAt(const Tuple &p) const override {
+            //return (p - make_point(0, 0, 0)).normalize();
+            const auto object_point = transformation.invert() * p;
+            const auto object_normal = object_point - predefined_tuples::zero_point;
+            const auto world_normal = transformation.invert().transpose() * object_normal;
+            return make_vector(world_normal[tuple_constants::x],
+                    world_normal[tuple_constants::y],
+                    world_normal[tuple_constants::z]).normalize();
         }
 
     private:

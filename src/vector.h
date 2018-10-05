@@ -46,7 +46,7 @@ namespace raytracer {
         using Colour = Vector<double, 3>;
 
     protected:
-        const vector_type contents;
+        vector_type contents;
 
     public:
 
@@ -58,6 +58,9 @@ namespace raytracer {
         constexpr Vector(std::initializer_list<T> lst) : contents{initializer_list_to_array<T,N>(lst)} {}
 
         ~Vector() = default;
+
+        constexpr Vector &operator=(const Vector &t) noexcept = default;
+        constexpr Vector &operator=(Vector&& t) noexcept = default;
 
         constexpr const T operator[](size_t idx) const noexcept {
             return contents[idx];
