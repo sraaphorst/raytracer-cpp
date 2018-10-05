@@ -7,6 +7,7 @@ add_library(raytracer SHARED
         canvas.h
         common.h
         constmath.h
+        material.h
         matrix.h
         meta.h
         pointlight.h
@@ -20,4 +21,4 @@ add_library(raytracer SHARED
         shape.h
         sphere.h
         intersection.h
-        variant_ops.h material.h)
+        variant_ops.h)
