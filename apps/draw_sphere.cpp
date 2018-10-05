@@ -16,7 +16,7 @@
 using namespace raytracer;
 
 int main() {
-    constexpr int canvas_pixels = 100;
+    constexpr int canvas_pixels = 1000;
 
     // Start the ray at z = -5.
     const auto ray_origin = make_point(0, 0, -5);
