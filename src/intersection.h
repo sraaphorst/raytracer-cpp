@@ -53,19 +53,9 @@ namespace raytracer {
         }
 
         // Static hit method: the intersection that is visible. This is always the lowest non-negative intersection.
-        static const std::optional<const Intersection> hit(const std::vector<Intersection> &ints) {
-            if (ints.empty())
-                return {};
+        static const std::optional<const Intersection> hit(const std::vector<Intersection> &ints);
 
-            Intersection const *curr = nullptr;
-            for (const Intersection &i: ints) {
-                if (i.getT() > 0 && (curr == nullptr || i.getT() < curr->getT()))
-                    curr = &i;
-            }
-            if (curr == nullptr || curr->getT() < 0)
-                return {};
-            else
-                return {*curr};
-        }
+        static const std::optional<const Intersection> prepare_hit(const std::optional<const Intersection> &hit,
+                const Ray &ray);
     };
 }
