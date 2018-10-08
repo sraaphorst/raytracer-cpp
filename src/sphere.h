@@ -29,8 +29,9 @@ namespace raytracer {
         Sphere(T&& t, M&& m): Shape{t, m} {}
 
         bool operator==(const Sphere &other) const {
-            return t == other.t &&
+            return transformation == other.transformation && material == other.material;
         }
+
         const std::vector<Intersection> intersect(const Ray &r0) const noexcept override {
             // First transform the ray.
             const Ray r = r0.transform(getTransformation().invert());
@@ -47,8 +48,9 @@ namespace raytracer {
 
             const auto t1 = (-b - sqrtd(discriminant)) / (2 * a);
             const auto t2 = (-b + sqrtd(discriminant)) / (2 * a);
-            if (t1 < t2) return {Intersection{t1, *this}, Intersection{t2, *this}};
-            else return {Intersection{t2, *this}, Intersection{t1, *this}};
+            const auto ptr = std::shared_ptr<const Shape>(new Sphere{*this});
+            if (t1 < t2) return {Intersection{t1, ptr}, Intersection{t2, ptr}};
+            else return {Intersection{t2, ptr}, Intersection{t1, ptr}};
         }
 
         const Tuple normalAt(const Tuple &p) const override {
@@ -64,7 +66,7 @@ namespace raytracer {
     private:
         bool doCompare(const Shape &other) const override {
             const auto *s = dynamic_cast<const Sphere*>(&other);
-            return (s != nullptr);
+            return (s != nullptr && *this == *s);
         }
     };
 }

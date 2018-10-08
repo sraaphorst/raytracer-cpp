@@ -48,6 +48,10 @@ namespace raytracer {
         Material &operator=(const Material&) = default;
         Material &operator=(Material&&) = default;
 
+        constexpr bool operator !=(const Material &other) const noexcept {
+            return !(*this == other);
+        }
+
         constexpr Colour getColour() const noexcept {
             return colour;
         }
@@ -85,6 +89,6 @@ namespace raytracer {
         constexpr static double DEFAULT_SHININESS = 200;
 
         // Calculate the lighting of this material.
-        Colour lighting(const PointLight &light, const Tuple &point, const Tuple &eyev, const Tuple &normalv) const;
+        Colour lighting(const PointLight &light, const Tuple &point, const Tuple &eyev, const Tuple &normalv) const noexcept;
     };
 }

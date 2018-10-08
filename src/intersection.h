@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <initializer_list>
+#include <memory>
 #include <optional>
 #include <vector>
 
@@ -19,30 +20,31 @@ namespace raytracer {
 
     class Intersection final {
     private:
-        const double t;
-        const Shape &o;
+        double t;
+        std::shared_ptr<const Shape> o;
 
     public:
         Intersection() = delete;
 
         // We can't use an initializer_list due to mixed types, and a variadic template constructor is unnecessary.
         // This first constructor should be able to handle all the cases.
-        Intersection(const double t, const Shape &o): t{t}, o{o} {}
+        //Intersection(const double t, const Shape &o): t{t}, o{std::make_shared(o)} {}
+        Intersection(const double t, const std::shared_ptr<const Shape> o): t{t}, o{o} {}
         Intersection(const Intersection&) = default;
         Intersection(Intersection&&) = default;
 
-        ~Intersection() = default;
+        Intersection &operator=(const Intersection &other) noexcept = default;
 
-        bool operator==(const Intersection &other) const {
+        constexpr bool operator==(const Intersection &other) const {
             return t == other.t && o == other.o;
         }
 
-        double getT() const noexcept {
+        constexpr double getT() const noexcept {
             return t;
         }
 
         const Shape &getObject() const noexcept {
-            return o;
+            return *o;
         }
 
         // Static aggregator method.
@@ -64,17 +66,6 @@ namespace raytracer {
                 return {};
             else
                 return {*curr};
-//            const auto iter = std::min(std::cbegin(ints), std::cend(ints), [](const Intersection &i1, const Intersection &i2) {
-//                if (i1.getT() < 0) return i2;
-//                else if (i2.getT() < 0) return i1;
-//                else if (i1.getT() < i2.getT()) return i1;
-//                else return i2;
-//            });
-//
-//            if (iter == std::cend(ints) || iter->getT() < 0)
-//                return {};
-//            else
-//                return {*iter};
         }
     };
 }

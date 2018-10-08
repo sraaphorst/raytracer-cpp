@@ -28,6 +28,7 @@ set(TEST_LIST
         TestTransform
         TestTuple
         TestVariantOps
+        TestWorld
         )
 
 foreach(testname ${TEST_LIST})

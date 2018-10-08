@@ -26,7 +26,7 @@ namespace raytracer {
     }
 
     Colour Material::lighting(const PointLight &light, const Tuple &point,
-                    const Tuple &eyev, const Tuple &normalv) const {
+                    const Tuple &eyev, const Tuple &normalv) const noexcept {
         const auto effective_colour = colour * light.getIntensity();
         const auto lightv = (light.getPosition() - point).normalize();
         const auto ambient_component = ambient * effective_colour;

@@ -24,9 +24,6 @@ namespace raytracer {
         template<typename T, typename S>
         Shape(T&& transformation, S&& material) : transformation{transformation}, material{material} {}
 
-//        explicit Shape(const Transformation &t): transformation{t} {}
-//        explicit Shape(Transformation&& t): transformation{t} {}
-
         virtual const std::vector<Intersection> intersect(const Ray &r) const noexcept = 0;
 
         bool operator==(const Shape &other) const noexcept {

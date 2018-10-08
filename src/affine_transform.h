@@ -14,6 +14,10 @@
 namespace raytracer {
     using Transformation = SquareMatrix<4>;
 
+    constexpr Transformation notransform() {
+        return predefined_matrices::I<double, 4>;
+    }
+
     constexpr Transformation translation(double x, double y, double z) {
         std::array<double, 3> point{x, y, z};
 
