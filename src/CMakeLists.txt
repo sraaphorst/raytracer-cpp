@@ -16,10 +16,13 @@ add_library(raytracer SHARED
         projectile.cpp
         transformers.h
         vector.h
-        world.h
-        world.cpp
+        worldconditions.h
+        worldconditions.cpp
         ray.h
         shape.h
         sphere.h
         intersection.h
-        variant_ops.h material.cpp)
+        variant_ops.h
+        material.cpp
+        world.h
+        world.cpp)

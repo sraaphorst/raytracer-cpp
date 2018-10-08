@@ -12,7 +12,7 @@
 #include <stdexcept>
 
 #include "vector.h"
-#include "world.h"
+#include "worldconditions.h"
 
 namespace raytracer {
     class Projectile {
@@ -30,7 +30,7 @@ namespace raytracer {
 
         constexpr Projectile(const Projectile &other) = default;
 
-        std::unique_ptr<Projectile> tick(const World w) const {
+        std::unique_ptr<Projectile> tick(const WorldConditions w) const {
             return std::make_unique<Projectile>(position + velocity, velocity + w.gravity + w.wind);
         }
 

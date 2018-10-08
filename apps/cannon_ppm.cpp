@@ -11,12 +11,12 @@
 #include <canvas.h>
 #include <projectile.h>
 #include <vector.h>
-#include <world.h>
+#include <worldconditions.h>
 
 using namespace raytracer;
 
 int main() {
-    World w{make_vector(0, -0.1, 0), make_vector(-0.01, 0, 0)};
+    WorldConditions w{make_vector(0, -0.1, 0), make_vector(-0.01, 0, 0)};
     std::unique_ptr<Projectile> ptr = std::make_unique<Projectile>(
             make_point(0, 1, 0),
             make_vector(1, 1.8, 0).normalize() * 11.25);

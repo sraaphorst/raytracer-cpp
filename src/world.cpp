@@ -4,13 +4,4 @@
  * By Sebastian Raaphorst, 2018.
  */
 
-#include <iostream>
-
 #include "world.h"
-
-namespace raytracer {
-
-    std::ostream &operator<<(std::ostream &os, const World &world) {
-        return os << "world(gravity: " << world.gravity << ", wind: " << world.wind << ')';
-    }
-}

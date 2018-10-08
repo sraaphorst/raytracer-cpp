@@ -28,6 +28,9 @@ namespace raytracer {
         template<typename T, typename M>
         Sphere(T&& t, M&& m): Shape{t, m} {}
 
+        bool operator==(const Sphere &other) const {
+            return t == other.t &&
+        }
         const std::vector<Intersection> intersect(const Ray &r0) const noexcept override {
             // First transform the ray.
             const Ray r = r0.transform(getTransformation().invert());
