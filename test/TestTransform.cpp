@@ -194,47 +194,27 @@ TEST_CASE("The transformation matrix for the default orientation") {
     constexpr auto from = make_point(0, 0,  0);
     constexpr auto to   = make_point(0, 0, -1);
     constexpr auto up   = make_vector(0, 1, 0);
-    auto t = view_transform(from, to, up);
-    REQUIRE(t == predefined_matrices::I<double, 4>);
+    constexpr auto t1 = view_transform(from, to, up);
+    REQUIRE(t1 == predefined_matrices::I<double, 4>);
 }
 
 TEST_CASE("The view transformation moves the world") {
     constexpr auto from = make_point(0, 0, 8);
     constexpr auto to   = make_point(0, 0, 0);
     constexpr auto up   = make_vector(0, 1, 0);
-
-    constexpr auto t = view_transform(from, to, up);
-    REQUIRE(t == translation(0, 0, -8));
+    constexpr auto t1 = view_transform(from, to, up);
+    REQUIRE(t1 == translation(0, 0, -8));
 }
 
 TEST_CASE("An arbitrary view transformation") {
     constexpr auto from = make_point(1,  3, 2);
     constexpr auto to   = make_point(4, -2, 8);
-    constexpr auto up   = make_vector(11, 1, 0);
+    constexpr auto up   = make_vector(1, 1, 0);
 
-    const auto forward = (to - from).normalize();
-    const auto upn     = up.normalize();
-    const auto left    = forward.cross_product(upn);
-    const auto true_up = left.cross_product(forward);
-    auto prv = [](const auto v){for (int i=0; i < 4; ++i) std::cout << v[i] << ' '; std::cout << '\n';};
-    prv(to-from);
-    prv((to-from).normalize());
-    prv(forward);
-    prv(left);
-    prv(true_up);
-    std::cout << '\n';
-
-
-
-    auto t = view_transform(from, to, up);
-    for (size_t x = 0; x < 4; ++x) {
-        for (size_t y = 0; y < 4; ++y)
-            std::cout << t[x][y] << ' ';
-        std::cout << '\n';
-    }
+    constexpr auto t1 = view_transform(from, to, up);
     constexpr SquareMatrix<4> t2 = {{-0.50709, 0.50709,  0.67612, -2.36643},
                                     { 0.76772, 0.60609,  0.12122, -2.82843},
                                     {-0.35857, 0.59761, -0.71714,  0.00000},
                                     { 0.00000, 0.00000,  0.00000,  1.00000}};
-    REQUIRE(t == t2);
+    REQUIRE(t1 == t2);
 }
