@@ -7,6 +7,10 @@ add_library(raytracer SHARED
         canvas.h
         common.h
         constmath.h
+        hit.h
+        hit.cpp
+        intersection.h
+        intersection.cpp
         material.h
         material.cpp
         matrix.h
@@ -14,15 +18,13 @@ add_library(raytracer SHARED
         pointlight.h
         projectile.h
         projectile.cpp
-        transformers.h
-        vector.h
-        worldconditions.h
-        worldconditions.cpp
         ray.h
         shape.h
         sphere.h
-        intersection.h
+        transformers.h
+        vector.h
         variant_ops.h
-        material.cpp
         world.h
-        world.cpp)
+        world.cpp
+        worldconditions.h
+        worldconditions.cpp)

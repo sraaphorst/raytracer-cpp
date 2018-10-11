@@ -58,5 +58,5 @@ TEST_CASE("Colours should be able to determine when they are valid", "[Colour][v
 TEST_CASE("Colours should be able to determine when they are invalid", "[Colour][validity]") {
     constexpr Colour c{0.5, 0, 1.1};
     constexpr auto res = c.isValidColour();
-    REQUIRE(!c.isValidColour());
+    REQUIRE_FALSE(c.isValidColour());
 }

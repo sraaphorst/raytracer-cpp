@@ -17,8 +17,9 @@
 
 namespace raytracer {
     using namespace transformers;
+    class Hit;
 
-    class Intersection final {
+    class Intersection {
     private:
         double t;
         std::shared_ptr<const Shape> o;
@@ -47,15 +48,13 @@ namespace raytracer {
             return *o;
         }
 
-        // Static aggregator method.
-        static std::vector<Intersection> aggregate(std::initializer_list<Intersection> lst) {
-            return std::vector<Intersection>{lst};
-        }
+        static std::vector<Intersection> aggregate(std::initializer_list<Intersection> lst) noexcept;
 
         // Static hit method: the intersection that is visible. This is always the lowest non-negative intersection.
-        static const std::optional<const Intersection> hit(const std::vector<Intersection> &ints);
+        static const std::optional<const Intersection> hit(const std::vector<Intersection> &ints) noexcept;
 
-        static const std::optional<const Intersection> prepare_hit(const std::optional<const Intersection> &hit,
-                const Ray &ray);
+        static const std::optional<const Hit> prepare_hit(const std::optional<const Intersection> &hit,
+                const Ray &ray) noexcept;
+        static const Hit prepare_hit(const Intersection &hit, const Ray &ray) noexcept;
     };
 }

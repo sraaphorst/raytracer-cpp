@@ -7,6 +7,7 @@
 #include <memory>
 #include <vector>
 
+#include "hit.h"
 #include "intersection.h"
 #include "ray.h"
 #include "shape.h"
@@ -28,6 +29,21 @@ namespace raytracer {
 
     const std::vector<std::shared_ptr<const Shape>> World::getObjects() const noexcept {
         return shapes;
+    }
+
+    const bool World::contains(const Shape &s) const noexcept {
+        for (const auto i: shapes)
+            if (*i == s)
+                return true;
+        return false;
+    }
+
+    const std::optional<const Colour> World::shade_hit(const std::optional<const Hit> &hit) const noexcept {
+        if (!(light.has_value() && hit.has_value()))
+            return {};
+
+        return hit->getObject().getMaterial().lighting(light.value(),
+                hit->getPoint(), hit->getEyeVector(), hit->getNormalVector());
     }
 
     const std::vector<Intersection> World::intersect(const Ray &ray) const noexcept {

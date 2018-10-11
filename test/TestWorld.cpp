@@ -9,6 +9,7 @@
 #include <optional>
 
 #include "affine_transform.h"
+#include "hit.h"
 #include "material.h"
 #include "pointlight.h"
 #include "ray.h"
@@ -23,7 +24,7 @@ using namespace raytracer;
 TEST_CASE("Creating a world") {
     World w;
     REQUIRE(w.getObjects().empty());
-    REQUIRE(!w.getLightSource().has_value());
+    REQUIRE_FALSE(w.getLightSource().has_value());
 }
 
 TEST_CASE("The default world") {
@@ -46,16 +47,25 @@ TEST_CASE("Intersect a world with a ray") {
     auto w = World::getDefaultWorld();
     constexpr Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
     auto xs = w.intersect(ray);
-    for (const auto i: xs)
-        std::cout << i.getT() << '\n';
-    const auto &a1 = xs[0];
-    const auto &a2 = xs[1];
-    const auto &a3 = xs[2];
-    const auto &a4 = xs[3];
     REQUIRE(xs.size() == 4);
     REQUIRE(ALMOST_EQUALS(xs[0].getT(), 4));
     REQUIRE(ALMOST_EQUALS(xs[1].getT(), 4.5));
     REQUIRE(ALMOST_EQUALS(xs[2].getT(), 5.5));
     REQUIRE(ALMOST_EQUALS(xs[3].getT(), 6));
     REQUIRE(true);
+}
+
+TEST_CASE("Shading an intersection") {
+    const auto w = World::getDefaultWorld();
+    const Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
+    REQUIRE_FALSE(w.getObjects().empty());
+    const auto s = w.getObjects().front();
+    const Intersection i{4, s};
+    const auto hit = Intersection::prepare_hit(i, ray);
+    const auto cOpt = w.shade_hit(hit);
+    REQUIRE(cOpt.has_value());
+    const auto c = cOpt.value();
+    REQUIRE(ALMOST_EQUALS(c[colour_constants::r], 0.38066));
+    REQUIRE(ALMOST_EQUALS(c[colour_constants::g], 0.47583));
+    REQUIRE(ALMOST_EQUALS(c[colour_constants::b], 0.2855));
 }

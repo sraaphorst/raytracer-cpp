@@ -12,12 +12,14 @@
 #include <optional>
 #include <vector>
 
-#include "intersection.h"
 #include "pointlight.h"
 #include "shape.h"
-
+#include "vector.h"
 
 namespace raytracer {
+    class Intersection;
+    class Hit;
+
     class World final {
         std::optional<PointLight> light;
         std::vector<std::shared_ptr<const Shape>> shapes;
@@ -38,12 +40,9 @@ namespace raytracer {
         const std::optional<PointLight> getLightSource() const noexcept;
         const std::vector<std::shared_ptr<const Shape>> getObjects() const noexcept;
 
-        const bool contains(const Shape &s) const noexcept {
-            for (const auto i: shapes)
-                if (*i == s)
-                    return true;
-            return false;
-        }
+        const bool contains(const Shape &s) const noexcept;
+
+        const std::optional<const Colour> shade_hit(const std::optional<const Hit>&) const noexcept;
 
         const std::vector<Intersection> intersect(const Ray &ray) const noexcept;
 
