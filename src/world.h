@@ -26,7 +26,7 @@ namespace raytracer {
 
     public:
         World() noexcept = default;
-        World(const World&) noexcept = default;
+        World(const World&) = default;
         World(World&&) noexcept = default;
 
         template<typename L, typename S>

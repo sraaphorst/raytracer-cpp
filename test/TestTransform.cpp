@@ -203,23 +203,7 @@ TEST_CASE("The view transformation moves the world") {
     constexpr auto to   = make_point(0, 0, 0);
     constexpr auto up   = make_vector(0, 1, 0);
 
-    const auto forward = (to - from).normalize();
-    const auto upn     = up.normalize();
-    const auto left    = forward.cross_product(upn);
-    const auto true_up = left.cross_product(forward);
-    auto prv = [](const auto v){for (int i=0; i < 4; ++i) std::cout << v[i] << ' '; std::cout << '\n';};
-    prv(forward);
-    prv(upn);
-    prv(left);
-    prv(true_up);
-
-    auto t = view_transform(from, to, up);
-    for (size_t x = 0; x < 4; ++x) {
-        for (size_t y = 0; y < 4; ++y)
-            std::cout << t[x][y] << ' ';
-        std::cout << '\n';
-    }
-    REQUIRE(true);
+    constexpr auto t = view_transform(from, to, up);
     REQUIRE(t == translation(0, 0, -8));
 }
 
@@ -227,6 +211,21 @@ TEST_CASE("An arbitrary view transformation") {
     constexpr auto from = make_point(1,  3, 2);
     constexpr auto to   = make_point(4, -2, 8);
     constexpr auto up   = make_vector(11, 1, 0);
+
+    const auto forward = (to - from).normalize();
+    const auto upn     = up.normalize();
+    const auto left    = forward.cross_product(upn);
+    const auto true_up = left.cross_product(forward);
+    auto prv = [](const auto v){for (int i=0; i < 4; ++i) std::cout << v[i] << ' '; std::cout << '\n';};
+    prv(to-from);
+    prv((to-from).normalize());
+    prv(forward);
+    prv(left);
+    prv(true_up);
+    std::cout << '\n';
+
+
+
     auto t = view_transform(from, to, up);
     for (size_t x = 0; x < 4; ++x) {
         for (size_t y = 0; y < 4; ++y)

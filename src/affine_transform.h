@@ -131,6 +131,6 @@ namespace raytracer {
             m[1][i] = true_up[i];
             m[2][i] = -forward[i];
         }
-        return Transformation{m};
+        return Transformation{m} * translation(-from[0], -from[1], -from[2]);
     }
 }
