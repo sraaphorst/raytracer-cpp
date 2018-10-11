@@ -10,6 +10,8 @@
 #include "matrix.h"
 #include "vector.h"
 
+#include <iostream>
+
 using namespace raytracer;
 
 TEST_CASE("translation should produce the desired matrix", "[Transformation][translation]") {
@@ -186,4 +188,54 @@ TEST_CASE("andThen should be the same as multiplying the transformation matrices
     constexpr auto res1 = D * C * B * A;
     constexpr auto res2 = D * C * B * A == A.andThen(B).andThen(C).andThen(D);
     REQUIRE(D * C * B * A == A.andThen(B).andThen(C).andThen(D));
+}
+
+TEST_CASE("The transformation matrix for the default orientation") {
+    constexpr auto from = make_point(0, 0,  0);
+    constexpr auto to   = make_point(0, 0, -1);
+    constexpr auto up   = make_vector(0, 1, 0);
+    auto t = view_transform(from, to, up);
+    REQUIRE(t == predefined_matrices::I<double, 4>);
+}
+
+TEST_CASE("The view transformation moves the world") {
+    constexpr auto from = make_point(0, 0, 8);
+    constexpr auto to   = make_point(0, 0, 0);
+    constexpr auto up   = make_vector(0, 1, 0);
+
+    const auto forward = (to - from).normalize();
+    const auto upn     = up.normalize();
+    const auto left    = forward.cross_product(upn);
+    const auto true_up = left.cross_product(forward);
+    auto prv = [](const auto v){for (int i=0; i < 4; ++i) std::cout << v[i] << ' '; std::cout << '\n';};
+    prv(forward);
+    prv(upn);
+    prv(left);
+    prv(true_up);
+
+    auto t = view_transform(from, to, up);
+    for (size_t x = 0; x < 4; ++x) {
+        for (size_t y = 0; y < 4; ++y)
+            std::cout << t[x][y] << ' ';
+        std::cout << '\n';
+    }
+    REQUIRE(true);
+    REQUIRE(t == translation(0, 0, -8));
+}
+
+TEST_CASE("An arbitrary view transformation") {
+    constexpr auto from = make_point(1,  3, 2);
+    constexpr auto to   = make_point(4, -2, 8);
+    constexpr auto up   = make_vector(11, 1, 0);
+    auto t = view_transform(from, to, up);
+    for (size_t x = 0; x < 4; ++x) {
+        for (size_t y = 0; y < 4; ++y)
+            std::cout << t[x][y] << ' ';
+        std::cout << '\n';
+    }
+    constexpr SquareMatrix<4> t2 = {{-0.50709, 0.50709,  0.67612, -2.36643},
+                                    { 0.76772, 0.60609,  0.12122, -2.82843},
+                                    {-0.35857, 0.59761, -0.71714,  0.00000},
+                                    { 0.00000, 0.00000,  0.00000,  1.00000}};
+    REQUIRE(t == t2);
 }

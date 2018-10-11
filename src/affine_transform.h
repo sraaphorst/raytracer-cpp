@@ -115,4 +115,22 @@ namespace raytracer {
                 else m[i][j] = 0;
         return Transformation{m};
     }
+
+    constexpr Transformation view_transform(const Tuple &from, const Tuple &to, const Tuple &upv) {
+        Transformation::matrix_type m{};
+
+        const auto forward = (to - from).normalize();
+        const auto upn     = upv.normalize();
+        const auto left    = forward.cross_product(upn);
+        const auto true_up = left.cross_product(forward);
+
+        for (size_t i = 0; i < 4; ++i)
+            m[i][3] = m[3][i] = (i == 3 ? 1 : 0);
+        for (size_t i = 0; i < 3; ++i) {
+            m[0][i] = left[i];
+            m[1][i] = true_up[i];
+            m[2][i] = -forward[i];
+        }
+        return Transformation{m};
+    }
 }

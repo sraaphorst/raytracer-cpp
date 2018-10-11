@@ -13,14 +13,16 @@
 namespace raytracer {
     class PointLight final {
     private:
-        const Tuple position;
-        const Colour intensity;
+        Tuple position;
+        Colour intensity;
 
     public:
         template<typename T, typename S>
         constexpr PointLight(T &&position, S &&intensity) noexcept: position{position}, intensity{intensity} {}
         constexpr PointLight(const PointLight&) noexcept = default;
         constexpr PointLight(PointLight&&) noexcept = default;
+
+        PointLight &operator=(const PointLight&) = default;
 
         constexpr bool operator==(const std::optional<PointLight> &other) const noexcept {
             return other.has_value() && (*this == other.value());

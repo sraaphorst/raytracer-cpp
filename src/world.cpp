@@ -27,7 +27,15 @@ namespace raytracer {
         return light;
     }
 
-    const std::vector<std::shared_ptr<const Shape>> World::getObjects() const noexcept {
+    void World::setLightSource(const PointLight &pl) noexcept {
+        light = pl;
+    }
+
+    void World::clearLightSource() noexcept {
+        light = {};
+    }
+
+    std::vector<std::shared_ptr<Shape>> World::getObjects() noexcept {
         return shapes;
     }
 
@@ -36,14 +44,6 @@ namespace raytracer {
             if (*i == s)
                 return true;
         return false;
-    }
-
-    const std::optional<const Colour> World::shade_hit(const std::optional<const Hit> &hit) const noexcept {
-        if (!(light.has_value() && hit.has_value()))
-            return {};
-
-        return hit->getObject().getMaterial().lighting(light.value(),
-                hit->getPoint(), hit->getEyeVector(), hit->getNormalVector());
     }
 
     const std::vector<Intersection> World::intersect(const Ray &ray) const noexcept {
@@ -60,12 +60,32 @@ namespace raytracer {
         return intersections;
     }
 
+    const std::optional<const Colour> World::shade_hit(const std::optional<const Hit> &hit) const noexcept {
+        if (!(light.has_value() && hit.has_value()))
+            return {};
+
+        return hit->getObject().getMaterial().lighting(light.value(),
+                hit->getPoint(), hit->getEyeVector(), hit->getNormalVector());
+    }
+
+    const Colour World::colour_at(const Ray &ray) const noexcept {
+        const auto xs = intersect(ray);
+        const auto hit = Intersection::hit(xs);
+        if (!hit.has_value())
+            return predefined_colours::black;
+
+        const auto populated_hit = Intersection::prepare_hit(hit, ray);
+        const auto shade = shade_hit(populated_hit);
+        return shade.value_or(predefined_colours::black);
+    }
+
+
     World World::getDefaultWorld() noexcept {
-        std::shared_ptr<const Shape> s1{new Sphere{notransform(),
+        std::shared_ptr<Shape> s1{new Sphere{notransform(),
             Material{make_colour(0.8, 1.0, 0.6), Material::DEFAULT_AMBIENT, 0.7, 0.2, Material::DEFAULT_SHININESS}
         }};
-        std::shared_ptr<const Shape> s2{new Sphere{scale(0.5, 0.5, 0.5)}};
-        std::vector<std::shared_ptr<const Shape>> v = {s1, s2};
+        std::shared_ptr<Shape> s2{new Sphere{scale(0.5, 0.5, 0.5)}};
+        std::vector<std::shared_ptr<Shape>> v = {s1, s2};
         return World{PointLight{make_point(-10, 10, -10), predefined_colours::white}, v};
     }
 }

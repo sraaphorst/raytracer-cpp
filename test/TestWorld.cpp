@@ -56,16 +56,61 @@ TEST_CASE("Intersect a world with a ray") {
 }
 
 TEST_CASE("Shading an intersection") {
-    const auto w = World::getDefaultWorld();
-    const Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
+    auto w = World::getDefaultWorld();
+    Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
     REQUIRE_FALSE(w.getObjects().empty());
-    const auto s = w.getObjects().front();
-    const Intersection i{4, s};
-    const auto hit = Intersection::prepare_hit(i, ray);
-    const auto cOpt = w.shade_hit(hit);
+    auto s = w.getObjects().front();
+    Intersection i{4, s};
+    auto hit = Intersection::prepare_hit(i, ray);
+    auto cOpt = w.shade_hit(hit);
     REQUIRE(cOpt.has_value());
-    const auto c = cOpt.value();
-    REQUIRE(ALMOST_EQUALS(c[colour_constants::r], 0.38066));
-    REQUIRE(ALMOST_EQUALS(c[colour_constants::g], 0.47583));
-    REQUIRE(ALMOST_EQUALS(c[colour_constants::b], 0.2855));
+    REQUIRE(cOpt.value() == make_colour(0.38066, 0.47583, 0.2855));
 }
+
+TEST_CASE("Shading an intersection from the inside") {
+    auto w = World::getDefaultWorld();
+    w.setLightSource(PointLight{make_point(0, 0.25, 0), predefined_colours::white});
+    Ray ray{make_point(0, 0, 0), make_vector(0, 0, 1)};
+    REQUIRE(w.getObjects().size() >= 2);
+    auto s = w.getObjects()[1];
+    Intersection i{0.5, s};
+    auto hit = Intersection::prepare_hit(i, ray);
+    auto cOpt = w.shade_hit(hit);
+    REQUIRE(cOpt.has_value());
+    REQUIRE(cOpt.value() == make_colour(0.90498, 0.90498, 0.90498));
+}
+
+TEST_CASE("The colour when a ray misses") {
+    auto w = World::getDefaultWorld();
+    Ray ray{make_point(0, 0, -5), make_vector(0, 1, 0)};
+    auto c = w.colour_at(ray);
+    REQUIRE(c == predefined_colours::black);
+}
+
+TEST_CASE("The colour when a ray hits") {
+    auto w = World::getDefaultWorld();
+    Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
+    auto c = w.colour_at(ray);
+    REQUIRE(c == make_colour(0.38066, 0.47583, 0.2855));
+}
+
+// This test case is incorrect: pg 101 from the PDF.
+//TEST_CASE("The colour with an intersection behind the ray") {
+//    auto w = World::getDefaultWorld();
+//    REQUIRE(w.getObjects().size() >= 2);
+//
+//    auto outer = w.getObjects()[0];
+//    auto mouter = outer->getMaterial();
+//    mouter.setAmbient(1);
+//    outer->setMaterial(mouter);
+//
+//    auto inner = w.getObjects()[1];
+//    auto minner = inner->getMaterial();
+//    minner.setAmbient(1);
+//    inner->setMaterial(minner);
+//
+//    REQUIRE(w.getObjects()[0]->getMaterial().getAmbient() == 1);
+//    REQUIRE(w.getObjects()[1]->getMaterial().getAmbient() == 1);
+//    Ray ray{make_point(0, 0, -0.75), make_vector(0, 0, 1)};
+//    REQUIRE(w.colour_at(ray) == inner->getMaterial().getColour());
+//}

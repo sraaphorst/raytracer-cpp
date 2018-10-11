@@ -22,7 +22,7 @@ namespace raytracer {
 
     class World final {
         std::optional<PointLight> light;
-        std::vector<std::shared_ptr<const Shape>> shapes;
+        std::vector<std::shared_ptr<Shape>> shapes;
 
     public:
         World() noexcept = default;
@@ -38,13 +38,15 @@ namespace raytracer {
         bool operator!=(const World &other) const noexcept;
 
         const std::optional<PointLight> getLightSource() const noexcept;
-        const std::vector<std::shared_ptr<const Shape>> getObjects() const noexcept;
+        void setLightSource(const PointLight&) noexcept;
+        void clearLightSource() noexcept;
 
+        std::vector<std::shared_ptr<Shape>> getObjects() noexcept;
         const bool contains(const Shape &s) const noexcept;
 
-        const std::optional<const Colour> shade_hit(const std::optional<const Hit>&) const noexcept;
-
         const std::vector<Intersection> intersect(const Ray &ray) const noexcept;
+        const std::optional<const Colour> shade_hit(const std::optional<const Hit>&) const noexcept;
+        const Colour colour_at(const Ray &ray) const noexcept;
 
         static World getDefaultWorld() noexcept;
     };
