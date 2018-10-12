@@ -32,8 +32,8 @@ int main() {
     // x and y values.
     constexpr double half = wall_size / 2;
 
-    Canvas<canvas_pixels, canvas_pixels> c{};
-    colour_ptr_t colour_ptr{new Colour{1, 0, 0}};
+    Canvas c{canvas_pixels, canvas_pixels};
+    const auto colour = predefined_colours::red;
 
     // Give the sphere a purple-ish colour.
     Sphere s;
@@ -67,9 +67,7 @@ int main() {
                 const auto point = r.position(intersection.getT());
                 const auto normal = intersection.getObject().normalAt(point);
                 const auto eye = -r.getDirection();
-                const auto colour = intersection.getObject().getMaterial().lighting(light, point, eye, normal);
-                colour_ptr_t cp{new Colour{colour}};
-                c[x][y] = cp;
+                c[x][y] = intersection.getObject().getMaterial().lighting(light, point, eye, normal);
             }
         }
     }

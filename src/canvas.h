@@ -6,35 +6,28 @@
 
 #pragma once
 
-#include <array>
 #include <cmath>
 #include <cstddef>
 #include <memory>
 #include <ostream>
+#include <vector>
 
 #include "constmath.h"
 #include "vector.h"
 
 namespace raytracer {
-    using colour_ptr_t = std::shared_ptr<const Colour>;
-
-    template<size_t width, size_t height>
     class Canvas final {
-    private:
-        using col  = std::array<colour_ptr_t, height>;
-        using grid = std::array<col, width>;
+        const int width;
+        const int height;
 
-        std::shared_ptr<const Colour> black{new Colour{0, 0, 0}};
+        using col  = std::vector<Colour>;
+        using grid = std::vector<col>;
 
         /// Use shared_ptrs so that we can reuse colours, like black on initialization.
         grid pixels;
 
     public:
-        Canvas() {
-            for (int i=0; i < width; ++i)
-                for (int j=0; j < height; ++j)
-                    pixels[i][j] = std::shared_ptr<const Colour>(black);
-        }
+        Canvas(int width, int height);
 
         /// This is mutable, so allow access to contents through indexing.
         col& operator[](const int idx) {
@@ -46,16 +39,16 @@ namespace raytracer {
         }
 
         /// Create a stream representing this as a PPM file.
-        friend std::ostream &operator<<(std::ostream &ostr, const Canvas<width, height> &c) {
-            ostr << "P3\n" << width << ' ' << height << '\n' << colour_constants::maxvalue << '\n';
+        friend std::ostream &operator<<(std::ostream &ostr, const Canvas &c) {
+            ostr << "P3\n" << c.width << ' ' << c.height << '\n' << colour_constants::maxvalue << '\n';
 
             int linewidth = 0;
-            for (auto j=0; j < height; ++j) {
+            for (auto j=0; j < c.height; ++j) {
                 bool first = true;
 
-                for (auto i=0; i < width; ++i) {
+                for (auto i=0; i < c.width; ++i) {
                     for (auto rgb = 0; rgb < 3; ++rgb) {
-                        auto cval = (int) ((*c[i][j])[rgb] * colour_constants::maxvalue + 0.5);
+                        auto cval = (int) (c[i][j][rgb] * colour_constants::maxvalue + 0.5);
                         auto val = std::max(0, std::min(cval, colour_constants::maxvalue));
 
                         // Constrain lines to 70 characters as per PPM specifications.

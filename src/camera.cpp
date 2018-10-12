@@ -78,14 +78,14 @@ namespace raytracer {
         return Ray{origin, direction};
     }
 
-    const Canvas Camera::render(World &w) const noexcept {
-        const auto image = Canvas{hsize, vsize};
+    const Canvas Camera::render(const World &w) const noexcept {
+        auto image = Canvas{hsize, vsize};
 
         for (size_t y = 0; y < vsize; ++y)
             for (size_t x = 0; x < hsize; ++x) {
                 const auto ray = ray_for_pixel(x, y);
                 const auto colour = w.colour_at(ray);
-                image[x][y] = std::make_shared<const Colour>(colour);
+                image[x][y] = colour;
             }
 
         return image;

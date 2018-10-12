@@ -42,7 +42,7 @@ namespace raytracer {
 
         const Ray ray_for_pixel(double px, double py) const noexcept;
 
-        const Canvas render(World &w) const noexcept;
+        const Canvas render(const World &w) const noexcept;
     };
 }
 

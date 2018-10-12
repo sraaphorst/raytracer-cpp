@@ -23,8 +23,8 @@ int main() {
     constexpr int size  = 300;
     constexpr int border = 50;
 
-    colour_ptr_t colour_ptr{new Colour{1, 1, 0}};
-    Canvas<size, size> c{};
+    Colour colour{1, 1, 0};
+    Canvas c{size, size};
 
     // Calculate the rotation needed to advance one hour.
     constexpr auto rot = math_constants::pi<> / 6;
@@ -62,7 +62,7 @@ int main() {
 
     for (size_t i = 0; i < 12; ++i) {
         auto newp = rotation_z(i * rot).andThen(sc).andThen(tr) * p;
-        c[newp[tuple_constants::x]][newp[tuple_constants::y]] = colour_ptr;
+        c[newp[tuple_constants::x]][newp[tuple_constants::y]] = colour;
     }
 
     // Let's add hands to show the current time.
@@ -72,8 +72,8 @@ int main() {
     int min  = now2->tm_min;
 
     // Colour of the hour and minute hand.
-    colour_ptr_t hour_colour_ptr{new Colour{1, 0, 0}};
-    colour_ptr_t min_colour_ptr{new Colour{0.5, 0.5, 1}};
+    const auto hour_colour = predefined_colours::red;
+    const auto min_colour  = make_colour(0.5, 0.5, 1);
 
     // Angle per minute.
     constexpr auto minuteangle = math_constants::pi<> / 30;
@@ -83,7 +83,7 @@ int main() {
         auto newp = rotation_z((hour + min / 60.0) * rot)
                 .andThen(scale(i, i, i))
                 .andThen(tr) * p;
-        c[newp[tuple_constants::x]][newp[tuple_constants::y]] = hour_colour_ptr;
+        c[newp[tuple_constants::x]][newp[tuple_constants::y]] = hour_colour;
     }
 
     // Draw the minute hand.
@@ -91,7 +91,7 @@ int main() {
         auto newp = rotation_z(min * minuteangle)
                 .andThen(scale(i, i, i))
                 .andThen(tr) * p;
-        c[newp[tuple_constants::x]][newp[tuple_constants::y]] = min_colour_ptr;
+        c[newp[tuple_constants::x]][newp[tuple_constants::y]] = min_colour;
     }
 
     std::ofstream out("clock.ppm");

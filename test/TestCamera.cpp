@@ -8,6 +8,7 @@
 
 #include "affine_transform.h"
 #include "camera.h"
+#include "canvas.h"
 #include "common.h"
 #include "constmath.h"
 #include "matrix.h"
@@ -65,6 +66,6 @@ TEST_CASE("Rendering a world with a camera") {
     const auto up   = predefined_tuples::y1;
     const Camera c{11, 11, math_constants::pi_by_two<>, view_transform(from, to, up)};
     const auto image = c.render(w);
-    REQUIRE(*image[5][5] == make_colour(0.38066, 0.47583, 0.2855));
+    REQUIRE(image[5][5] == make_colour(0.38066, 0.47583, 0.2855));
 
 }

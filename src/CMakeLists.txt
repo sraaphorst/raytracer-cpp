@@ -7,6 +7,7 @@ add_library(raytracer SHARED
         camera.h
         camera.cpp
         canvas.h
+        canvas.cpp
         common.h
         constmath.h
         hit.h
