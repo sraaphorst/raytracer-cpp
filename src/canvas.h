@@ -38,6 +38,14 @@ namespace raytracer {
             return pixels[idx];
         }
 
+        const size_t getWidth() const noexcept {
+            return width;
+        }
+
+        const size_t getHeight() const noexcept {
+            return height;
+        }
+
         /// Create a stream representing this as a PPM file.
         friend std::ostream &operator<<(std::ostream &ostr, const Canvas &c) {
             ostr << "P3\n" << c.width << ' ' << c.height << '\n' << colour_constants::maxvalue << '\n';

@@ -17,8 +17,8 @@
 namespace raytracer {
     class Projectile {
     private:
-        const Tuple position;
-        const Tuple velocity;
+        Tuple position;
+        Tuple velocity;
 
     public:
         constexpr Projectile(const Tuple &position, const Tuple &velocity): position{position}, velocity{velocity} {
@@ -30,8 +30,10 @@ namespace raytracer {
 
         constexpr Projectile(const Projectile &other) = default;
 
-        std::unique_ptr<Projectile> tick(const WorldConditions w) const {
-            return std::make_unique<Projectile>(position + velocity, velocity + w.gravity + w.wind);
+        Projectile tick(const WorldConditions w) const {
+//            position = position + velocity;
+//            velocity = velocity + w.gravity + w.wind;
+return Projectile{position + velocity, velocity + w.gravity + w.wind};
         }
 
         constexpr const Tuple &getPosition() const {

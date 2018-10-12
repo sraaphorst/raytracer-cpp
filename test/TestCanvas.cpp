@@ -20,14 +20,14 @@ constexpr int width  = 10;
 constexpr int height = 10;
 
 TEST_CASE("Canvas initializes to black", "[Canvas][initialization]") {
-    Canvas<width, height> c;
+    Canvas c{width, height};
     for (auto i=0; i < width; ++i)
         for (auto j=0; j < height; ++j)
-            REQUIRE(*(c[i][j]) == predefined_colours::black);
+            REQUIRE(c[i][j] == predefined_colours::black);
 }
 
 TEST_CASE("Canvas can be written to", "[Canvas][set]") {
-    Canvas<width, height> c;
+    Canvas c{width, height};
 
     constexpr std::array<const Colour, 3> colours{
         predefined_colours::red,
@@ -35,25 +35,20 @@ TEST_CASE("Canvas can be written to", "[Canvas][set]") {
         predefined_colours::blue
     };
 
-    std::array<colour_ptr_t, 3> colour_ptrs;
-    std::transform(colours.cbegin(), colours.cend(),
-            colour_ptrs.begin(),
-            [](auto c){ return colour_ptr_t{new Colour{c}}; });
-
     for (auto i=0; i < width; ++i)
         for (auto j=0; j < width; ++j)
-            c[i][j] = colour_ptrs[(i + j) % 3];
+            c[i][j] = colours[(i + j) % 3];
 
     for (auto i=0; i < width; ++i)
         for (auto j=0; j < height; ++j)
-            REQUIRE(*(c[i][j]) == colours[(i + j) % 3]);
+            REQUIRE((c[i][j]) == colours[(i + j) % 3]);
 }
 
 TEST_CASE("Canvas outputs as PPM", "[Canvas][ppm]") {
-    Canvas<5, 3> c;
-    c[0][0] = colour_ptr_t{new Colour{ 1.5, 0  , 0}};
-    c[2][1] = colour_ptr_t{new Colour{ 0  , 0.5, 0}};
-    c[4][2] = colour_ptr_t{new Colour{-0.5, 0  , 1}};
+    Canvas c{5, 3};
+    c[0][0] = make_colour( 1.5, 0  , 0);
+    c[2][1] = make_colour( 0  , 0.5, 0);
+    c[4][2] = make_colour(-0.5, 0  , 1);
 
     auto s = "P3\n5 3\n" + std::to_string(colour_constants::maxvalue) + '\n' +
             "255 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n"
@@ -66,11 +61,11 @@ TEST_CASE("Canvas outputs as PPM", "[Canvas][ppm]") {
 }
 
 TEST_CASE("Canvas PPM file truncates at 70 characters", "[Canvas][ppm]") {
-    Canvas<10, 2> c;
-    colour_ptr_t colour_ptr{new Colour{1, 0.8, 0.6}};
+    Canvas c{10, 2};
+    const auto colour = make_colour(1, 0.8, 0.6);
     for (auto i=0; i < 10; ++i)
         for (auto j=0; j < 2; ++j)
-            c[i][j] = colour_ptr;
+            c[i][j] = colour;
 
     auto s = "P3\n10 2\n" + std::to_string(colour_constants::maxvalue) + '\n' +
             "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204\n"

@@ -7,6 +7,7 @@
 #include <cassert>
 #include <fstream>
 #include <memory>
+#include <iostream>
 
 #include <canvas.h>
 #include <projectile.h>
@@ -16,20 +17,19 @@
 using namespace raytracer;
 
 int main() {
+    constexpr auto width = 900;
+    constexpr auto height = 550;
     WorldConditions w{make_vector(0, -0.1, 0), make_vector(-0.01, 0, 0)};
-    std::unique_ptr<Projectile> ptr = std::make_unique<Projectile>(
-            make_point(0, 1, 0),
-            make_vector(1, 1.8, 0).normalize() * 11.25);
-    Colour colour{1, 1, 0};
+    const auto colour = make_colour(1, 1, 0);
 
-    Canvas c{900, 550};
-    for (; ptr->inAir(); ptr = std::move(ptr->tick(w))) {
-        auto pos = ptr->getPosition();
-        auto x = (int) pos[tuple_constants::x];
-        auto y = 550 - (int) pos[tuple_constants::y];
+    Canvas c{width, height};
+    for (Projectile p{make_point(0, 1, 0), make_vector(1, 1.8, 0).normalize() * 11.25}; p.inAir(); p = p.tick(w)) {
+        const auto pos = p.getPosition();
+        const auto x = (int) pos[tuple_constants::x];
+        const auto y = height - (int) pos[tuple_constants::y];
 
-        assert(x >= 0 && x <= 900);
-        assert(y >= 0 && y <= 550);
+        assert(x >= 0 && x < width);
+        assert(y >= 0 && y < height);
 
         c[x][y] = colour;
     }

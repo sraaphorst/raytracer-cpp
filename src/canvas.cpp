@@ -8,5 +8,5 @@
 
 namespace raytracer {
     Canvas::Canvas(int width, int height): width{width}, height{height},
-        pixels{height, std::vector<Colour>{width, predefined_colours::black}} {}
+        pixels{width, std::vector<Colour>{height, predefined_colours::black}} {}
 }
