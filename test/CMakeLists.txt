@@ -16,6 +16,7 @@ target_link_libraries(tests Catch)
 
 # Create a list of all tests
 set(TEST_LIST
+        TestCamera
         TestCanvas
         TestColour
         TestIntersection

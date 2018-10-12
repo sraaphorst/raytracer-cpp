@@ -137,6 +137,12 @@ namespace raytracer {
 
     template<typename T>
     constexpr std::enable_if_t<std::is_floating_point_v<T>, T>
+    tanc(T value) {
+        return sinc(value) / cosc(value);
+    }
+
+    template<typename T>
+    constexpr std::enable_if_t<std::is_floating_point_v<T>, T>
     deg_to_rad(T deg) {
         return normalize_radians((deg * math_constants::pi<T>) / 180);
     }

@@ -4,6 +4,8 @@
 project(raytracer VERSION 0.1.0 LANGUAGES CXX)
 
 add_library(raytracer SHARED
+        camera.h
+        camera.cpp
         canvas.h
         common.h
         constmath.h
