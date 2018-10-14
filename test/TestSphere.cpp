@@ -17,7 +17,7 @@
 
 using namespace raytracer;
 
-TEST_CASE("Sphere must return a pair of points if ray intersects it", "[Sphere][Ray][intersect]") {
+TEST_CASE("Sphere: Sphere must return a pair of points if ray intersects it") {
     const Sphere s;
     const Ray r{make_point(0, 0, -5), make_vector(0, 0, 1)};
     const auto xs = s.intersect(r);
@@ -26,7 +26,7 @@ TEST_CASE("Sphere must return a pair of points if ray intersects it", "[Sphere][
     REQUIRE(xs[1].getT() == 6);
 }
 
-TEST_CASE("Sphere must return a pair of equal points if ray intersects at a tangent", "[Sphere][Ray][intersect]") {
+TEST_CASE("Sphere: Sphere must return a pair of equal points if ray intersects at a tangent") {
     const Sphere s;
     const Ray r{make_point(0, 1, -5), make_vector(0, 0, 1)};
     const auto xs = s.intersect(r);
@@ -35,14 +35,14 @@ TEST_CASE("Sphere must return a pair of equal points if ray intersects at a tang
     REQUIRE(xs[1].getT() == 5);
 }
 
-TEST_CASE("Sphere must return empty vector if a ray does not intersect it", "[Sphere][Ray][intersection]") {
+TEST_CASE("Sphere: Sphere must return empty vector if a ray does not intersect it") {
     const Sphere s;
     const Ray r{make_point(0, 2, -5), make_vector(0, 0, 1)};
     const auto xs = s.intersect(r);
     REQUIRE(xs.empty());
 }
 
-TEST_CASE("Sphere should return correct values if ray originates inside it", "[Sphere][Ray][intersection]") {
+TEST_CASE("Sphere: Sphere should return correct values if ray originates inside it") {
     const Sphere s;
     const Ray r{make_point(0, 0, 0), make_vector(0, 0, 1)};
     const auto xs = s.intersect(r);
@@ -50,7 +50,7 @@ TEST_CASE("Sphere should return correct values if ray originates inside it", "[S
     REQUIRE(xs[1].getT() ==  1);
 }
 
-TEST_CASE("Sphere should return correct values if it is behind the ray", "[Sphere][Ray][intersect]") {
+TEST_CASE("Sphere: Sphere should return correct values if it is behind the ray") {
     const Sphere s;
     const Ray r{make_point(0, 0, 5), make_vector(0, 0, 1)};
     const auto xs = s.intersect(r);
@@ -58,7 +58,7 @@ TEST_CASE("Sphere should return correct values if it is behind the ray", "[Spher
     REQUIRE(xs[1].getT() == -4);
 }
 
-TEST_CASE("Intersecting a scaled sphere with a ray") {
+TEST_CASE("Sphere: Intersecting a scaled sphere with a ray") {
     const Ray r{make_point(0, 0, -5), make_vector(0, 0, 1)};
     Sphere s;
     s.setTransformation(scale(2, 2, 2));
@@ -68,7 +68,7 @@ TEST_CASE("Intersecting a scaled sphere with a ray") {
     REQUIRE(xs[1].getT() == 7);
 }
 
-TEST_CASE("Intersecting a translated sphere with a ray") {
+TEST_CASE("Sphere: Intersecting a translated sphere with a ray") {
     const Ray r{make_point(0, 0, -5), make_vector(0, 0, 1)};
     Sphere s;
     s.setTransformation(translation(5, 0, 0));
@@ -76,32 +76,32 @@ TEST_CASE("Intersecting a translated sphere with a ray") {
     REQUIRE(xs.size() == 0);
 }
 
-TEST_CASE("The normal on a sphere at a point on the x-axis") {
+TEST_CASE("Sphere: The normal on a sphere at a point on the x-axis") {
     const Sphere s;
     const auto n = s.normalAt(make_point(1, 0, 0));
     REQUIRE(n == make_vector(1, 0, 0));
 }
 
-TEST_CASE("The normal on a sphere at a point on the y-axis") {
+TEST_CASE("Sphere: The normal on a sphere at a point on the y-axis") {
     const Sphere s;
     const auto n = s.normalAt(make_point(0, 1, 0));
     REQUIRE(n == make_vector(0, 1, 0));
 }
 
-TEST_CASE("The normal on a sphere at a point on the z-axis") {
+TEST_CASE("Sphere: The normal on a sphere at a point on the z-axis") {
     const Sphere s;
     const auto n = s.normalAt(make_point(0, 0, 1));
     REQUIRE(n == make_vector(0, 0, 1));
 }
 
-TEST_CASE("The normal on a sphere at a non-axial point") {
+TEST_CASE("Sphere: The normal on a sphere at a non-axial point") {
     const Sphere s;
     const auto i = sqrtd(3) / 3;
     const auto n = s.normalAt(make_point(i, i, i));
     REQUIRE(n == make_vector(i, i, i));
 }
 
-TEST_CASE("The normal is a normalized vector") {
+TEST_CASE("Sphere: The normal is a normalized vector") {
     const Sphere s;
     const auto i = sqrtd(3) / 3;
     const auto n = s.normalAt(make_point(i, i, i));

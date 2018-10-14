@@ -12,7 +12,7 @@
 
 using namespace raytracer;
 
-TEST_CASE("The default material") {
+TEST_CASE("Material: The default material") {
     const Material m;
     REQUIRE(m.getColour() == make_colour(1, 1, 1));
     REQUIRE(ALMOST_EQUALS(m.getAmbient(), 0.1));
@@ -21,7 +21,7 @@ TEST_CASE("The default material") {
     REQUIRE(m.getShininess() == 200);
 }
 
-TEST_CASE("Lighting with the eye between the light and the surface") {
+TEST_CASE("Material: Lighting with the eye between the light and the surface") {
     constexpr Material m;
     constexpr auto position = predefined_tuples::zero_point;
     constexpr auto eyev = make_vector(0, 0, -1);
@@ -31,7 +31,7 @@ TEST_CASE("Lighting with the eye between the light and the surface") {
     REQUIRE(result == make_colour(1.9, 1.9, 1.9));
 }
 
-TEST_CASE("Lighting with the eye between light and surface, eye offset 45 deg") {
+TEST_CASE("Material: Lighting with the eye between light and surface, eye offset 45 deg") {
     constexpr Material m;
     const auto position = predefined_tuples::zero_point;
     constexpr auto sqrt2by2 = sqrtd(2) / 2;
@@ -42,7 +42,7 @@ TEST_CASE("Lighting with the eye between light and surface, eye offset 45 deg") 
     REQUIRE(result == predefined_colours::white);
 }
 
-TEST_CASE("Lighting with eye opposite surface, light offset 45 deg") {
+TEST_CASE("Material: Lighting with eye opposite surface, light offset 45 deg") {
     constexpr Material m;
     constexpr auto position = predefined_tuples::zero_point;
     constexpr auto eyev = make_vector(0, 0, -1);
@@ -52,7 +52,7 @@ TEST_CASE("Lighting with eye opposite surface, light offset 45 deg") {
     REQUIRE(result == make_colour(0.7364, 0.7364, 0.7364));
 }
 
-TEST_CASE("Lighting with eye in the path of the reflection vector") {
+TEST_CASE("Material: Lighting with eye in the path of the reflection vector") {
     constexpr Material m;
     constexpr auto position = predefined_tuples::zero_point;
     constexpr auto sqrt2by2 = sqrtd(2) / 2;
@@ -63,7 +63,7 @@ TEST_CASE("Lighting with eye in the path of the reflection vector") {
     REQUIRE(result == make_colour(1.6364, 1.6364, 1.6364));
 }
 
-TEST_CASE("Lighting with the light behind the surface") {
+TEST_CASE("Material: Lighting with the light behind the surface") {
     constexpr Material m;
     constexpr auto position = predefined_tuples::zero_point;
     constexpr auto eyev = make_vector(0, 0, -1);
@@ -73,7 +73,7 @@ TEST_CASE("Lighting with the light behind the surface") {
     REQUIRE(result == make_colour(0.1, 0.1, 0.1));
 }
 
-TEST_CASE("Lighting with the surface in shadow") {
+TEST_CASE("Material: Lighting with the surface in shadow") {
     constexpr Material m;
     constexpr auto position = predefined_tuples::zero_point;
     constexpr auto eyev = -predefined_tuples::z1;

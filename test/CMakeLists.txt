@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.12)
 project(raytracer_test)
 
 # Enables testing from this directory downwards.
@@ -40,3 +40,7 @@ foreach(testname ${TEST_LIST})
     add_executable(${testname} ${testfile} ${TEST_SOURCES})
     target_link_libraries(${testname} Catch raytracer)
 endforeach()
+
+list(TRANSFORM TEST_LIST APPEND ".cpp")
+add_executable(TestAll ${TEST_LIST} ${TEST_SOURCES})
+target_link_libraries(TestAll Catch raytracer)

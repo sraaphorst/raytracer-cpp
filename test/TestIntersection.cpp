@@ -18,13 +18,13 @@
 using namespace raytracer;
 using namespace raytracer::transformers;
 
-TEST_CASE("Intersection can be created and initialized", "[Intersection][constructor]") {
+TEST_CASE("Intersection: Intersection can be created and initialized", "[Intersection][constructor]") {
     Intersection it{0.5, std::make_shared<Sphere>()};
     REQUIRE(it.getObject() == Sphere{});
     REQUIRE(it.getT() == 0.5);
 }
 
-TEST_CASE("Intersections can be aggregated", "[Intersections][Intersection][aggregate]") {
+TEST_CASE("Intersection: Intersections can be aggregated", "[Intersections][Intersection][aggregate]") {
     Intersection i1{1, std::make_shared<Sphere>()};
     Intersection i2{2, std::make_shared<Sphere>()};
     const auto is = Intersection::aggregate({i1, i2});
@@ -33,7 +33,7 @@ TEST_CASE("Intersections can be aggregated", "[Intersections][Intersection][aggr
     REQUIRE(is[1] == i2);
 }
 
-TEST_CASE("Intersect sets the object on the intersection") {
+TEST_CASE("Intersection: Intersect sets the object on the intersection") {
     const Ray r{make_point(0, 0, -5), make_vector(0, 0, 1)};
     const Sphere s;
     const auto xs = s.intersect(r);
@@ -42,7 +42,7 @@ TEST_CASE("Intersect sets the object on the intersection") {
     REQUIRE(xs[1].getObject() == s);
 }
 
-TEST_CASE("The hit, when all intersections have positive t") {
+TEST_CASE("Intersection: The hit, when all intersections have positive t") {
     const Intersection i1{1, std::make_shared<Sphere>()};
     const Intersection i2{2, std::make_shared<Sphere>()};
     const auto xs = Intersection::aggregate({i1, i2});
@@ -51,7 +51,7 @@ TEST_CASE("The hit, when all intersections have positive t") {
     REQUIRE(hit.value() == i1);
 }
 
-TEST_CASE("The hit, when some intersections have negative t") {
+TEST_CASE("Intersection: The hit, when some intersections have negative t") {
     const Intersection i1{-1, std::make_shared<Sphere>()};
     const Intersection i2{1, std::make_shared<Sphere>()};
     const auto xs = Intersection::aggregate({i1, i2});
@@ -60,7 +60,7 @@ TEST_CASE("The hit, when some intersections have negative t") {
     REQUIRE(hit.value() == i2);
 }
 
-TEST_CASE("The hit, when all intersections have negative t") {
+TEST_CASE("Intersection: The hit, when all intersections have negative t") {
     const Intersection i1{-1, std::make_shared<Sphere>()};
     const Intersection i2{-2, std::make_shared<Sphere>()};
     const auto xs = Intersection::aggregate({i1, i2});
@@ -68,7 +68,7 @@ TEST_CASE("The hit, when all intersections have negative t") {
     REQUIRE_FALSE(hit.has_value());
 }
 
-TEST_CASE("The hit is always the lowest non-negative intersection") {
+TEST_CASE("Intersection: The hit is always the lowest non-negative intersection") {
     const Intersection i1{5, std::make_shared<Sphere>()};
     const Intersection i2{7, std::make_shared<Sphere>()};
     const Intersection i3{-3, std::make_shared<Sphere>()};
@@ -79,7 +79,7 @@ TEST_CASE("The hit is always the lowest non-negative intersection") {
     REQUIRE(hit.value() == i4);
 }
 
-TEST_CASE("Precomputing the state of an intersection") {
+TEST_CASE("Intersection: Precomputing the state of an intersection") {
     const Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
     const Intersection i{4, std::make_shared<const Sphere>()};
     const auto hit = Intersection::prepare_hit(i, ray);
@@ -88,14 +88,14 @@ TEST_CASE("Precomputing the state of an intersection") {
     REQUIRE(hit.getNormalVector() == make_vector(0, 0, -1));
 }
 
-TEST_CASE("An intersection occurs on the outside") {
+TEST_CASE("Intersection: An intersection occurs on the outside") {
     const Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
     const Intersection i{4, std::make_shared<const Sphere>()};
     const auto hit = Intersection::prepare_hit(i, ray);
     REQUIRE_FALSE(hit.isInside());
 }
 
-TEST_CASE("An intersection occurs on the inside") {
+TEST_CASE("Intersection: An intersection occurs on the inside") {
     const Ray ray{make_point(0, 0, 0), make_vector(0, 0, 1)};
     const Intersection i{1, std::make_shared<const Sphere>()};
     const auto hit = Intersection::prepare_hit(i, ray);
@@ -105,7 +105,7 @@ TEST_CASE("An intersection occurs on the inside") {
     REQUIRE(hit.getNormalVector() == make_vector(0, 0, -1)); // inverted
 }
 
-TEST_CASE("The point is offset") {
+TEST_CASE("Intersection: The point is offset") {
     const Ray ray{make_point(0, 0, -5), predefined_tuples::z1};
     const Intersection i{4, std::make_shared<const Sphere>()};
     const auto hit = Intersection::prepare_hit(i, ray);

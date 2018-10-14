@@ -4,7 +4,6 @@
  * By Sebastian Raaphorst, 2018.
  */
 
-#include <iostream>
 #include <vector>
 
 #include "affine_transform.h"
@@ -43,7 +42,6 @@ private:
     }
 
     const raytracer::Tuple localNormalAt(const raytracer::Tuple &point) const noexcept override {
-        std::cout << "POINT: " << point[0] << "," << point[1] << "," << point[2] << '\n';
         return point - raytracer::predefined_tuples::zero_point;
     }
 };

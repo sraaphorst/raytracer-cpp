@@ -11,7 +11,7 @@
 
 using namespace raytracer;
 
-TEST_CASE("A point light has a position and intensity") {
+TEST_CASE("Lights: A point light has a position and intensity") {
     constexpr auto intensity = make_colour(1, 1, 1);
     constexpr auto position  = make_point(0, 0, 0);
     constexpr auto light     = PointLight(position, intensity);

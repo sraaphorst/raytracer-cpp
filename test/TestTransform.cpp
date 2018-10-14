@@ -14,7 +14,7 @@
 
 using namespace raytracer;
 
-TEST_CASE("translation should produce the desired matrix", "[Transformation][translation]") {
+TEST_CASE("Transform: translation should produce the desired matrix") {
     constexpr auto trans = translation(5, -3, 2);
     constexpr Transformation tExpect = {{1, 0, 0,  5},
                                         {0, 1, 0, -3},
@@ -23,13 +23,13 @@ TEST_CASE("translation should produce the desired matrix", "[Transformation][tra
     REQUIRE(trans == tExpect);
 }
 
-TEST_CASE("translation should be able to move points", "[Transformation][translation]") {
+TEST_CASE("Transform: translation should be able to move points") {
     constexpr auto trans = translation(5, -3, 2);
     constexpr auto p = make_point(-3, 4, 5);
     REQUIRE(trans * p == make_point(2, 1, 7));
 }
 
-TEST_CASE("translation should have an inverse that reverses the translation", "[Transformation][translation]") {
+TEST_CASE("Transform: translation should have an inverse that reverses the translation") {
     constexpr auto trans = translation(5, -3, 2);
     constexpr auto tinv = translation(-5, 3, -2);
     constexpr auto p = make_point(2, 1, 7);
@@ -38,13 +38,13 @@ TEST_CASE("translation should have an inverse that reverses the translation", "[
     REQUIRE(trans.invert() * trans == predefined_matrices::I<double, 4>);
 }
 
-TEST_CASE("translation should not affect vectors", "[Transformation][translation]") {
+TEST_CASE("Transform: translation should not affect vectors") {
     constexpr auto trans = translation(5, -3, 2);
     constexpr auto v = make_vector(1, 1, 1);
     REQUIRE(trans * v == v);
 }
 
-TEST_CASE("scale should scale points", "[Transformation][scale]") {
+TEST_CASE("Transform: scale should scale points") {
     constexpr auto m1 = scale(2, 3, 4);
     constexpr auto m2 = scale(-0.5, 0.5, 0.5);
     constexpr auto p = make_point(-4, 6, 8);
@@ -53,13 +53,13 @@ TEST_CASE("scale should scale points", "[Transformation][scale]") {
     REQUIRE(m2 * p == make_point(2, 3, 4));
 }
 
-TEST_CASE("scale should scale vectors", "[Transformation][scale]") {
+TEST_CASE("Transform: scale should scale vectors") {
     constexpr auto m1 = scale(2, 3, 4);
     constexpr auto p = make_vector(-4, 6, 8);
     REQUIRE(m1 * p == make_vector(-8, 18, 32));
 }
 
-TEST_CASE("scale by inverse of scale matrix should move points and vectors back to original location", "[Transformation][scale]") {
+TEST_CASE("Transform: scale by inverse of scale matrix should move points and vectors back to original location") {
     constexpr auto m = scale(2, 3, 4);
     constexpr auto minv = m.invert();
     constexpr auto p = make_point(-4, 6, 8);
@@ -69,7 +69,7 @@ TEST_CASE("scale by inverse of scale matrix should move points and vectors back 
     REQUIRE(minv * (m * v) == v);
 }
 
-TEST_CASE("scale should be able to represent reflections", "[Transformation][scale]") {
+TEST_CASE("Transform: scale should be able to represent reflections") {
     constexpr auto m = scale(-1, 1, 1);
     constexpr auto p = make_point(-4, 6, 8);
     constexpr auto v = make_vector(8, -12, -16);
@@ -78,7 +78,7 @@ TEST_CASE("scale should be able to represent reflections", "[Transformation][sca
     REQUIRE(m * v == -make_vector(8, 12, 16));
 }
 
-TEST_CASE("rotation_x should rotate around the x axis", "[Transformation][rotation]") {
+TEST_CASE("Transform: rotation_x should rotate around the x axis") {
     constexpr auto p = make_point(0, 1, 0);
     constexpr auto half_quarter = rotation_x(math_constants::pi_by_four<>);
     constexpr auto full_quarter = rotation_x(math_constants::pi_by_two<>);
@@ -87,7 +87,7 @@ TEST_CASE("rotation_x should rotate around the x axis", "[Transformation][rotati
     REQUIRE(full_quarter * p == make_point(0, 0, 1));
 }
 
-TEST_CASE("rotation_x inverse should rotate in the opposite direction", "[Transformation][rotation]") {
+TEST_CASE("Transform: rotation_x inverse should rotate in the opposite direction") {
     constexpr auto p = make_point(0, 1, 0);
     constexpr auto half_quarter = rotation_x(math_constants::pi_by_four<>);
     constexpr auto sqrt2_by_2 = sqrtd(2)/2;
@@ -95,7 +95,7 @@ TEST_CASE("rotation_x inverse should rotate in the opposite direction", "[Transf
     REQUIRE(half_quarter.invert() * p == make_point(0, sqrt2_by_2, -sqrt2_by_2));
 }
 
-TEST_CASE("rotation_y should rotate a point around the y axis", "[Transformation][rotation]") {
+TEST_CASE("Transform: rotation_y should rotate a point around the y axis") {
     constexpr auto p = make_point(0, 0, 1);
     constexpr auto half_quarter = rotation_y(math_constants::pi_by_four<>);
     constexpr auto full_quarter = rotation_y(math_constants::pi_by_two<>);
@@ -104,7 +104,7 @@ TEST_CASE("rotation_y should rotate a point around the y axis", "[Transformation
     REQUIRE(full_quarter * p == make_point(1, 0, 0));
 }
 
-TEST_CASE("rotation_z should rotate a point around the z axis", "[Transformation][rotiation]") {
+TEST_CASE("Transform: rotation_z should rotate a point around the z axis") {
     constexpr auto p = make_point(0, 1, 0);
     constexpr auto half_quarter = rotation_z(math_constants::pi_by_four<>);
     constexpr auto full_quarter = rotation_z(math_constants::pi_by_two<>);
@@ -113,43 +113,43 @@ TEST_CASE("rotation_z should rotate a point around the z axis", "[Transformation
     REQUIRE(full_quarter * p == make_point(-1, 0, 0));
 }
 
-TEST_CASE("skew should move x in proportion to y", "[Transformation][skew]") {
+TEST_CASE("Transform: skew should move x in proportion to y") {
     constexpr auto m = skew(1, 0, 0, 0, 0, 0);
     constexpr auto p = make_point(2, 3, 4);
     REQUIRE(m * p == make_point(5, 3, 4));
 }
 
-TEST_CASE("skew should move x in proportion to z", "[Transformation][skew]") {
+TEST_CASE("Transform: skew should move x in proportion to z") {
     constexpr auto m = skew(0, 1, 0, 0, 0, 0);
     constexpr auto p = make_point(2, 3, 4);
     REQUIRE(m * p == make_point(6, 3, 4));
 }
 
-TEST_CASE("skew should move y in proportion to x", "[Transformation][skew]") {
+TEST_CASE("Transform: skew should move y in proportion to x") {
     constexpr auto m = skew(0, 0, 1, 0, 0, 0);
     constexpr auto p = make_point(2, 3, 4);
     REQUIRE(m * p == make_point(2, 5, 4));
 }
 
-TEST_CASE("skew should move y in proportion to z", "[Transformation][skew]") {
+TEST_CASE("Transform: skew should move y in proportion to z") {
     constexpr auto m = skew(0, 0, 0, 1, 0, 0);
     constexpr auto p = make_point(2, 3, 4);
     REQUIRE(m * p == make_point(2, 7, 4));
 }
 
-TEST_CASE("skew should move z in proportion to x", "[Transformation][skew]") {
+TEST_CASE("Transform: skew should move z in proportion to x") {
     constexpr auto m = skew(0, 0, 0, 0, 1, 0);
     constexpr auto p = make_point(2, 3, 4);
     REQUIRE(m * p == make_point(2, 3, 6));
 }
 
-TEST_CASE("skew should move z in proportion to y", "[Transformation][skew]") {
+TEST_CASE("Transform: skew should move z in proportion to y") {
     constexpr auto m = skew(0, 0, 0, 0, 0, 1);
     constexpr auto p = make_point(2, 3, 4);
     REQUIRE(m * p == make_point(2, 3, 7));
 }
 
-TEST_CASE("individual transformations should applied in sequence", "[Transformation]") {
+TEST_CASE("Transform: individual transformations should applied in sequence") {
     constexpr auto p = make_point(1, 0, 1);
     constexpr auto A = rotation_x(math_constants::pi_by_two<>);
     constexpr auto B = scale(5, 5, 5);
@@ -162,7 +162,7 @@ TEST_CASE("individual transformations should applied in sequence", "[Transformat
     REQUIRE(s == make_point(15, 0, 7));
 }
 
-TEST_CASE("chained transformations should be applied in reverse order", "[Transformation]") {
+TEST_CASE("Transform: chained transformations should be applied in reverse order") {
     constexpr auto p = make_point(1, 0, 1);
     constexpr auto A = rotation_x(math_constants::pi_by_two<>);
     constexpr auto B = scale(5, 5, 5);
@@ -171,7 +171,7 @@ TEST_CASE("chained transformations should be applied in reverse order", "[Transf
     REQUIRE(T * p == make_point(15, 0, 7));
 }
 
-TEST_CASE("andThen should allow us to apply transformations in the desired order", "[Transformation]") {
+TEST_CASE("Transform: andThen should allow us to apply transformations in the desired order") {
     constexpr auto p = make_point(1, 0, 1);
     constexpr auto transform = predefined_matrices::I<double, 4>
             .andThen(rotation_x(math_constants::pi_by_two<>))
@@ -180,7 +180,7 @@ TEST_CASE("andThen should allow us to apply transformations in the desired order
     REQUIRE(transform * p == make_point(15, 0, 7));
 }
 
-TEST_CASE("andThen should be the same as multiplying the transformation matrices in reverse order", "[Transfomation]") {
+TEST_CASE("Transform: andThen should be the same as multiplying the transformation matrices in reverse order") {
     constexpr auto A = translation(1, 2, 3);
     constexpr auto B = skew(1, 1.5, -2, -3, 1, -1);
     constexpr auto C = rotation_x(math_constants::pi_by_four<>);
@@ -190,7 +190,7 @@ TEST_CASE("andThen should be the same as multiplying the transformation matrices
     REQUIRE(D * C * B * A == A.andThen(B).andThen(C).andThen(D));
 }
 
-TEST_CASE("The transformation matrix for the default orientation") {
+TEST_CASE("Transform: The transformation matrix for the default orientation") {
     constexpr auto from = make_point(0, 0,  0);
     constexpr auto to   = make_point(0, 0, -1);
     constexpr auto up   = make_vector(0, 1, 0);
@@ -198,7 +198,7 @@ TEST_CASE("The transformation matrix for the default orientation") {
     REQUIRE(t1 == predefined_matrices::I<double, 4>);
 }
 
-TEST_CASE("The view transformation moves the world") {
+TEST_CASE("Transform: The view transformation moves the world") {
     constexpr auto from = make_point(0, 0, 8);
     constexpr auto to   = make_point(0, 0, 0);
     constexpr auto up   = make_vector(0, 1, 0);
@@ -206,7 +206,7 @@ TEST_CASE("The view transformation moves the world") {
     REQUIRE(t1 == translation(0, 0, -8));
 }
 
-TEST_CASE("An arbitrary view transformation") {
+TEST_CASE("Transform: An arbitrary view transformation") {
     constexpr auto from = make_point(1,  3, 2);
     constexpr auto to   = make_point(4, -2, 8);
     constexpr auto up   = make_vector(1, 1, 0);

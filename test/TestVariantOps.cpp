@@ -82,7 +82,7 @@ struct S0 {
 
 using namespace raytracer::variant_ops;
 
-TEST_CASE("variant arrays can be built up from zero", "[variant_ops]") {
+TEST_CASE("VariantOps: variant arrays can be built up from zero") {
     constexpr std::array<std::variant<Variant_Monoid::zero>, 0> s0{};
     REQUIRE(s0.empty());
 
@@ -96,14 +96,14 @@ TEST_CASE("variant arrays can be built up from zero", "[variant_ops]") {
     REQUIRE(s2[1] == std::variant<double, Variant_Monoid::zero, int>{5});
 }
 
-TEST_CASE("variant arrays can have the same type added to them multiple times", "[variant_ops]") {
+TEST_CASE("VariantOps: variant arrays can have the same type added to them multiple times") {
     constexpr std::array<std::variant<int>, 2> s2{0, 1};
     constexpr std::array<std::variant<int>, 3> s3 = va_prepend_element(-1, s2);
     constexpr std::array<std::variant<int>, 4> s4 = va_append_element(s3, 2);
     REQUIRE(s4 == std::array<std::variant<int>, 4>{-1, 0, 1, 2,});
 }
 
-TEST_CASE("variant arrays can act pseudopolymorphically", "[variant_ops][pseudopolymorphism]") {
+TEST_CASE("VariantOps: variant arrays can act pseudopolymorphically") {
     using variants_all = std::variant<S1, S2, S3, S4, S5, S6, S7, S8, S0>;
     constexpr std::array<variants_all, 9> arr = {{S0{0}, S1{}, S2{}, S3{}, S4{}, S5{}, S6{}, S7{}, S8{}}};
     constexpr std::array<int, 9> intarr = va_map<int>(arr, [](auto &&a) { return a.val(); });
