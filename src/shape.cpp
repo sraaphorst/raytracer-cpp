@@ -16,14 +16,6 @@
 namespace raytracer {
     Shape::Shape() noexcept: transformation{predefined_matrices::I<double, 4>}, material{} {}
 
-    const std::vector<Intersection> Shape::intersect(const Ray &r0) const noexcept {
-        // Transform the ray to object space.
-        const Ray r = r0.transform(getTransformation().invert());
-
-        // Return the shape-dependent implementation results.
-        return local_intersect(r);
-    }
-
     bool Shape::operator==(const Shape &other) const noexcept {
         return typeid(*this) == typeid(other)
                && transformation == other.transformation
@@ -33,5 +25,25 @@ namespace raytracer {
 
     bool Shape::operator!=(const Shape &other) const noexcept {
         return !(*this == other);
+    }
+
+    const std::vector<Intersection> Shape::intersect(const Ray &r0) const noexcept {
+        // Transform the ray to object space.
+        const Ray r = r0.transform(getTransformation().invert());
+
+        // Return the shape-dependent implementation results.
+        return localIntersection(r);
+    }
+
+    const Tuple Shape::normalAt(const Tuple &point) const noexcept {
+        // Transform the point to object space.
+        const auto local_point = transformation.invert() * point;
+        const auto local_normal = localNormalAt(local_point);
+        const auto world_normal = transformation.invert().transpose() * local_normal;
+
+        // w could have a value after this, so get rid of it.
+        return make_vector(world_normal[tuple_constants::x],
+                           world_normal[tuple_constants::y],
+                           world_normal[tuple_constants::z]).normalize();
     }
 }

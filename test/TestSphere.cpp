@@ -10,6 +10,7 @@
 
 #include "affine_transform.h"
 #include "constmath.h"
+#include "intersection.h"
 #include "ray.h"
 #include "sphere.h"
 #include "vector.h"
@@ -105,10 +106,4 @@ TEST_CASE("The normal is a normalized vector") {
     const auto i = sqrtd(3) / 3;
     const auto n = s.normalAt(make_point(i, i, i));
     REQUIRE(n == n.normalize());
-}
-
-TEST_CASE("Computing the normal on a translated sphere") {
-    const Sphere s{translation(0, 1, 0)};
-    const auto n = s.normalAt(make_point(0, 1.70711, -0.70711));
-    REQUIRE(n == make_vector(0, .70711, -0.70711));
 }

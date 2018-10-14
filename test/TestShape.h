@@ -4,6 +4,7 @@
  * By Sebastian Raaphorst, 2018.
  */
 
+#include <iostream>
 #include <vector>
 
 #include "affine_transform.h"
@@ -17,9 +18,14 @@
  * This is a class that implements just enough of Shape to be a concrete implementation,
  * so as to be used to isolate and test the common characteristics of all subclasses of Shape.
  */
-class TestShape final: public raytracer::Shape {
-public:
+struct TestShape final: raytracer::Shape {
+    // Saves the ray passed to localIntersection to make sure the proper transformation happens.
+    raytracer::Ray saved_ray;
+
     TestShape() = default;
+
+    template<typename T>
+    explicit TestShape(T&& t): Shape{t} {}
 
     template<typename T, typename S>
     TestShape(T&& transformation, S&& material) noexcept: raytracer::Shape{transformation, material} {}
@@ -28,12 +34,16 @@ public:
     TestShape(TestShape&&) noexcept = default;
     TestShape &operator=(const TestShape&) noexcept = default;
 
-    const raytracer::Tuple normalAt(const raytracer::Tuple &p) const noexcept override {
-        return raytracer::predefined_tuples::zero_vector;
+private:
+    /// Since this has no actual form, it just saves the ray to make sure it is properly translated to object space.
+    const std::vector<raytracer::Intersection> localIntersection(const raytracer::Ray &r) const noexcept override {
+        // This is an exceptional situation.
+        const_cast<TestShape*>(this)->saved_ray = r;
+        return {};
     }
 
-private:
-    const std::vector<raytracer::Intersection> local_intersect(const raytracer::Ray&) const noexcept override {
-        return {};
+    const raytracer::Tuple localNormalAt(const raytracer::Tuple &point) const noexcept override {
+        std::cout << "POINT: " << point[0] << "," << point[1] << "," << point[2] << '\n';
+        return point - raytracer::predefined_tuples::zero_point;
     }
 };

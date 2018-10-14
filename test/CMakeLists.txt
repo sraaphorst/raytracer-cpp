@@ -24,6 +24,7 @@ set(TEST_LIST
         TestMaterial
         TestMath
         TestMatrix
+        TestPlane
         TestRay
         TestShape
         TestSphere

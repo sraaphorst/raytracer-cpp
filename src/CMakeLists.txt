@@ -18,6 +18,8 @@ add_library(raytracer SHARED
         material.cpp
         matrix.h
         meta.h
+        plane.h
+        plane.cpp
         pointlight.h
         projectile.h
         projectile.cpp
@@ -25,6 +27,7 @@ add_library(raytracer SHARED
         shape.h
         shape.cpp
         sphere.h
+        sphere.cpp
         transformers.h
         vector.h
         variant_ops.h

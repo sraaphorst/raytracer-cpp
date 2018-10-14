@@ -21,14 +21,11 @@ namespace raytracer {
     public:
         Shape() noexcept;
 
+        template<typename T>
+        explicit Shape(T&& t): transformation{t}, material{Material{}} {}
+
         template<typename T, typename S>
         Shape(T&& transformation, S&& material) noexcept: transformation{transformation}, material{material} {}
-
-        /**
-         * Convert the ray to object space and then pass it to the concrete implementation of local_intersect,
-         * which is subbclass-dependent.
-         */
-        const std::vector<Intersection> intersect(const Ray&) const noexcept;
 
         /**
          * Compare type compatibility, transformation and material, and then invoke the concrete implementation,
@@ -77,7 +74,17 @@ namespace raytracer {
             material = m;
         }
 
-        virtual const Tuple normalAt(const Tuple &p) const noexcept = 0;
+        /**
+         * Convert the ray to object space and then pass it to the concrete implementation of local_intersect,
+         * which is subclass-dependent.
+         */
+        const std::vector<Intersection> intersect(const Ray&) const noexcept;
+
+        /**
+         * Takes a point and transforms it to object space. It is then passed to localNormalAt, which is
+         * subclass-dependent. The normal vector is then translated back to world space and returned.
+         */
+        const Tuple normalAt(const Tuple &p) const noexcept;
 
     protected:
         /**
@@ -91,7 +98,15 @@ namespace raytracer {
          * The intersect method transforms the ray to object space and passes it to this method, which
          * should comprise the concrete implementation of calculating the intersections with the implemented Shape.
          */
-        virtual const std::vector<Intersection> local_intersect(const Ray &r) const noexcept = 0;
+        virtual const std::vector<Intersection> localIntersection(const Ray &r) const noexcept = 0;
+
+        /**
+         * The normalAt method transforms the point to object space and passes it to this method, which
+         * should comprise the concrete implementation of calculating the normal vector at the point for the
+         * implemented Shape. The normalAt method then translates it back to world space.
+         */
+        virtual const Tuple localNormalAt(const Tuple&) const noexcept = 0;
+
 
         Transformation transformation;
         Material material;
