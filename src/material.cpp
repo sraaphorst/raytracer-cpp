@@ -26,10 +26,15 @@ namespace raytracer {
     }
 
     Colour Material::lighting(const PointLight &light, const Tuple &point,
-                    const Tuple &eyev, const Tuple &normalv) const noexcept {
+                    const Tuple &eyev, const Tuple &normalv, bool in_shadow) const noexcept {
         const auto effective_colour = colour * light.getIntensity();
         const auto lightv = (light.getPosition() - point).normalize();
         const auto ambient_component = ambient * effective_colour;
+
+        // If the point is in shadow, we only use the ambient component.
+        if (in_shadow)
+            return ambient_component;
+
         const auto light_dot_normal = lightv.dot_product(normalv);
 
         const auto diffuse_component = (light_dot_normal < 0)

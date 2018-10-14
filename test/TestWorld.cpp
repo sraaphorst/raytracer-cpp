@@ -77,7 +77,10 @@ TEST_CASE("Shading an intersection from the inside") {
     auto hit = Intersection::prepare_hit(i, ray);
     auto cOpt = w.shade_hit(hit);
     REQUIRE(cOpt.has_value());
-    REQUIRE(cOpt.value() == make_colour(0.90498, 0.90498, 0.90498));
+
+    // After shadowing is implemented, we only have the ambient component.
+    //REQUIRE(cOpt.value() == make_colour(0.90498, 0.90498, 0.90498));
+    REQUIRE(cOpt.value() == make_colour(0.1, 0.1, 0.1));
 }
 
 TEST_CASE("The colour when a ray misses") {
@@ -114,3 +117,44 @@ TEST_CASE("The colour when a ray hits") {
 //    Ray ray{make_point(0, 0, -0.75), make_vector(0, 0, 1)};
 //    REQUIRE(w.colour_at(ray) == inner->getMaterial().getColour());
 //}
+
+TEST_CASE("There is no shadow when nothing is collinear with point and light") {
+    const auto w = World::getDefaultWorld();
+    constexpr auto p = make_point(0, 10, 0);
+    REQUIRE_FALSE(w.is_shadowed(p));
+}
+
+TEST_CASE("Shadow when an object is between the point and the light") {
+    const auto w = World::getDefaultWorld();
+    constexpr auto p = make_point(10, -10, 10);
+    REQUIRE(w.is_shadowed(p));
+}
+
+TEST_CASE("There is no shadow when an object is behind the light") {
+    const auto w = World::getDefaultWorld();
+    constexpr auto p = make_point(-20, 20, -20);
+    REQUIRE_FALSE(w.is_shadowed(p));
+}
+
+TEST_CASE("There is no shadow when an object is behind the point") {
+    const auto w = World::getDefaultWorld();
+    constexpr auto p = make_point(-2, -2, -2);
+    REQUIRE_FALSE(w.is_shadowed(p));
+}
+
+TEST_CASE("When shade_hit is given an intersection in shadow") {
+    const PointLight light{make_point(0, 0, -10), predefined_colours::white};
+    const std::shared_ptr<Shape> s1{std::make_shared<Sphere>()};
+    const std::shared_ptr<Shape> s2{std::make_shared<Sphere>(translation(0, 0, 10))};
+    const std::vector<std::shared_ptr<Shape>> shapes = {s1, s2};
+    const World w{light, shapes};
+    const Ray ray{make_point(0, 0, 5), predefined_tuples::z1};
+    const Intersection i{4, s2};
+    const auto hit = Intersection::prepare_hit(i, ray);
+    const auto c = w.shade_hit(hit);
+    for (size_t x = 0; x < 3; ++x)
+        std::cout << " " << c.value()[x];
+    std::cout << std::endl;
+    REQUIRE(c.has_value());
+    REQUIRE(c.value() == make_colour(0.1, 0.1, 0.1));
+}

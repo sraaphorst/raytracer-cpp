@@ -89,6 +89,10 @@ namespace raytracer {
         constexpr static double DEFAULT_SHININESS = 200;
 
         // Calculate the lighting of this material.
-        Colour lighting(const PointLight &light, const Tuple &point, const Tuple &eyev, const Tuple &normalv) const noexcept;
+        Colour lighting(const PointLight &light,
+                        const Tuple &point,
+                        const Tuple &eyev,
+                        const Tuple &normalv,
+                        bool in_shadow) const noexcept;
     };
 }

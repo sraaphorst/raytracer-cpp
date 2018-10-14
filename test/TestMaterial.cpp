@@ -27,11 +27,8 @@ TEST_CASE("Lighting with the eye between the light and the surface") {
     constexpr auto eyev = make_vector(0, 0, -1);
     constexpr auto normalv = make_vector(0, 0, -1);
     constexpr PointLight light{make_point(0, 0, -10), predefined_colours::white};
-    const auto result = m.lighting(light, position, eyev, normalv);
-
-    REQUIRE(ALMOST_EQUALS(result[colour_constants::r], 1.9));
-    REQUIRE(ALMOST_EQUALS(result[colour_constants::g], 1.9));
-    REQUIRE(ALMOST_EQUALS(result[colour_constants::b], 1.9));
+    const auto result = m.lighting(light, position, eyev, normalv, false);
+    REQUIRE(result == make_colour(1.9, 1.9, 1.9));
 }
 
 TEST_CASE("Lighting with the eye between light and surface, eye offset 45 deg") {
@@ -41,11 +38,8 @@ TEST_CASE("Lighting with the eye between light and surface, eye offset 45 deg") 
     constexpr auto eyev = make_vector(0, sqrt2by2, -sqrt2by2);
     constexpr auto normalv = make_vector(0, 0, -1);
     constexpr PointLight light{make_point(0, 0, -10), predefined_colours::white};
-    const auto result = m.lighting(light, position, eyev, normalv);
-
-    REQUIRE(ALMOST_EQUALS(result[colour_constants::r], 1.0));
-    REQUIRE(ALMOST_EQUALS(result[colour_constants::g], 1.0));
-    REQUIRE(ALMOST_EQUALS(result[colour_constants::b], 1.0));
+    const auto result = m.lighting(light, position, eyev, normalv, false);
+    REQUIRE(result == predefined_colours::white);
 }
 
 TEST_CASE("Lighting with eye opposite surface, light offset 45 deg") {
@@ -54,11 +48,8 @@ TEST_CASE("Lighting with eye opposite surface, light offset 45 deg") {
     constexpr auto eyev = make_vector(0, 0, -1);
     constexpr auto normalv = make_vector(0, 0, -1);
     constexpr PointLight light{make_point(0, 10, -10), predefined_colours::white};
-    const auto result = m.lighting(light, position, eyev, normalv);
-
-    REQUIRE(ALMOST_EQUALS(result[colour_constants::r], 0.7364));
-    REQUIRE(ALMOST_EQUALS(result[colour_constants::g], 0.7364));
-    REQUIRE(ALMOST_EQUALS(result[colour_constants::b], 0.7364));
+    const auto result = m.lighting(light, position, eyev, normalv, false);
+    REQUIRE(result == make_colour(0.7364, 0.7364, 0.7364));
 }
 
 TEST_CASE("Lighting with eye in the path of the reflection vector") {
@@ -68,11 +59,8 @@ TEST_CASE("Lighting with eye in the path of the reflection vector") {
     constexpr auto eyev = make_vector(0, -sqrt2by2, -sqrt2by2);
     constexpr auto normalv = make_vector(0, 0, -1);
     constexpr PointLight light{make_point(0, 10, -10), predefined_colours::white};
-    const auto result = m.lighting(light, position, eyev, normalv);
-
-    REQUIRE(ALMOST_EQUALS(result[colour_constants::r], 1.6364));
-    REQUIRE(ALMOST_EQUALS(result[colour_constants::g], 1.6364));
-    REQUIRE(ALMOST_EQUALS(result[colour_constants::b], 1.6364));
+    const auto result = m.lighting(light, position, eyev, normalv, false);
+    REQUIRE(result == make_colour(1.6364, 1.6364, 1.6364));
 }
 
 TEST_CASE("Lighting with the light behind the surface") {
@@ -81,9 +69,17 @@ TEST_CASE("Lighting with the light behind the surface") {
     constexpr auto eyev = make_vector(0, 0, -1);
     constexpr auto normalv = make_vector(0, 0, -1);
     constexpr PointLight light{make_point(0, 0, 10), predefined_colours::white};
-    const auto result = m.lighting(light, position, eyev, normalv);
+    const auto result = m.lighting(light, position, eyev, normalv, false);
+    REQUIRE(result == make_colour(0.1, 0.1, 0.1));
+}
 
-    REQUIRE(ALMOST_EQUALS(result[colour_constants::r], 0.1));
-    REQUIRE(ALMOST_EQUALS(result[colour_constants::g], 0.1));
-    REQUIRE(ALMOST_EQUALS(result[colour_constants::b], 0.1));
+TEST_CASE("Lighting with the surface in shadow") {
+    constexpr Material m;
+    constexpr auto position = predefined_tuples::zero_point;
+    constexpr auto eyev = -predefined_tuples::z1;
+    constexpr auto normalv = -predefined_tuples::z1;
+    constexpr PointLight light{make_point(0, 0, -10), predefined_colours::white};
+    constexpr bool in_shadow = true;
+    const auto result = m.lighting(light, position, eyev, normalv, in_shadow);
+    REQUIRE(result == make_colour(0.1, 0.1, 0.1));
 }

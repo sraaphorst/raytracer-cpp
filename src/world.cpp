@@ -64,8 +64,10 @@ namespace raytracer {
         if (!(light.has_value() && hit.has_value()))
             return {};
 
+        const auto shadowed = is_shadowed(hit->getPoint());
+
         return hit->getObject().getMaterial().lighting(light.value(),
-                hit->getPoint(), hit->getEyeVector(), hit->getNormalVector());
+                hit->getPoint(), hit->getEyeVector(), hit->getNormalVector(), shadowed);
     }
 
     const Colour World::colour_at(const Ray &ray) const noexcept {
@@ -79,6 +81,19 @@ namespace raytracer {
         return shade.value_or(predefined_colours::black);
     }
 
+    bool World::is_shadowed(const Tuple &point) const noexcept {
+        if (!light.has_value())
+            return false;
+        const auto v = light.value().getPosition() - point;
+        const auto distance = v.magnitude();
+        const auto direction = v.normalize();
+
+        // Cast a shadow ray to see if it intersects anything.
+        const Ray ray{point, direction};
+        const auto xs = intersect(ray);
+        const auto hit = Intersection::hit(xs);
+        return hit.has_value() && hit.value().getT() < distance;
+    }
 
     World World::getDefaultWorld() noexcept {
         std::shared_ptr<Shape> s1{new Sphere{notransform(),

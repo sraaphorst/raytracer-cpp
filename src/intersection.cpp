@@ -43,6 +43,12 @@ namespace raytracer {
         const auto eyev  = -ray.getDirection();
         const auto normalv = hit.getObject().normalAt(point);
         const bool inside = normalv.dot_product(eyev) < 0;
-        return Hit{hit, point, eyev, (inside ? -1 : 1) * normalv, inside};
+
+        // Slightly offset the point from the expected value to prevent acne.
+        // 1e-4 is arbitrary and depends on the scale of the scene; it is sufficient unless dealing with very
+        // small distances.
+        const auto adjusted_point = point + normalv * 1e-4;
+
+        return Hit{hit, adjusted_point, eyev, (inside ? -1 : 1) * normalv, inside};
     }
 }

@@ -104,3 +104,12 @@ TEST_CASE("An intersection occurs on the inside") {
     REQUIRE(hit.getEyeVector() == make_vector(0, 0, -1));
     REQUIRE(hit.getNormalVector() == make_vector(0, 0, -1)); // inverted
 }
+
+TEST_CASE("The point is offset") {
+    const Ray ray{make_point(0, 0, -5), predefined_tuples::z1};
+    const Intersection i{4, std::make_shared<const Sphere>()};
+    const auto hit = Intersection::prepare_hit(i, ray);
+    const auto z = hit.getPoint()[tuple_constants::z];
+    REQUIRE(-1.1 < z);
+    REQUIRE(z < -1);
+}

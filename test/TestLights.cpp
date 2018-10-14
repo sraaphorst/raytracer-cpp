@@ -18,4 +18,3 @@ TEST_CASE("A point light has a position and intensity") {
     REQUIRE(light.getPosition() == position);
     REQUIRE(light.getIntensity() == intensity);
 }
-

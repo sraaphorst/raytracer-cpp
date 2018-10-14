@@ -48,6 +48,9 @@ namespace raytracer {
         const std::optional<const Colour> shade_hit(const std::optional<const Hit>&) const noexcept;
         const Colour colour_at(const Ray &ray) const noexcept;
 
+        /// Determine if a point is in shadow, i.e. there is something between this point and the light source.
+        bool is_shadowed(const Tuple &point) const noexcept;
+
         static World getDefaultWorld() noexcept;
     };
 }
