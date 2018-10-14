@@ -11,3 +11,7 @@ Note that the current code will not compile under clang, and requires GCC in C++
 **NOTE:** Due to time constraints (as a technical reviewer of "The Ray Tracer Challenge"), I have decided to implement the ray tracer to work at run-time instead of entirely at compile-time. In the future, I plan to branch off this and modify it to render at compile time.
 
 ![sphere](output/sphere.png)
+
+# Update: now with shadows!
+
+![scene](output/scene.png)
