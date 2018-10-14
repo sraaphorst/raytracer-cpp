@@ -57,30 +57,6 @@ TEST_CASE("Sphere should return correct values if it is behind the ray", "[Spher
     REQUIRE(xs[1].getT() == -4);
 }
 
-SCENARIO("A sphere's default translation") {
-    GIVEN("s is a sphere") {
-        const Sphere s;
-        THEN("s.tranform is the identity matrix") {
-            REQUIRE(s.getTransformation() == predefined_matrices::I<double, 4>);
-        }
-    }
-}
-
-SCENARIO("Changing a sphere's transformation") {
-    GIVEN("s is a mutable sphere") {
-        Sphere s;
-        GIVEN("t is the translation(2, 3, 4)") {
-            const auto t = translation(2, 3, 4);
-            WHEN("t is set to the transformation of s") {
-                s.setTransformation(t);
-                THEN("s.transform == t") {
-                    REQUIRE(s.getTransformation() == t);
-                }
-            }
-        }
-    }
-}
-
 TEST_CASE("Intersecting a scaled sphere with a ray") {
     const Ray r{make_point(0, 0, -5), make_vector(0, 0, 1)};
     Sphere s;
@@ -135,17 +111,4 @@ TEST_CASE("Computing the normal on a translated sphere") {
     const Sphere s{translation(0, 1, 0)};
     const auto n = s.normalAt(make_point(0, 1.70711, -0.70711));
     REQUIRE(n == make_vector(0, .70711, -0.70711));
-}
-
-TEST_CASE("Sphere has a default material") {
-    const Sphere s;
-    REQUIRE(s.getMaterial() == Material{});
-}
-
-TEST_CASE("A sphere may be assigned a material") {
-    Sphere s;
-    Material m;
-    m.setAmbient(1);
-    s.setMaterial(m);
-    REQUIRE(s.getMaterial() == m);
 }

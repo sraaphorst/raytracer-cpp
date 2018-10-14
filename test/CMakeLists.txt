@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.9)
-project(cmake_test)
+project(raytracer_test)
 
 # Enables testing from this directory downwards.
 enable_testing(true)
@@ -25,6 +25,7 @@ set(TEST_LIST
         TestMath
         TestMatrix
         TestRay
+        TestShape
         TestSphere
         TestTransform
         TestTuple

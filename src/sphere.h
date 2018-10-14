@@ -28,13 +28,18 @@ namespace raytracer {
         template<typename T, typename M>
         Sphere(T&& t, M&& m): Shape{t, m} {}
 
-        bool operator==(const Sphere &other) const {
-            return transformation == other.transformation && material == other.material;
+        const Tuple normalAt(const Tuple &p) const noexcept override {
+            //return (p - make_point(0, 0, 0)).normalize();
+            const auto object_point = transformation.invert() * p;
+            const auto object_normal = object_point - predefined_tuples::zero_point;
+            const auto world_normal = transformation.invert().transpose() * object_normal;
+            return make_vector(world_normal[tuple_constants::x],
+                               world_normal[tuple_constants::y],
+                               world_normal[tuple_constants::z]).normalize();
         }
 
-        const std::vector<Intersection> intersect(const Ray &r0) const noexcept override {
-            // First transform the ray.
-            const Ray r = r0.transform(getTransformation().invert());
+    private:
+        const std::vector<Intersection> local_intersect(const Ray &r) const noexcept override {
             const auto sphere_to_ray = r.getOrigin() - predefined_tuples::zero_point;
             const auto &direction = r.getDirection();
 
@@ -51,22 +56,6 @@ namespace raytracer {
             const auto ptr = std::make_shared<const Sphere>(transformation, material);
             if (t1 < t2) return {Intersection{t1, ptr}, Intersection{t2, ptr}};
             else return {Intersection{t2, ptr}, Intersection{t1, ptr}};
-        }
-
-        const Tuple normalAt(const Tuple &p) const override {
-            //return (p - make_point(0, 0, 0)).normalize();
-            const auto object_point = transformation.invert() * p;
-            const auto object_normal = object_point - predefined_tuples::zero_point;
-            const auto world_normal = transformation.invert().transpose() * object_normal;
-            return make_vector(world_normal[tuple_constants::x],
-                    world_normal[tuple_constants::y],
-                    world_normal[tuple_constants::z]).normalize();
-        }
-
-    private:
-        bool doCompare(const Shape &other) const override {
-            const auto *s = dynamic_cast<const Sphere*>(&other);
-            return (s != nullptr && *this == *s);
         }
     };
 }
