@@ -9,3 +9,6 @@ target_link_libraries(clock raytracer)
 
 add_executable(draw_sphere draw_sphere.cpp)
 target_link_libraries(draw_sphere raytracer)
+
+add_executable(draw_scene draw_scene.cpp)
+target_link_libraries(draw_scene raytracer)
