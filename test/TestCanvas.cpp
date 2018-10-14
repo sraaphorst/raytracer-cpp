@@ -4,9 +4,8 @@
  * By Sebastian Raaphorst, 2018.
  */
 
-#include "catch.hpp"
+#include <catch.hpp>
 
-#include <array>
 #include <memory>
 #include <string>
 #include <sstream>
@@ -19,14 +18,14 @@ using namespace raytracer;
 constexpr int width  = 10;
 constexpr int height = 10;
 
-TEST_CASE("Canvas initializes to black", "[Canvas][initialization]") {
+TEST_CASE("Canvas initializes to black") {
     Canvas c{width, height};
     for (auto i=0; i < width; ++i)
         for (auto j=0; j < height; ++j)
             REQUIRE(c[i][j] == predefined_colours::black);
 }
 
-TEST_CASE("Canvas can be written to", "[Canvas][set]") {
+TEST_CASE("Canvas can be written to") {
     Canvas c{width, height};
 
     constexpr std::array<const Colour, 3> colours{
@@ -44,7 +43,7 @@ TEST_CASE("Canvas can be written to", "[Canvas][set]") {
             REQUIRE((c[i][j]) == colours[(i + j) % 3]);
 }
 
-TEST_CASE("Canvas outputs as PPM", "[Canvas][ppm]") {
+TEST_CASE("Canvas outputs as PPM") {
     Canvas c{5, 3};
     c[0][0] = make_colour( 1.5, 0  , 0);
     c[2][1] = make_colour( 0  , 0.5, 0);
@@ -60,7 +59,7 @@ TEST_CASE("Canvas outputs as PPM", "[Canvas][ppm]") {
     REQUIRE(s == ostr.str());
 }
 
-TEST_CASE("Canvas PPM file truncates at 70 characters", "[Canvas][ppm]") {
+TEST_CASE("Canvas PPM file truncates at 70 characters") {
     Canvas c{10, 2};
     const auto colour = make_colour(1, 0.8, 0.6);
     for (auto i=0; i < 10; ++i)

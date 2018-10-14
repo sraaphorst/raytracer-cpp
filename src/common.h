@@ -11,7 +11,7 @@
 
 #include "constmath.h"
 
-#define EPSILON 1e-5
+#define EPSILON 1e-4
 
 namespace raytracer {
     template<typename S, typename T>

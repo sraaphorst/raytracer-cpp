@@ -45,7 +45,7 @@ TEST_CASE("The default world") {
 
 TEST_CASE("Intersect a world with a ray") {
     auto w = World::getDefaultWorld();
-    constexpr Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
+    const Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
     auto xs = w.intersect(ray);
     REQUIRE(xs.size() == 4);
     REQUIRE(ALMOST_EQUALS(xs[0].getT(), 4));
@@ -57,10 +57,11 @@ TEST_CASE("Intersect a world with a ray") {
 
 TEST_CASE("Shading an intersection") {
     auto w = World::getDefaultWorld();
-    Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
+    const Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
     REQUIRE_FALSE(w.getObjects().empty());
-    auto s = w.getObjects().front();
-    Intersection i{4, s};
+
+    const auto s = w.getObjects().front();
+    const Intersection i{4, s};
     auto hit = Intersection::prepare_hit(i, ray);
     auto cOpt = w.shade_hit(hit);
     REQUIRE(cOpt.has_value());
@@ -70,10 +71,11 @@ TEST_CASE("Shading an intersection") {
 TEST_CASE("Shading an intersection from the inside") {
     auto w = World::getDefaultWorld();
     w.setLightSource(PointLight{make_point(0, 0.25, 0), predefined_colours::white});
-    Ray ray{make_point(0, 0, 0), make_vector(0, 0, 1)};
+    const Ray ray{make_point(0, 0, 0), make_vector(0, 0, 1)};
     REQUIRE(w.getObjects().size() >= 2);
-    auto s = w.getObjects()[1];
-    Intersection i{0.5, s};
+
+    const auto s = w.getObjects()[1];
+    const Intersection i{0.5, s};
     auto hit = Intersection::prepare_hit(i, ray);
     auto cOpt = w.shade_hit(hit);
     REQUIRE(cOpt.has_value());
@@ -84,16 +86,16 @@ TEST_CASE("Shading an intersection from the inside") {
 }
 
 TEST_CASE("The colour when a ray misses") {
-    auto w = World::getDefaultWorld();
-    Ray ray{make_point(0, 0, -5), make_vector(0, 1, 0)};
-    auto c = w.colour_at(ray);
+    const auto w = World::getDefaultWorld();
+    const Ray ray{make_point(0, 0, -5), make_vector(0, 1, 0)};
+    const auto c = w.colour_at(ray);
     REQUIRE(c == predefined_colours::black);
 }
 
 TEST_CASE("The colour when a ray hits") {
-    auto w = World::getDefaultWorld();
-    Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
-    auto c = w.colour_at(ray);
+    const auto w = World::getDefaultWorld();
+    const Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
+    const auto c = w.colour_at(ray);
     REQUIRE(c == make_colour(0.38066, 0.47583, 0.2855));
 }
 
