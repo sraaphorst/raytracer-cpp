@@ -28,9 +28,9 @@ TEST_CASE("World: Creating a world") {
 }
 
 TEST_CASE("World: The default world") {
-    constexpr PointLight light{make_point(-10, 10, -10), predefined_colours::white};
+    const PointLight light{make_point(-10, 10, -10), predefined_colours::white};
 
-    constexpr Material m1{make_colour(0.8, 1.0, 0.6), Material::DEFAULT_AMBIENT, 0.7, 0.2, Material::DEFAULT_SHININESS};
+    const Material m1{make_colour(0.8, 1.0, 0.6), Material::DEFAULT_AMBIENT, 0.7, 0.2, Material::DEFAULT_SHININESS};
     Sphere s1{};
     s1.setMaterial(m1);
 
@@ -122,25 +122,25 @@ TEST_CASE("World: The colour when a ray hits") {
 
 TEST_CASE("World: There is no shadow when nothing is collinear with point and light") {
     const auto w = World::getDefaultWorld();
-    constexpr auto p = make_point(0, 10, 0);
+    const auto p = make_point(0, 10, 0);
     REQUIRE_FALSE(w.is_shadowed(p));
 }
 
 TEST_CASE("World: Shadow when an object is between the point and the light") {
     const auto w = World::getDefaultWorld();
-    constexpr auto p = make_point(10, -10, 10);
+    const auto p = make_point(10, -10, 10);
     REQUIRE(w.is_shadowed(p));
 }
 
 TEST_CASE("World: There is no shadow when an object is behind the light") {
     const auto w = World::getDefaultWorld();
-    constexpr auto p = make_point(-20, 20, -20);
+    const auto p = make_point(-20, 20, -20);
     REQUIRE_FALSE(w.is_shadowed(p));
 }
 
 TEST_CASE("World: There is no shadow when an object is behind the point") {
     const auto w = World::getDefaultWorld();
-    constexpr auto p = make_point(-2, -2, -2);
+    const auto p = make_point(-2, -2, -2);
     REQUIRE_FALSE(w.is_shadowed(p));
 }
 

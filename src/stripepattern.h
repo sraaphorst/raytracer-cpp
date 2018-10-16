@@ -19,10 +19,10 @@ namespace raytracer {
         StripePattern() = delete;
         explicit StripePattern(const std::vector<Colour>&);
         explicit StripePattern(std::vector<Colour>&&);
-        StripePattern(const StripePattern&) = default;
-        StripePattern(StripePattern&&) = default;
-        StripePattern &operator=(const StripePattern&) = default;
-        StripePattern &operator=(StripePattern&&) = default;
+        StripePattern(const StripePattern&) noexcept = default;
+        StripePattern(StripePattern&&) noexcept = default;
+        StripePattern &operator=(const StripePattern&) noexcept = default;
+        StripePattern &operator=(StripePattern&&) noexcept = default;
 
         const Colour colour_at(const Tuple&) const noexcept override;
 

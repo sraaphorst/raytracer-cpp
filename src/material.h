@@ -6,7 +6,8 @@
 
 #pragma once
 
-/** TODO:constexpr If we want to make this constexpr, we'll need to implement pow as a constexpr function.
+/**
+ * TODO:constexpr If we want to make this constexpr, we'll need to implement pow as a constexpr function.
  *
  * Taylor series expansion:
  * a^x = e^{x ln a} = 1 + x ln a / 1! + (x ln a)^2 / 2! + (x ln a)^3 / 3! + ...
@@ -18,69 +19,59 @@
  * https://github.com/elbeno/constexpr/blob/master/src/include/cx_math.h
  */
 #include <cmath>
+#include <memory>
 
 #include "pointlight.h"
 #include "vector.h"
 
 namespace raytracer {
+    class Pattern;
+
     class Material final {
     private:
-        Colour colour;
+        std::shared_ptr<Pattern> pattern;
         double ambient;
         double diffuse;
         double specular;
         double shininess;
 
     public:
-        constexpr Material(const Colour colour,
-                           double ambient,
-                           double diffuse,
-                           double specular,
-                           double shininess) noexcept:
-                colour{colour}, ambient{ambient}, diffuse{diffuse}, specular{specular}, shininess{shininess} {}
+        /// Default material is just solid white.
+        Material() noexcept;
 
-        constexpr Material() noexcept:
-                Material{DEFAULT_COLOUR, DEFAULT_AMBIENT, DEFAULT_DIFFUSE, DEFAULT_SPECULAR, DEFAULT_SHININESS} {}
+        /// Keep this for backward compatibility, and convert the colour into a SolidPattern.
+        Material(const Colour &colour,
+                 double ambient,
+                 double diffuse,
+                 double specular,
+                 double shininess) noexcept;
 
-        constexpr Material(const Material&) = default;
-        constexpr Material(Material&&) = default;
+        Material(const std::shared_ptr<Pattern> &pattern,
+                 double ambient,
+                 double diffuse,
+                 double specular,
+                 double shininess) noexcept;
 
+        Material(const Material&) = default;
+        Material(Material&&) = default;
         Material &operator=(const Material&) = default;
         Material &operator=(Material&&) = default;
 
-        constexpr bool operator !=(const Material &other) const noexcept {
-            return !(*this == other);
-        }
+        bool operator==(const Material &other) const;
+        bool operator!=(const Material &other) const noexcept;
 
-        constexpr Colour getColour() const noexcept {
-            return colour;
-        }
-        constexpr double getAmbient() const noexcept {
-            return ambient;
-        }
-        constexpr double getDiffuse() const noexcept {
-            return diffuse;
-        }
-        constexpr double getSpecular() const noexcept {
-            return specular;
-        }
-        constexpr double getShininess() const noexcept {
-            return shininess;
-        }
+        const std::shared_ptr<Pattern> &getPattern() const noexcept;
+        double getAmbient() const noexcept;
+        double getDiffuse() const noexcept;
+        double getSpecular() const noexcept;
+        double getShininess() const noexcept;
 
-        void setColour(const Colour &c) noexcept;
-        void setAmbient(double a) noexcept;
-        void setDiffuse(double d) noexcept;
-        void setSpecular(double s) noexcept;
-        void setShininess(double s) noexcept;
+        void setPattern(const std::shared_ptr<Pattern>&) noexcept;
+        void setAmbient(double) noexcept;
+        void setDiffuse(double) noexcept;
+        void setSpecular(double) noexcept;
+        void setShininess(double) noexcept;
 
-        constexpr bool operator==(const Material &other) const {
-            return colour == other.colour
-                && ALMOST_EQUALS(ambient, other.ambient)
-                && ALMOST_EQUALS(diffuse, other.diffuse)
-                && ALMOST_EQUALS(specular, other.specular)
-                && ALMOST_EQUALS(shininess, other.shininess);
-        }
 
         constexpr static Colour DEFAULT_COLOUR    = predefined_colours::white;
         constexpr static double DEFAULT_AMBIENT   = 0.1;

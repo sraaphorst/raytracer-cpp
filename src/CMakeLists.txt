@@ -26,6 +26,8 @@ add_library(raytracer SHARED
         projectile.h
         projectile.cpp
         ray.h
+        solidpattern.h
+        solidpattern.cpp
         shape.h
         shape.cpp
         sphere.h

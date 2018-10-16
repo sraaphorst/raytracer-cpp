@@ -4,13 +4,74 @@
  * By Sebastian Raaphorst, 2018.
  */
 
+#include <memory>
+
 #include "material.h"
+#include "pattern.h"
 #include "pointlight.h"
+#include "solidpattern.h"
 #include "vector.h"
 
 namespace raytracer {
-    void Material::setColour(const Colour &c) noexcept {
-        colour = c;
+    Material::Material() noexcept:
+            pattern{std::make_shared<SolidPattern>(DEFAULT_COLOUR)},
+            ambient{DEFAULT_AMBIENT},
+            diffuse{DEFAULT_DIFFUSE},
+            specular{DEFAULT_SPECULAR},
+            shininess{DEFAULT_SHININESS} {}
+
+    Material::Material(const Colour &colour,
+                       double ambient,
+                       double diffuse,
+                       double specular,
+                       double shininess) noexcept:
+            pattern{std::make_shared<SolidPattern>(colour)},
+            ambient{ambient},
+            diffuse{diffuse},
+            specular{specular},
+            shininess{shininess} {}
+
+    Material::Material(const std::shared_ptr<Pattern> &pattern,
+                       double ambient,
+                       double diffuse,
+                       double specular,
+                       double shininess) noexcept:
+            pattern{pattern},
+            ambient{ambient},
+            diffuse{diffuse},
+            specular{specular},
+            shininess{shininess} {}
+
+    bool Material::operator==(const Material &other) const {
+        return *pattern == *other.pattern
+               && ALMOST_EQUALS(ambient, other.ambient)
+               && ALMOST_EQUALS(diffuse, other.diffuse)
+               && ALMOST_EQUALS(specular, other.specular)
+               && ALMOST_EQUALS(shininess, other.shininess);
+    }
+
+    bool Material::operator!=(const Material &other) const noexcept {
+        return *this != other;
+    }
+
+    const std::shared_ptr<Pattern> &Material::getPattern() const noexcept {
+        return pattern;
+    }
+    double Material::getAmbient() const noexcept {
+        return ambient;
+    }
+    double Material::getDiffuse() const noexcept {
+        return diffuse;
+    }
+    double Material::getSpecular() const noexcept {
+        return specular;
+    }
+    double Material::getShininess() const noexcept {
+        return shininess;
+    }
+
+    void Material::setPattern(const std::shared_ptr<Pattern> &p) noexcept {
+        pattern = p;
     }
     void Material::setAmbient(double a) noexcept {
         ambient = a;
@@ -27,6 +88,7 @@ namespace raytracer {
 
     Colour Material::lighting(const PointLight &light, const Tuple &point,
                     const Tuple &eyev, const Tuple &normalv, bool in_shadow) const noexcept {
+        const auto colour = pattern->colour_at(point);
         const auto effective_colour = colour * light.getIntensity();
         const auto lightv = (light.getPosition() - point).normalize();
         const auto ambient_component = ambient * effective_colour;

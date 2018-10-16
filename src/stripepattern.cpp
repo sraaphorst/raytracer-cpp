@@ -36,6 +36,7 @@ namespace raytracer {
     }
 
     bool StripePattern::doCompare(const Pattern &other) const noexcept {
-        return colours == dynamic_cast<const StripePattern* const>(&other)->colours;
+        const auto othersp = dynamic_cast<const StripePattern* const>(&other);
+        return othersp != nullptr && colours == othersp->colours;
     }
 }
