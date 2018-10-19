@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <vector>
 
+#include "checkerpattern.h"
 #include "gradientpattern.h"
 #include "pattern.h"
 #include "ringpattern.h"
@@ -90,4 +91,25 @@ TEST_CASE("Pattern: Ring should extend in both x and z") {
     REQUIRE(pattern.colourAt(make_point(0, 0, 1)) == predefined_colours::black);
     // 0.708 just slightly more than sqrt(2)/2.
     REQUIRE(pattern.colourAt(make_point(0.708, 0, 0.708)) == predefined_colours::black);
+}
+
+TEST_CASE("Pattern: Checkers should repeat in x") {
+    CheckerPattern pattern;
+    REQUIRE(pattern.colourAt(predefined_tuples::zero_point) == predefined_colours::white);
+    REQUIRE(pattern.colourAt(make_point(0.99, 0, 0)) == predefined_colours::white);
+    REQUIRE(pattern.colourAt(make_point(1.01, 0, 0)) == predefined_colours::black);
+}
+
+TEST_CASE("Pattern: Checkers should repeat in y") {
+    CheckerPattern pattern;
+    REQUIRE(pattern.colourAt(predefined_tuples::zero_point) == predefined_colours::white);
+    REQUIRE(pattern.colourAt(make_point(0, 0.99, 0)) == predefined_colours::white);
+    REQUIRE(pattern.colourAt(make_point(0, 1.01, 0)) == predefined_colours::black);
+}
+
+TEST_CASE("Pattern: Checkers should repeat in z") {
+    CheckerPattern pattern;
+    REQUIRE(pattern.colourAt(predefined_tuples::zero_point) == predefined_colours::white);
+    REQUIRE(pattern.colourAt(make_point(0, 0, 0.99)) == predefined_colours::white);
+    REQUIRE(pattern.colourAt(make_point(0, 0, 1.01)) == predefined_colours::black);
 }
