@@ -64,7 +64,7 @@ TEST_CASE("World: Shading an intersection") {
     const auto s = w.getObjects().front();
     const Intersection i{4, s};
     auto hit = Intersection::prepareHit(i, ray);
-    auto cOpt = w.shade_hit(hit);
+    auto cOpt = w.shadeHit(hit);
     REQUIRE(cOpt.has_value());
     REQUIRE(cOpt.value() == make_colour(0.38066, 0.47583, 0.2855));
 }
@@ -78,7 +78,7 @@ TEST_CASE("World: Shading an intersection from the inside") {
     const auto s = w.getObjects()[1];
     const Intersection i{0.5, s};
     auto hit = Intersection::prepareHit(i, ray);
-    auto cOpt = w.shade_hit(hit);
+    auto cOpt = w.shadeHit(hit);
     REQUIRE(cOpt.has_value());
 
     // After shadowing is implemented, we only have the ambient component.
@@ -153,7 +153,7 @@ TEST_CASE("World: When shade_hit is given an intersection in shadow") {
     const Ray ray{make_point(0, 0, 5), predefined_tuples::z1};
     const Intersection i{4, s2};
     const auto hit = Intersection::prepareHit(i, ray);
-    const auto c = w.shade_hit(hit);
+    const auto c = w.shadeHit(hit);
     REQUIRE(c.has_value());
     REQUIRE(c.value() == make_colour(0.1, 0.1, 0.1));
 }

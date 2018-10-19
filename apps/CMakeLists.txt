@@ -12,3 +12,6 @@ target_link_libraries(draw_sphere raytracer)
 
 add_executable(draw_scene draw_scene.cpp)
 target_link_libraries(draw_scene raytracer)
+
+add_executable(draw_scene2 draw_scene2.cpp)
+target_link_libraries(draw_scene2 raytracer)

@@ -16,10 +16,11 @@ namespace raytracer {
         std::vector<Colour> colours;
 
     public:
+        /// The default stripe pattern is alternating white and black.
         StripePattern();
         explicit StripePattern(const std::vector<Colour>&);
         explicit StripePattern(std::vector<Colour>&&);
-        StripePattern(const StripePattern&) noexcept = default;
+        StripePattern(const StripePattern&) = default;
         StripePattern(StripePattern&&) noexcept = default;
         StripePattern &operator=(const StripePattern&) noexcept = default;
         StripePattern &operator=(StripePattern&&) noexcept = default;

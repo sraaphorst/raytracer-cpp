@@ -60,7 +60,7 @@ namespace raytracer {
         return intersections;
     }
 
-    const std::optional<const Colour> World::shade_hit(const std::optional<const Hit> &hit) const noexcept {
+    const std::optional<const Colour> World::shadeHit(const std::optional<const Hit> &) const noexcept {
         if (!(light.has_value() && hit.has_value()))
             return {};
 
@@ -77,7 +77,7 @@ namespace raytracer {
             return predefined_colours::black;
 
         const auto populated_hit = Intersection::prepareHit(hit, ray);
-        const auto shade = shade_hit(populated_hit);
+        const auto shade = shadeHit(populated_hit);
         return shade.value_or(predefined_colours::black);
     }
 
