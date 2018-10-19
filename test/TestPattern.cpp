@@ -6,12 +6,12 @@
 
 #include <catch.hpp>
 
-#include <iostream>
 #include <stdexcept>
 #include <vector>
-#include <gradientpattern.h>
 
+#include "gradientpattern.h"
 #include "pattern.h"
+#include "ringpattern.h"
 #include "sphere.h"
 #include "stripepattern.h"
 #include "vector.h"
@@ -81,4 +81,13 @@ TEST_CASE("Pattern: Gradient linearly interpolates between colours") {
     REQUIRE(pattern.colourAt(make_point(0.25, 0, 0)) == make_colour(0.75, 0.75, 0.75));
     REQUIRE(pattern.colourAt(make_point(0.5, 0, 0)) == make_colour(0.5, 0.5, 0.5));
     REQUIRE(pattern.colourAt(make_point(0.75, 0, 0)) == make_colour(0.25, 0.25, 0.25));
+}
+
+TEST_CASE("Pattern: Ring should extend in both x and z") {
+    RingPattern pattern;
+    REQUIRE(pattern.colourAt(predefined_tuples::zero_point) == predefined_colours::white);
+    REQUIRE(pattern.colourAt(make_point(1, 0, 0)) == predefined_colours::black);
+    REQUIRE(pattern.colourAt(make_point(0, 0, 1)) == predefined_colours::black);
+    // 0.708 just slightly more than sqrt(2)/2.
+    REQUIRE(pattern.colourAt(make_point(0.708, 0, 0.708)) == predefined_colours::black);
 }

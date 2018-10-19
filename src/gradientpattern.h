@@ -26,6 +26,9 @@ namespace raytracer {
         GradientPattern &operator=(GradientPattern&&) noexcept = default;
 
         const Colour colourAt(const Tuple&) const noexcept override;
+
+    private:
+        bool doCompare(const Pattern &other) const noexcept;
     };
 }
 

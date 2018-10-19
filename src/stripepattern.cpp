@@ -13,7 +13,7 @@
 #include "vector.h"
 
 namespace raytracer {
-    StripePattern::StripePattern(): colours{predefined_colours::white, predefined_colours::black} {}
+    StripePattern::StripePattern() noexcept: colours{predefined_colours::white, predefined_colours::black} {}
 
     StripePattern::StripePattern(const std::vector<Colour> &cs): colours{cs} {
         if (colours.empty())
