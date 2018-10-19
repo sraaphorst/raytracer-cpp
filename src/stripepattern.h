@@ -12,11 +12,12 @@
 #include "vector.h"
 
 namespace raytracer {
-    class StripePattern final: Pattern {
+    class StripePattern final: public Pattern {
         std::vector<Colour> colours;
 
     public:
-        StripePattern() = delete;
+        /// The default stripe pattern is alternating white and black.
+        StripePattern();
         explicit StripePattern(const std::vector<Colour>&);
         explicit StripePattern(std::vector<Colour>&&);
         StripePattern(const StripePattern&) noexcept = default;

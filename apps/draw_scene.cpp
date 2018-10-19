@@ -12,6 +12,7 @@
 #include "material.h"
 #include "pointlight.h"
 #include "ray.h"
+#include "solidpattern.h"
 #include "sphere.h"
 #include "vector.h"
 #include "world.h"
@@ -22,7 +23,7 @@ using namespace raytracer;
 
 int main() {
     Material wall_material{};
-    wall_material.setColour(make_colour(1, 0.9, 0.9));
+    wall_material.setPattern(std::make_shared<SolidPattern>(make_colour(1, 0.9, 0.9)));
     wall_material.setSpecular(0);
 
     auto floor = std::make_shared<Sphere>(scale(10, 0.01, 10), wall_material);

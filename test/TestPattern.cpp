@@ -16,21 +16,21 @@
 
 using namespace raytracer;
 
-TEST_CASE("Pattern: Creating a stripe pattern") {
-    const StripePattern pattern{{predefined_colours::white, predefined_colours::black}};
+TEST_CASE("Pattern: Creating default stripe pattern") {
+    const StripePattern pattern;
     REQUIRE(pattern.getColours()[0] == predefined_colours::white);
     REQUIRE(pattern.getColours()[1] == predefined_colours::black);
 }
 
 TEST_CASE("Pattern: A stripe pattern is constant in y") {
-    const StripePattern pattern{{predefined_colours::white, predefined_colours::black}};
+    const StripePattern pattern;
     REQUIRE(pattern.colour_at(predefined_tuples::zero_point) == predefined_colours::white);
     REQUIRE(pattern.colour_at(make_point(0, 1, 0)) == predefined_colours::white);
     REQUIRE(pattern.colour_at(make_point(0, 2, 0)) == predefined_colours::white);
 }
 
 TEST_CASE("Pattern: A stripe pattern is constant in z") {
-    const StripePattern pattern{{predefined_colours::white, predefined_colours::black}};
+    const StripePattern pattern;
     REQUIRE(pattern.colour_at(predefined_tuples::zero_point) == predefined_colours::white);
     REQUIRE(pattern.colour_at(make_point(0, 0, 1)) == predefined_colours::white);
     REQUIRE(pattern.colour_at(make_point(0, 0, 2)) == predefined_colours::white);
