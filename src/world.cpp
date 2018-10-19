@@ -64,24 +64,24 @@ namespace raytracer {
         if (!(light.has_value() && hit.has_value()))
             return {};
 
-        const auto shadowed = is_shadowed(hit->getPoint());
+        const auto shadowed = isShadowed(hit->getPoint());
 
-        return hit->getObject().getMaterial().lighting(light.value(),
+        return hit->getObject().getMaterial().lighting(light.value(), hit->getObject(),
                 hit->getPoint(), hit->getEyeVector(), hit->getNormalVector(), shadowed);
     }
 
-    const Colour World::colour_at(const Ray &ray) const noexcept {
+    const Colour World::colourAt(const Ray &ray) const noexcept {
         const auto xs = intersect(ray);
         const auto hit = Intersection::hit(xs);
         if (!hit.has_value())
             return predefined_colours::black;
 
-        const auto populated_hit = Intersection::prepare_hit(hit, ray);
+        const auto populated_hit = Intersection::prepareHit(hit, ray);
         const auto shade = shade_hit(populated_hit);
         return shade.value_or(predefined_colours::black);
     }
 
-    bool World::is_shadowed(const Tuple &point) const noexcept {
+    bool World::isShadowed(const Tuple &point) const noexcept {
         if (!light.has_value())
             return false;
         const auto v = light.value().getPosition() - point;

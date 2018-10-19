@@ -26,6 +26,7 @@
 
 namespace raytracer {
     class Pattern;
+    class Shape;
 
     class Material final {
     private:
@@ -81,6 +82,7 @@ namespace raytracer {
 
         // Calculate the lighting of this material.
         Colour lighting(const PointLight &light,
+                        const Shape &shape,
                         const Tuple &point,
                         const Tuple &eyev,
                         const Tuple &normalv,

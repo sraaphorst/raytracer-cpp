@@ -23,7 +23,7 @@ namespace raytracer {
         SolidPattern &operator=(const SolidPattern&) noexcept = default;
         SolidPattern &operator=(SolidPattern&&) noexcept = default;
 
-        inline const Colour colour_at(const Tuple&) const noexcept override {
+        inline const Colour colourAt(const Tuple &) const noexcept override {
             return colour;
         }
 

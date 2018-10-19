@@ -31,14 +31,14 @@ namespace raytracer {
         return std::vector<Intersection>{lst};
     }
 
-    const std::optional<const Hit> Intersection::prepare_hit(const std::optional<const Intersection> &hit,
-                                                             const Ray &ray) noexcept {
+    const std::optional<const Hit> Intersection::prepareHit(const std::optional<const Intersection> &hit,
+                                                            const Ray &ray) noexcept {
         if (!hit.has_value())
             return {};
-        return prepare_hit(hit.value(), ray);
+        return prepareHit(hit.value(), ray);
     }
 
-    const Hit Intersection::prepare_hit(const Intersection &hit, const Ray &ray) noexcept {
+    const Hit Intersection::prepareHit(const Intersection &hit, const Ray &ray) noexcept {
         const auto point = ray.position(hit.getT());
         const auto eyev  = -ray.getDirection();
         const auto normalv = hit.getObject().normalAt(point);

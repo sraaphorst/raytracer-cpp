@@ -12,11 +12,11 @@
 #include "vector.h"
 
 namespace raytracer {
-    class StripePattern final: Pattern {
+    class StripePattern final: public Pattern {
         std::vector<Colour> colours;
 
     public:
-        StripePattern() = delete;
+        StripePattern();
         explicit StripePattern(const std::vector<Colour>&);
         explicit StripePattern(std::vector<Colour>&&);
         StripePattern(const StripePattern&) noexcept = default;
@@ -24,7 +24,7 @@ namespace raytracer {
         StripePattern &operator=(const StripePattern&) noexcept = default;
         StripePattern &operator=(StripePattern&&) noexcept = default;
 
-        const Colour colour_at(const Tuple&) const noexcept override;
+        const Colour colourAt(const Tuple &) const noexcept override;
 
         const std::vector<Colour> getColours() const noexcept;
         void setColours(const std::vector<Colour>&) noexcept;

@@ -86,9 +86,11 @@ namespace raytracer {
         shininess = s;
     }
 
-    Colour Material::lighting(const PointLight &light, const Tuple &point,
+    Colour Material::lighting(const PointLight &light,
+                              const Shape &shape,
+                              const Tuple &point,
                     const Tuple &eyev, const Tuple &normalv, bool in_shadow) const noexcept {
-        const auto colour = pattern->colour_at(point);
+        const auto colour = pattern->colourAtObject(shape, point);
         const auto effective_colour = colour * light.getIntensity();
         const auto lightv = (light.getPosition() - point).normalize();
         const auto ambient_component = ambient * effective_colour;

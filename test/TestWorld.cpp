@@ -11,6 +11,7 @@
 #include "affine_transform.h"
 #include "hit.h"
 #include "material.h"
+#include "pattern.h"
 #include "pointlight.h"
 #include "ray.h"
 #include "sphere.h"
@@ -62,7 +63,7 @@ TEST_CASE("World: Shading an intersection") {
 
     const auto s = w.getObjects().front();
     const Intersection i{4, s};
-    auto hit = Intersection::prepare_hit(i, ray);
+    auto hit = Intersection::prepareHit(i, ray);
     auto cOpt = w.shade_hit(hit);
     REQUIRE(cOpt.has_value());
     REQUIRE(cOpt.value() == make_colour(0.38066, 0.47583, 0.2855));
@@ -76,7 +77,7 @@ TEST_CASE("World: Shading an intersection from the inside") {
 
     const auto s = w.getObjects()[1];
     const Intersection i{0.5, s};
-    auto hit = Intersection::prepare_hit(i, ray);
+    auto hit = Intersection::prepareHit(i, ray);
     auto cOpt = w.shade_hit(hit);
     REQUIRE(cOpt.has_value());
 
@@ -88,60 +89,59 @@ TEST_CASE("World: Shading an intersection from the inside") {
 TEST_CASE("World: The colour when a ray misses") {
     const auto w = World::getDefaultWorld();
     const Ray ray{make_point(0, 0, -5), make_vector(0, 1, 0)};
-    const auto c = w.colour_at(ray);
+    const auto c = w.colourAt(ray);
     REQUIRE(c == predefined_colours::black);
 }
 
 TEST_CASE("World: The colour when a ray hits") {
     const auto w = World::getDefaultWorld();
     const Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
-    const auto c = w.colour_at(ray);
+    const auto c = w.colourAt(ray);
     REQUIRE(c == make_colour(0.38066, 0.47583, 0.2855));
 }
 
-// This test case is incorrect: pg 101 from the PDF.
-//TEST_CASE("World: The colour with an intersection behind the ray") {
-//    auto w = World::getDefaultWorld();
-//    REQUIRE(w.getObjects().size() >= 2);
-//
-//    auto outer = w.getObjects()[0];
-//    auto mouter = outer->getMaterial();
-//    mouter.setAmbient(1);
-//    outer->setMaterial(mouter);
-//
-//    auto inner = w.getObjects()[1];
-//    auto minner = inner->getMaterial();
-//    minner.setAmbient(1);
-//    inner->setMaterial(minner);
-//
-//    REQUIRE(w.getObjects()[0]->getMaterial().getAmbient() == 1);
-//    REQUIRE(w.getObjects()[1]->getMaterial().getAmbient() == 1);
-//    Ray ray{make_point(0, 0, -0.75), make_vector(0, 0, 1)};
-//    REQUIRE(w.colour_at(ray) == inner->getMaterial().getColour());
-//}
+TEST_CASE("World: The colour with an intersection behind the ray") {
+    auto w = World::getDefaultWorld();
+    REQUIRE(w.getObjects().size() >= 2);
+
+    auto outer = w.getObjects()[0];
+    auto mouter = outer->getMaterial();
+    mouter.setAmbient(1);
+    outer->setMaterial(mouter);
+
+    auto inner = w.getObjects()[1];
+    auto minner = inner->getMaterial();
+    minner.setAmbient(1);
+    inner->setMaterial(minner);
+
+    REQUIRE(w.getObjects()[0]->getMaterial().getAmbient() == 1);
+    REQUIRE(w.getObjects()[1]->getMaterial().getAmbient() == 1);
+    Ray ray{make_point(0, 0, -0.75), make_vector(0, 0, 1)};
+    REQUIRE(w.colourAt(ray) == inner->getMaterial().getPattern()->colourAt(make_point(0, 0, -0.75)));
+}
 
 TEST_CASE("World: There is no shadow when nothing is collinear with point and light") {
     const auto w = World::getDefaultWorld();
     const auto p = make_point(0, 10, 0);
-    REQUIRE_FALSE(w.is_shadowed(p));
+    REQUIRE_FALSE(w.isShadowed(p));
 }
 
 TEST_CASE("World: Shadow when an object is between the point and the light") {
     const auto w = World::getDefaultWorld();
     const auto p = make_point(10, -10, 10);
-    REQUIRE(w.is_shadowed(p));
+    REQUIRE(w.isShadowed(p));
 }
 
 TEST_CASE("World: There is no shadow when an object is behind the light") {
     const auto w = World::getDefaultWorld();
     const auto p = make_point(-20, 20, -20);
-    REQUIRE_FALSE(w.is_shadowed(p));
+    REQUIRE_FALSE(w.isShadowed(p));
 }
 
 TEST_CASE("World: There is no shadow when an object is behind the point") {
     const auto w = World::getDefaultWorld();
     const auto p = make_point(-2, -2, -2);
-    REQUIRE_FALSE(w.is_shadowed(p));
+    REQUIRE_FALSE(w.isShadowed(p));
 }
 
 TEST_CASE("World: When shade_hit is given an intersection in shadow") {
@@ -152,7 +152,7 @@ TEST_CASE("World: When shade_hit is given an intersection in shadow") {
     const World w{light, shapes};
     const Ray ray{make_point(0, 0, 5), predefined_tuples::z1};
     const Intersection i{4, s2};
-    const auto hit = Intersection::prepare_hit(i, ray);
+    const auto hit = Intersection::prepareHit(i, ray);
     const auto c = w.shade_hit(hit);
     REQUIRE(c.has_value());
     REQUIRE(c.value() == make_colour(0.1, 0.1, 0.1));

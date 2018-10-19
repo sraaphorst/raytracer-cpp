@@ -84,7 +84,7 @@ namespace raytracer {
         for (size_t y = 0; y < vsize; ++y)
             for (size_t x = 0; x < hsize; ++x) {
                 const auto ray = ray_for_pixel(x, y);
-                const auto colour = w.colour_at(ray);
+                const auto colour = w.colourAt(ray);
                 image[x][y] = colour;
             }
 

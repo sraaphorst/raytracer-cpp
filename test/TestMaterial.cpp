@@ -6,11 +6,14 @@
 
 #include <catch.hpp>
 
+#include <memory>
+
 #include "constmath.h"
 #include "material.h"
 #include "pattern.h"
 #include "pointlight.h"
 #include "solidpattern.h"
+#include "sphere.h"
 #include "stripepattern.h"
 
 using namespace raytracer;
@@ -30,7 +33,7 @@ TEST_CASE("Material: Lighting with the eye between the light and the surface") {
     const auto eyev = make_vector(0, 0, -1);
     const auto normalv = make_vector(0, 0, -1);
     const PointLight light{make_point(0, 0, -10), predefined_colours::white};
-    const auto result = m.lighting(light, position, eyev, normalv, false);
+    const auto result = m.lighting(light, Sphere{}, position, eyev, normalv, false);
     REQUIRE(result == make_colour(1.9, 1.9, 1.9));
 }
 
@@ -41,7 +44,7 @@ TEST_CASE("Material: Lighting with the eye between light and surface, eye offset
     const auto eyev = make_vector(0, sqrt2by2, -sqrt2by2);
     const auto normalv = make_vector(0, 0, -1);
     const PointLight light{make_point(0, 0, -10), predefined_colours::white};
-    const auto result = m.lighting(light, position, eyev, normalv, false);
+    const auto result = m.lighting(light, Sphere{}, position, eyev, normalv, false);
     REQUIRE(result == predefined_colours::white);
 }
 
@@ -51,7 +54,7 @@ TEST_CASE("Material: Lighting with eye opposite surface, light offset 45 deg") {
     const auto eyev = make_vector(0, 0, -1);
     const auto normalv = make_vector(0, 0, -1);
     const PointLight light{make_point(0, 10, -10), predefined_colours::white};
-    const auto result = m.lighting(light, position, eyev, normalv, false);
+    const auto result = m.lighting(light, Sphere{}, position, eyev, normalv, false);
     REQUIRE(result == make_colour(0.7364, 0.7364, 0.7364));
 }
 
@@ -62,7 +65,7 @@ TEST_CASE("Material: Lighting with eye in the path of the reflection vector") {
     const auto eyev = make_vector(0, -sqrt2by2, -sqrt2by2);
     const auto normalv = make_vector(0, 0, -1);
     const PointLight light{make_point(0, 10, -10), predefined_colours::white};
-    const auto result = m.lighting(light, position, eyev, normalv, false);
+    const auto result = m.lighting(light, Sphere{}, position, eyev, normalv, false);
     REQUIRE(result == make_colour(1.6364, 1.6364, 1.6364));
 }
 
@@ -72,7 +75,7 @@ TEST_CASE("Material: Lighting with the light behind the surface") {
     const auto eyev = make_vector(0, 0, -1);
     const auto normalv = make_vector(0, 0, -1);
     const PointLight light{make_point(0, 0, 10), predefined_colours::white};
-    const auto result = m.lighting(light, position, eyev, normalv, false);
+    const auto result = m.lighting(light, Sphere{}, position, eyev, normalv, false);
     REQUIRE(result == make_colour(0.1, 0.1, 0.1));
 }
 
@@ -83,10 +86,18 @@ TEST_CASE("Material: Lighting with the surface in shadow") {
     const auto normalv = -predefined_tuples::z1;
     const PointLight light{make_point(0, 0, -10), predefined_colours::white};
     const bool in_shadow = true;
-    const auto result = m.lighting(light, position, eyev, normalv, in_shadow);
+    const auto result = m.lighting(light, Sphere{}, position, eyev, normalv, in_shadow);
     REQUIRE(result == make_colour(0.1, 0.1, 0.1));
 }
 
 TEST_CASE("Lighting with a pattern applied") {
-
+    const std::shared_ptr<Pattern> pattern = std::make_shared<StripePattern>();
+    const Material material{pattern, 1, 0, 0, Material::DEFAULT_SHININESS};
+    const auto eyev = make_vector(0, 0, -1);
+    const auto normalv = make_vector(0, 0, -1);
+    const PointLight light{make_point(0, 0, -10), predefined_colours::white};
+    const auto c1 = material.lighting(light, Sphere{}, make_point(0.9, 0, 0), eyev, normalv, false);
+    const auto c2 = material.lighting(light, Sphere{}, make_point(1.1, 0, 0), eyev, normalv, false);
+    REQUIRE(c1 == predefined_colours::white);
+    REQUIRE(c2 == predefined_colours::black);
 }

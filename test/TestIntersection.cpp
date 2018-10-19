@@ -82,7 +82,7 @@ TEST_CASE("Intersection: The hit is always the lowest non-negative intersection"
 TEST_CASE("Intersection: Precomputing the state of an intersection") {
     const Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
     const Intersection i{4, std::make_shared<const Sphere>()};
-    const auto hit = Intersection::prepare_hit(i, ray);
+    const auto hit = Intersection::prepareHit(i, ray);
     REQUIRE(hit.getPoint() == make_point(0, 0, -1));
     REQUIRE(hit.getEyeVector() == make_vector(0, 0, -1));
     REQUIRE(hit.getNormalVector() == make_vector(0, 0, -1));
@@ -91,14 +91,14 @@ TEST_CASE("Intersection: Precomputing the state of an intersection") {
 TEST_CASE("Intersection: An intersection occurs on the outside") {
     const Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
     const Intersection i{4, std::make_shared<const Sphere>()};
-    const auto hit = Intersection::prepare_hit(i, ray);
+    const auto hit = Intersection::prepareHit(i, ray);
     REQUIRE_FALSE(hit.isInside());
 }
 
 TEST_CASE("Intersection: An intersection occurs on the inside") {
     const Ray ray{make_point(0, 0, 0), make_vector(0, 0, 1)};
     const Intersection i{1, std::make_shared<const Sphere>()};
-    const auto hit = Intersection::prepare_hit(i, ray);
+    const auto hit = Intersection::prepareHit(i, ray);
     REQUIRE(hit.isInside());
     REQUIRE(hit.getPoint() == make_point(0, 0, 1));
     REQUIRE(hit.getEyeVector() == make_vector(0, 0, -1));
@@ -108,7 +108,7 @@ TEST_CASE("Intersection: An intersection occurs on the inside") {
 TEST_CASE("Intersection: The point is offset") {
     const Ray ray{make_point(0, 0, -5), predefined_tuples::z1};
     const Intersection i{4, std::make_shared<const Sphere>()};
-    const auto hit = Intersection::prepare_hit(i, ray);
+    const auto hit = Intersection::prepareHit(i, ray);
     const auto z = hit.getPoint()[tuple_constants::z];
     REQUIRE(-1.1 < z);
     REQUIRE(z < -1);
