@@ -60,7 +60,7 @@ namespace raytracer {
         return intersections;
     }
 
-    const std::optional<const Colour> World::shadeHit(const std::optional<const Hit> &) const noexcept {
+    const std::optional<const Colour> World::shadeHit(const std::optional<const Hit> &hit) const noexcept {
         if (!(light.has_value() && hit.has_value()))
             return {};
 

@@ -95,8 +95,8 @@ TEST_CASE("Lighting with a pattern applied") {
     const auto eyev = make_vector(0, 0, -1);
     const auto normalv = make_vector(0, 0, -1);
     const PointLight light{make_point(0, 0, -10), predefined_colours::white};
-    const auto c1 = m.lighting(light, make_point(0.9, 0, 0), eyev, normalv, false);
-    const auto c2 = m.lighting(light, make_point(1.1, 0, 0), eyev, normalv, false);
+    const auto c1 = m.lighting(light, Sphere{}, make_point(0.9, 0, 0), eyev, normalv, false);
+    const auto c2 = m.lighting(light, Sphere{}, make_point(1.1, 0, 0), eyev, normalv, false);
     REQUIRE(c1 == predefined_colours::white);
     REQUIRE(c2 == predefined_colours::black);
 }
