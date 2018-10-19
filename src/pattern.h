@@ -37,7 +37,7 @@ namespace raytracer {
         bool operator!=(const Pattern &other) const noexcept;
 
         /// Return the colour at a given point for this pattern.
-        virtual const Colour colourAt(const Tuple &) const noexcept = 0;
+        virtual const Colour colourAt(const Tuple&) const noexcept = 0;
 
         /// Computes the colour for a specific object at a given world point.
         const Colour colourAtObject(const Shape&, const Tuple&) const noexcept;
