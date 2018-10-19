@@ -9,6 +9,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+#include <gradientpattern.h>
 
 #include "pattern.h"
 #include "sphere.h"
@@ -72,4 +73,12 @@ TEST_CASE("Pattern: Pattern with both an object and a pattern transformation") {
     pattern->setTransformation(translation(0.5, 1, 1.5));
     const auto c = pattern->colourAtObject(s, make_point(2.5, 3, 3.5));
     REQUIRE(c == make_colour(0.75, 0.5, 0.25));
+}
+
+TEST_CASE("Pattern: Gradient linearly interpolates between colours") {
+    GradientPattern pattern;
+    REQUIRE(pattern.colourAt(make_point(0, 0, 0)) == predefined_colours::white);
+    REQUIRE(pattern.colourAt(make_point(0.25, 0, 0)) == make_colour(0.75, 0.75, 0.75));
+    REQUIRE(pattern.colourAt(make_point(0.5, 0, 0)) == make_colour(0.5, 0.5, 0.5));
+    REQUIRE(pattern.colourAt(make_point(0.75, 0, 0)) == make_colour(0.25, 0.25, 0.25));
 }

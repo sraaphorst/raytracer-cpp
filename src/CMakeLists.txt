@@ -10,6 +10,8 @@ add_library(raytracer SHARED
         canvas.cpp
         common.h
         constmath.h
+        gradientpattern.h
+        gradientpattern.cpp
         hit.h
         hit.cpp
         intersection.h
