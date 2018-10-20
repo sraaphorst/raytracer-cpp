@@ -7,6 +7,7 @@
 #include <catch.hpp>
 
 #include <optional>
+#include <vector>
 
 #include "affine_transform.h"
 #include "constmath.h"
@@ -146,7 +147,7 @@ TEST_CASE("World: There is no shadow when an object is behind the point") {
     REQUIRE_FALSE(w.isShadowed(p));
 }
 
-TEST_CASE("World: When shade_hit is given an intersection in shadow") {
+TEST_CASE("World: When shadeHit is given an intersection in shadow") {
     const PointLight light{make_point(0, 0, -10), predefined_colours::white};
     const std::shared_ptr<Shape> s1{std::make_shared<Sphere>()};
     const std::shared_ptr<Shape> s2{std::make_shared<Sphere>(translation(0, 0, 10))};
@@ -183,4 +184,43 @@ TEST_CASE("World: Reflected colour for reflective material") {
     const auto hit = Intersection::prepareHit(x, ray);
     const auto colour = w.reflectedColour(hit);
     REQUIRE(colour == make_colour(0.19032, 0.2379, 0.14274));
+}
+
+TEST_CASE("World: shadeHit with reflective material") {
+    auto w = World::getDefaultWorld();
+    std::shared_ptr<Shape> shape = std::make_shared<Plane>(translation(0, -1, 0));
+    shape->getMaterial().setReflectivity(0.5);
+    const auto sqrt2    = sqrtd(2);
+    const auto sqrt2by2 = sqrt2/2;
+    const Ray ray{make_point(0, 0, -3), make_vector(0, -sqrt2by2, sqrt2by2)};
+    const Intersection x{sqrt2, shape};
+    const auto hit = Intersection::prepareHit(x, ray);
+    const auto colour = w.shadeHit(hit);
+    REQUIRE(colour == make_colour(0.87677, 0.92436, 0.82918));
+}
+
+TEST_CASE("World: colorAt with mutually reflective surfaces") {
+    std::shared_ptr<Shape> lower = std::make_shared<Plane>(translation(0, -1, 0));
+    lower->getMaterial().setReflectivity(1);
+
+    std::shared_ptr<Shape> upper = std::make_shared<Plane>(translation(0, 1, 0));
+    upper->getMaterial().setReflectivity(1);
+
+    const std::vector<std::shared_ptr<Shape>> shapes{lower, upper};
+    const World w{PointLight{predefined_tuples::zero_point, predefined_colours::white}, shapes};
+    const Ray ray{predefined_tuples::zero_point, predefined_tuples::y1};
+    REQUIRE_NOTHROW(w.colourAt(ray));
+}
+
+TEST_CASE("World: Reflected colour at maximum recursive depth") {
+    auto w = World::getDefaultWorld();
+    std::shared_ptr<Shape> shape = std::make_shared<Plane>(translation(0, -1, 0));
+    shape->getMaterial().setReflectivity(0.5);
+    const auto sqrt2    = sqrtd(2);
+    const auto sqrt2by2 = sqrt2/2;
+    const Ray ray{make_point(0, 0, -3), make_vector(0, -sqrt2by2, sqrt2by2)};
+    const Intersection x{sqrt2, shape};
+    const auto hit = Intersection::prepareHit(x, ray);
+    const auto colour = w.reflectedColour(hit, 0);
+    REQUIRE(colour == predefined_colours::black);
 }

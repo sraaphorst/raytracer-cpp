@@ -4,6 +4,7 @@
  * By Sebastian Raaphorst, 2018.
  */
 
+#include <climits>
 #include <memory>
 #include <vector>
 
@@ -64,24 +65,26 @@ namespace raytracer {
         return intersections;
     }
 
-    const std::optional<const Colour> World::shadeHit(const std::optional<const Hit> &hit) const noexcept {
+    const std::optional<const Colour> World::shadeHit(const std::optional<const Hit> &hit,
+            int remaining) const noexcept {
         if (!(light.has_value() && hit.has_value()))
             return {};
 
         const auto shadowed = isShadowed(hit->getPoint());
-
-        return hit->getObject().getMaterial().lighting(light.value(), hit->getObject(),
+        const auto surface = hit->getObject().getMaterial().lighting(light.value(), hit->getObject(),
                 hit->getPoint(), hit->getEyeVector(), hit->getNormalVector(), shadowed);
+        const auto reflected = reflectedColour(*hit, remaining);
+        return surface + reflected;
     }
 
-    const Colour World::colourAt(const Ray &ray) const noexcept {
+    const Colour World::colourAt(const Ray &ray, int remaining) const noexcept {
         const auto xs = intersect(ray);
         const auto hit = Intersection::hit(xs);
         if (!hit.has_value())
             return predefined_colours::black;
 
         const auto populated_hit = Intersection::prepareHit(hit, ray);
-        const auto shade = shadeHit(populated_hit);
+        const auto shade = shadeHit(populated_hit, remaining);
         return shade.value_or(predefined_colours::black);
     }
 
@@ -99,12 +102,15 @@ namespace raytracer {
         return hit.has_value() && hit.value().getT() < distance;
     }
 
-    const Colour World::reflectedColour(const Hit &hit) const noexcept {
+    const Colour World::reflectedColour(const Hit &hit, int remaining) const noexcept {
+        if (remaining < 1)
+            return predefined_colours::black;
+
         const auto reflectivity = hit.getObject().getMaterial().getReflectivity();
         if (reflectivity == 0)
             return predefined_colours::black;
         const Ray reflect_ray{hit.getPoint(), hit.getReflectVector()};
-        const auto colour = colourAt(reflect_ray);
+        const auto colour = colourAt(reflect_ray, remaining - 1);
         return colour * reflectivity;
     }
 

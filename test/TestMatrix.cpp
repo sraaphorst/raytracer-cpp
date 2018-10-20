@@ -145,7 +145,7 @@ TEST_CASE("Matrix: Identity matrix should not change the value of a matrix, whet
     REQUIRE(m * predefined_matrices::I<double, 4> == m);
 }
 
-TEST_CASE("Identity matrix should not change the value of vectors, whether on left or right", "[Matrix][identity][vector_multiplication]") {
+TEST_CASE("Identity matrix should not change the value of vectors, whether on left or right") {
     constexpr Vector<double, 4> v = {4, 3, 2, 1};
     REQUIRE(predefined_matrices::I<double, 4> * v == v);
     REQUIRE(v * predefined_matrices::I<double, 4> == v);

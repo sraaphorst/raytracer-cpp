@@ -46,16 +46,19 @@ namespace raytracer {
         const bool contains(const Shape &s) const noexcept;
 
         const std::vector<Intersection> intersect(const Ray &ray) const noexcept;
-        const std::optional<const Colour> shadeHit(const std::optional<const Hit> &) const noexcept;
-        const Colour colourAt(const Ray &ray) const noexcept;
+        const std::optional<const Colour> shadeHit(const std::optional<const Hit>&,
+                int remaining = MAX_RECURSIONS) const noexcept;
+        const Colour colourAt(const Ray &ray, int remaining = MAX_RECURSIONS) const noexcept;
 
         /// Determine if a point is in shadow, i.e. there is something between this point and the light source.
         bool isShadowed(const Tuple &point) const noexcept;
 
-        /// Get the reflected colour for a hit.
-        const Colour reflectedColour(const Hit&) const noexcept;
+        /// Get the reflected colour for a hit. Limit the recursion.
+        const Colour reflectedColour(const Hit&, int remaining = MAX_RECURSIONS) const noexcept;
 
         static World getDefaultWorld() noexcept;
+
+        constexpr static int MAX_RECURSIONS = 5;
     };
 }
 
