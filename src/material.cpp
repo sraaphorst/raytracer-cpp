@@ -19,33 +19,43 @@ namespace raytracer {
             diffuse{DEFAULT_DIFFUSE},
             specular{DEFAULT_SPECULAR},
             shininess{DEFAULT_SHININESS},
-            reflectivity{DEFAULT_REFLECTIVITY} {}
+            reflectivity{DEFAULT_REFLECTIVITY},
+            transparency{DEFAULT_TRANSPARENCY},
+            refractive_index{DEFAULT_REFRACTIVE_INDEX} {}
 
     Material::Material(const Colour &colour,
                        double ambient,
                        double diffuse,
                        double specular,
                        double shininess,
-                       double reflectivity) noexcept:
+                       double reflectivity,
+                       double transparency,
+                       double refractive_index) noexcept:
             pattern{std::make_shared<SolidPattern>(colour)},
             ambient{ambient},
             diffuse{diffuse},
             specular{specular},
             shininess{shininess},
-            reflectivity{reflectivity} {}
+            reflectivity{reflectivity},
+            transparency{transparency},
+            refractive_index{refractive_index} {}
 
     Material::Material(const std::shared_ptr<Pattern> &pattern,
                        double ambient,
                        double diffuse,
                        double specular,
                        double shininess,
-                       double reflectivity) noexcept:
+                       double reflectivity,
+                       double transparency,
+                       double refractive_index) noexcept:
             pattern{pattern},
             ambient{ambient},
             diffuse{diffuse},
             specular{specular},
             shininess{shininess},
-            reflectivity{reflectivity} {}
+            reflectivity{reflectivity},
+            transparency{transparency},
+            refractive_index{refractive_index} {}
 
     bool Material::operator==(const Material &other) const {
         return *pattern == *other.pattern
@@ -53,7 +63,9 @@ namespace raytracer {
                && ALMOST_EQUALS(diffuse, other.diffuse)
                && ALMOST_EQUALS(specular, other.specular)
                && ALMOST_EQUALS(shininess, other.shininess)
-               && ALMOST_EQUALS(reflectivity, other.reflectivity);
+               && ALMOST_EQUALS(reflectivity, other.reflectivity)
+               && ALMOST_EQUALS(transparency, other.transparency)
+               && ALMOST_EQUALS(refractive_index, other.refractive_index);
     }
 
     bool Material::operator!=(const Material &other) const noexcept {
@@ -78,6 +90,12 @@ namespace raytracer {
     double Material::getReflectivity() const noexcept {
         return reflectivity;
     }
+    double Material::getTransparency() const noexcept {
+        return transparency;
+    }
+    double Material::getRefractiveIndex() const noexcept {
+        return refractive_index;
+    }
 
     void Material::setPattern(const std::shared_ptr<Pattern> &p) noexcept {
         pattern = p;
@@ -96,6 +114,12 @@ namespace raytracer {
     }
     void Material::setReflectivity(double r) noexcept {
         reflectivity = r;
+    }
+    void Material::setTransparency(double t) noexcept {
+        transparency = t;
+    }
+    void Material::setRefractiveIndex(double r) noexcept {
+        refractive_index = r;
     }
 
     Colour Material::lighting(const PointLight &light,

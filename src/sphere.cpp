@@ -14,6 +14,13 @@
 #include "vector.h"
 
 namespace raytracer {
+    const std::shared_ptr<Shape> Sphere::createGlassySphere() noexcept {
+        std::shared_ptr<Shape> sphere = std::make_shared<Sphere>();
+        sphere->getMaterial().setTransparency(1);
+        sphere->getMaterial().setRefractiveIndex(1.5);
+        return sphere;
+    }
+
     const std::vector<Intersection> Sphere::localIntersection(const Ray &r) const noexcept {
         const auto sphere_to_ray = r.getOrigin() - predefined_tuples::zero_point;
         const auto &direction = r.getDirection();

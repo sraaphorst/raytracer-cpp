@@ -107,3 +107,16 @@ TEST_CASE("Sphere: The normal is a normalized vector") {
     const auto n = s.normalAt(make_point(i, i, i));
     REQUIRE(n == n.normalize());
 }
+
+TEST_CASE("Sphere: A helper for producing a sphere with a glossy material") {
+    const auto sphere_ptr = Sphere::createGlassySphere();
+    REQUIRE(sphere_ptr->getTransformation() == predefined_matrices::I<>);
+    REQUIRE(sphere_ptr->getMaterial().getTransparency() == 1);
+    REQUIRE(sphere_ptr->getMaterial().getRefractiveIndex() == 1.5);
+}
+
+TEST_CASE("Sphere: Transparency and Refractive Index for the default material") {
+    const Material m{};
+    REQUIRE(m.getTransparency() == 0);
+    REQUIRE(m.getRefractiveIndex() == 1.0);
+}

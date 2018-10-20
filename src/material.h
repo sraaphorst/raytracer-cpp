@@ -36,6 +36,8 @@ namespace raytracer {
         double specular;
         double shininess;
         double reflectivity;
+        double transparency;
+        double refractive_index;
 
     public:
         /// Default material is just solid white.
@@ -47,14 +49,18 @@ namespace raytracer {
                  double = DEFAULT_DIFFUSE,
                  double = DEFAULT_SPECULAR,
                  double = DEFAULT_SHININESS,
-                 double = DEFAULT_REFLECTIVITY) noexcept;
+                 double = DEFAULT_REFLECTIVITY,
+                 double = DEFAULT_TRANSPARENCY,
+                 double = DEFAULT_REFRACTIVE_INDEX) noexcept;
 
         Material(const std::shared_ptr<Pattern> &pattern,
                  double = DEFAULT_AMBIENT,
                  double = DEFAULT_DIFFUSE,
                  double = DEFAULT_SPECULAR,
                  double = DEFAULT_SHININESS,
-                 double = DEFAULT_REFLECTIVITY) noexcept;
+                 double = DEFAULT_REFLECTIVITY,
+                 double = DEFAULT_TRANSPARENCY,
+                 double = DEFAULT_REFRACTIVE_INDEX) noexcept;
 
         Material(const Material&) = default;
         Material(Material&&) = default;
@@ -70,6 +76,8 @@ namespace raytracer {
         double getSpecular() const noexcept;
         double getShininess() const noexcept;
         double getReflectivity() const noexcept;
+        double getTransparency() const noexcept;
+        double getRefractiveIndex() const noexcept;
 
         void setPattern(const std::shared_ptr<Pattern>&) noexcept;
         void setAmbient(double) noexcept;
@@ -77,14 +85,18 @@ namespace raytracer {
         void setSpecular(double) noexcept;
         void setShininess(double) noexcept;
         void setReflectivity(double) noexcept;
+        void setTransparency(double) noexcept;
+        void setRefractiveIndex(double) noexcept;
 
 
-        constexpr static Colour DEFAULT_COLOUR       = predefined_colours::white;
-        constexpr static double DEFAULT_AMBIENT      =   0.1;
-        constexpr static double DEFAULT_DIFFUSE      =   0.9;
-        constexpr static double DEFAULT_SPECULAR     =   0.9;
-        constexpr static double DEFAULT_SHININESS    = 200;
-        constexpr static double DEFAULT_REFLECTIVITY =   0;
+        constexpr static Colour DEFAULT_COLOUR           = predefined_colours::white;
+        constexpr static double DEFAULT_AMBIENT          =   0.1;
+        constexpr static double DEFAULT_DIFFUSE          =   0.9;
+        constexpr static double DEFAULT_SPECULAR         =   0.9;
+        constexpr static double DEFAULT_SHININESS        = 200;
+        constexpr static double DEFAULT_REFLECTIVITY     =   0;
+        constexpr static double DEFAULT_TRANSPARENCY     =   0;
+        constexpr static double DEFAULT_REFRACTIVE_INDEX =   1;
 
         // Calculate the lighting of this material.
         Colour lighting(const PointLight &light,

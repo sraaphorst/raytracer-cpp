@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <memory>
 #include <vector>
 
 #include "shape.h"
@@ -24,6 +25,9 @@ namespace raytracer {
 
         template<typename T, typename M>
         Sphere(T&& t, M&& m): Shape{t, m} {}
+
+        /// Create a specific instance of a glassy sphere.
+        const static std::shared_ptr<Shape> createGlassySphere() noexcept;
 
     private:
         const std::vector<Intersection> localIntersection(const Ray&) const noexcept override;
