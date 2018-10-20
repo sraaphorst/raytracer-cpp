@@ -90,7 +90,7 @@ TEST_CASE("Material: Lighting with the surface in shadow") {
     REQUIRE(result == make_colour(0.1, 0.1, 0.1));
 }
 
-TEST_CASE("Lighting with a pattern applied") {
+TEST_CASE("Material: Lighting with a pattern applied") {
     const Material m{std::make_shared<StripePattern>(), 1, 0, 0, Material::DEFAULT_SHININESS};
     const auto eyev = make_vector(0, 0, -1);
     const auto normalv = make_vector(0, 0, -1);
@@ -99,4 +99,8 @@ TEST_CASE("Lighting with a pattern applied") {
     const auto c2 = m.lighting(light, Sphere{}, make_point(1.1, 0, 0), eyev, normalv, false);
     REQUIRE(c1 == predefined_colours::white);
     REQUIRE(c2 == predefined_colours::black);
+}
+
+TEST_CASE("Material: Reflectivity for the default material") {
+    REQUIRE(Material{}.getReflectivity() == 0);
 }

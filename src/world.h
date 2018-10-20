@@ -42,6 +42,7 @@ namespace raytracer {
         void clearLightSource() noexcept;
 
         std::vector<std::shared_ptr<Shape>> getObjects() noexcept;
+        const std::vector<std::shared_ptr<Shape>> getObjects() const noexcept;
         const bool contains(const Shape &s) const noexcept;
 
         const std::vector<Intersection> intersect(const Ray &ray) const noexcept;
@@ -50,6 +51,9 @@ namespace raytracer {
 
         /// Determine if a point is in shadow, i.e. there is something between this point and the light source.
         bool isShadowed(const Tuple &point) const noexcept;
+
+        /// Get the reflected colour for a hit.
+        const Colour reflectedColour(const Hit&) const noexcept;
 
         static World getDefaultWorld() noexcept;
     };

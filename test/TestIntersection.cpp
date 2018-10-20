@@ -8,8 +8,10 @@
 
 #include <memory>
 
+#include "constmath.h"
 #include "hit.h"
 #include "intersection.h"
+#include "plane.h"
 #include "ray.h"
 #include "sphere.h"
 #include "transformers.h"
@@ -112,4 +114,14 @@ TEST_CASE("Intersection: The point is offset") {
     const auto z = hit.getPoint()[tuple_constants::z];
     REQUIRE(-1.1 < z);
     REQUIRE(z < -1);
+}
+
+TEST_CASE("Intersection: Precomputing the reflection vector") {
+    const std::shared_ptr<Shape> shape = std::make_shared<Plane>();
+    constexpr double sqrt2 = sqrtd(2);
+    constexpr double sqrt2by2 = sqrt2/2;
+    const Ray ray{make_point(0, 1, -1), make_vector(0, -sqrt2by2, sqrt2by2)};
+    const Intersection hit{sqrt2, shape};
+    const auto prepared_hit = Intersection::prepareHit(hit, ray);
+    REQUIRE(prepared_hit.getReflectVector() == make_vector(0, sqrt2by2, sqrt2by2));
 }

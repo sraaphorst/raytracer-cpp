@@ -22,12 +22,13 @@ namespace raytracer {
         const Tuple point;
         const Tuple eyev;
         const Tuple normalv;
+        const Tuple reflectv;
         const bool inside;
 
     public:
         Hit() = delete;
-        Hit(const Intersection &i, const Tuple &point, const Tuple &eyev, const Tuple &normalv, bool inside):
-            Intersection{i}, point{point}, eyev{eyev}, normalv{normalv}, inside{inside} {}
+        Hit(const Intersection &i, const Tuple &point, const Tuple &eyev,
+                const Tuple &normalv, const Tuple &reflectv, bool inside);
         Hit(const Hit&) = default;
         Hit(Hit&&) = default;
 
@@ -36,6 +37,8 @@ namespace raytracer {
         const Tuple &getEyeVector() const noexcept;
 
         const Tuple &getNormalVector() const noexcept;
+
+        const Tuple &getReflectVector() const noexcept;
 
         const bool isInside() const noexcept;
     };

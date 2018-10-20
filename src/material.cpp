@@ -18,36 +18,42 @@ namespace raytracer {
             ambient{DEFAULT_AMBIENT},
             diffuse{DEFAULT_DIFFUSE},
             specular{DEFAULT_SPECULAR},
-            shininess{DEFAULT_SHININESS} {}
+            shininess{DEFAULT_SHININESS},
+            reflectivity{DEFAULT_REFLECTIVITY} {}
 
     Material::Material(const Colour &colour,
                        double ambient,
                        double diffuse,
                        double specular,
-                       double shininess) noexcept:
+                       double shininess,
+                       double reflectivity) noexcept:
             pattern{std::make_shared<SolidPattern>(colour)},
             ambient{ambient},
             diffuse{diffuse},
             specular{specular},
-            shininess{shininess} {}
+            shininess{shininess},
+            reflectivity{reflectivity} {}
 
     Material::Material(const std::shared_ptr<Pattern> &pattern,
                        double ambient,
                        double diffuse,
                        double specular,
-                       double shininess) noexcept:
+                       double shininess,
+                       double reflectivity) noexcept:
             pattern{pattern},
             ambient{ambient},
             diffuse{diffuse},
             specular{specular},
-            shininess{shininess} {}
+            shininess{shininess},
+            reflectivity{reflectivity} {}
 
     bool Material::operator==(const Material &other) const {
         return *pattern == *other.pattern
                && ALMOST_EQUALS(ambient, other.ambient)
                && ALMOST_EQUALS(diffuse, other.diffuse)
                && ALMOST_EQUALS(specular, other.specular)
-               && ALMOST_EQUALS(shininess, other.shininess);
+               && ALMOST_EQUALS(shininess, other.shininess)
+               && ALMOST_EQUALS(reflectivity, other.reflectivity);
     }
 
     bool Material::operator!=(const Material &other) const noexcept {
@@ -69,6 +75,9 @@ namespace raytracer {
     double Material::getShininess() const noexcept {
         return shininess;
     }
+    double Material::getReflectivity() const noexcept {
+        return reflectivity;
+    }
 
     void Material::setPattern(const std::shared_ptr<Pattern> &p) noexcept {
         pattern = p;
@@ -84,6 +93,9 @@ namespace raytracer {
     }
     void Material::setShininess(double s) noexcept {
         shininess = s;
+    }
+    void Material::setReflectivity(double r) noexcept {
+        reflectivity = r;
     }
 
     Colour Material::lighting(const PointLight &light,

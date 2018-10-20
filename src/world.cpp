@@ -39,6 +39,10 @@ namespace raytracer {
         return shapes;
     }
 
+    const std::vector<std::shared_ptr<Shape>> World::getObjects() const noexcept {
+        return shapes;
+    }
+
     const bool World::contains(const Shape &s) const noexcept {
         for (const auto i: shapes)
             if (*i == s)
@@ -93,6 +97,15 @@ namespace raytracer {
         const auto xs = intersect(ray);
         const auto hit = Intersection::hit(xs);
         return hit.has_value() && hit.value().getT() < distance;
+    }
+
+    const Colour World::reflectedColour(const Hit &hit) const noexcept {
+        const auto reflectivity = hit.getObject().getMaterial().getReflectivity();
+        if (reflectivity == 0)
+            return predefined_colours::black;
+        const Ray reflect_ray{hit.getPoint(), hit.getReflectVector()};
+        const auto colour = colourAt(reflect_ray);
+        return colour * reflectivity;
     }
 
     World World::getDefaultWorld() noexcept {

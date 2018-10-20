@@ -9,9 +9,11 @@
 #include <optional>
 
 #include "affine_transform.h"
+#include "constmath.h"
 #include "hit.h"
 #include "material.h"
 #include "pattern.h"
+#include "plane.h"
 #include "pointlight.h"
 #include "ray.h"
 #include "sphere.h"
@@ -156,4 +158,29 @@ TEST_CASE("World: When shade_hit is given an intersection in shadow") {
     const auto c = w.shadeHit(hit);
     REQUIRE(c.has_value());
     REQUIRE(c.value() == make_colour(0.1, 0.1, 0.1));
+}
+
+TEST_CASE("World: Reflected colour for non-reflective material") {
+    auto w = World::getDefaultWorld();
+    const Ray ray{predefined_tuples::zero_point, predefined_tuples::z1};
+    REQUIRE(w.getObjects().size() >= 2);
+    auto &shape = w.getObjects()[1];
+    shape->getMaterial().setAmbient(1);
+    const Intersection x{1, shape};
+    const auto hit = Intersection::prepareHit(x, ray);
+    const auto colour = w.reflectedColour(hit);
+    REQUIRE(colour == predefined_colours::black);
+}
+
+TEST_CASE("World: Reflected colour for reflective material") {
+    auto w = World::getDefaultWorld();
+    std::shared_ptr<Shape> shape = std::make_shared<Plane>(translation(0, -1, 0));
+    shape->getMaterial().setReflectivity(0.5);
+    const auto sqrt2    = sqrtd(2);
+    const auto sqrt2by2 = sqrt2/2;
+    const Ray ray{make_point(0, 0, -3), make_vector(0, -sqrt2by2, sqrt2by2)};
+    const Intersection x{sqrt2, shape};
+    const auto hit = Intersection::prepareHit(x, ray);
+    const auto colour = w.reflectedColour(hit);
+    REQUIRE(colour == make_colour(0.19032, 0.2379, 0.14274));
 }
