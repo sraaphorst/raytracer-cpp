@@ -8,6 +8,7 @@
 
 #include <optional>
 #include <vector>
+#include <iostream>
 
 #include "affine_transform.h"
 #include "constmath.h"
@@ -17,11 +18,12 @@
 #include "plane.h"
 #include "pointlight.h"
 #include "ray.h"
+#include "solidpattern.h"
 #include "sphere.h"
 #include "vector.h"
 #include "world.h"
 
-#include <iostream>
+#include "TestPattern.h"
 
 using namespace raytracer;
 
@@ -66,7 +68,7 @@ TEST_CASE("World: Shading an intersection") {
 
     const auto s = w.getObjects().front();
     const Intersection i{4, s};
-    auto hit = Intersection::prepareHit(i, ray);
+    auto hit = Intersection::prepareHit(i, ray, {});
     auto cOpt = w.shadeHit(hit);
     REQUIRE(cOpt.has_value());
     REQUIRE(cOpt.value() == make_colour(0.38066, 0.47583, 0.2855));
@@ -80,13 +82,13 @@ TEST_CASE("World: Shading an intersection from the inside") {
 
     const auto s = w.getObjects()[1];
     const Intersection i{0.5, s};
-    auto hit = Intersection::prepareHit(i, ray);
+    auto hit = Intersection::prepareHit(i, ray, {});
     auto cOpt = w.shadeHit(hit);
     REQUIRE(cOpt.has_value());
 
-    // After shadowing is implemented, we only have the ambient component.
-    //REQUIRE(cOpt.value() == make_colour(0.90498, 0.90498, 0.90498));
-    REQUIRE(cOpt.value() == make_colour(0.1, 0.1, 0.1));
+    /// After shadowing is implemented, we only have the ambient component.
+    REQUIRE(cOpt.value() == make_colour(0.90498, 0.90498, 0.90498));
+    /// REQUIRE(cOpt.value() == make_colour(0.1, 0.1, 0.1));
 }
 
 TEST_CASE("World: The colour when a ray misses") {
@@ -155,7 +157,7 @@ TEST_CASE("World: When shadeHit is given an intersection in shadow") {
     const World w{light, shapes};
     const Ray ray{make_point(0, 0, 5), predefined_tuples::z1};
     const Intersection i{4, s2};
-    const auto hit = Intersection::prepareHit(i, ray);
+    const auto hit = Intersection::prepareHit(i, ray, {});
     const auto c = w.shadeHit(hit);
     REQUIRE(c.has_value());
     REQUIRE(c.value() == make_colour(0.1, 0.1, 0.1));
@@ -168,7 +170,7 @@ TEST_CASE("World: Reflected colour for non-reflective material") {
     auto &shape = w.getObjects()[1];
     shape->getMaterial().setAmbient(1);
     const Intersection x{1, shape};
-    const auto hit = Intersection::prepareHit(x, ray);
+    const auto hit = Intersection::prepareHit(x, ray, {});
     const auto colour = w.reflectedColour(hit);
     REQUIRE(colour == predefined_colours::black);
 }
@@ -181,7 +183,7 @@ TEST_CASE("World: Reflected colour for reflective material") {
     const auto sqrt2by2 = sqrt2/2;
     const Ray ray{make_point(0, 0, -3), make_vector(0, -sqrt2by2, sqrt2by2)};
     const Intersection x{sqrt2, shape};
-    const auto hit = Intersection::prepareHit(x, ray);
+    const auto hit = Intersection::prepareHit(x, ray, {});
     const auto colour = w.reflectedColour(hit);
     REQUIRE(colour == make_colour(0.19032, 0.2379, 0.14274));
 }
@@ -194,7 +196,7 @@ TEST_CASE("World: shadeHit with reflective material") {
     const auto sqrt2by2 = sqrt2/2;
     const Ray ray{make_point(0, 0, -3), make_vector(0, -sqrt2by2, sqrt2by2)};
     const Intersection x{sqrt2, shape};
-    const auto hit = Intersection::prepareHit(x, ray);
+    const auto hit = Intersection::prepareHit(x, ray, {});
     const auto colour = w.shadeHit(hit);
     REQUIRE(colour == make_colour(0.87677, 0.92436, 0.82918));
 }
@@ -220,7 +222,99 @@ TEST_CASE("World: Reflected colour at maximum recursive depth") {
     const auto sqrt2by2 = sqrt2/2;
     const Ray ray{make_point(0, 0, -3), make_vector(0, -sqrt2by2, sqrt2by2)};
     const Intersection x{sqrt2, shape};
-    const auto hit = Intersection::prepareHit(x, ray);
+    const auto hit = Intersection::prepareHit(x, ray, {});
     const auto colour = w.reflectedColour(hit, 0);
     REQUIRE(colour == predefined_colours::black);
+}
+
+TEST_CASE("World: Refracted colour with opaque surface") {
+    const auto w = World::getDefaultWorld();
+    REQUIRE_FALSE(w.getObjects().empty());
+    const auto &shape = w.getObjects()[0];
+    const Ray ray{make_point(0, 0, -5), predefined_tuples::z1};
+    const std::vector<Intersection> xs{Intersection{4, shape}, Intersection{6, shape}};
+    const auto hit = Intersection::prepareHit(xs[0], ray, xs);
+    const auto colour = w.refractedColour(hit, 5);
+    REQUIRE(colour == predefined_colours::black);
+}
+
+TEST_CASE("World: Refracted colour at maximum recursive depth") {
+    auto w = World::getDefaultWorld();
+    REQUIRE_FALSE(w.getObjects().empty());
+
+    auto &shape = w.getObjects()[0];
+    shape->getMaterial().setTransparency(1.0);
+    shape->getMaterial().setRefractiveIndex(1.5);
+
+    const Ray ray{make_point(0, 0, -5), predefined_tuples::z1};
+
+    const std::vector<Intersection> xs{Intersection{4, shape}, Intersection{6, shape}};
+    const auto hit = Intersection::prepareHit(xs[0], ray, xs);
+    const auto colour = w.refractedColour(hit, 0);
+    REQUIRE(colour == predefined_colours::black);
+}
+
+TEST_CASE("World: Refracted colour under total internal reflection") {
+    auto w = World::getDefaultWorld();
+    REQUIRE_FALSE(w.getObjects().empty());
+
+    auto &shape = w.getObjects()[0];
+    shape->getMaterial().setTransparency(1.0);
+    shape->getMaterial().setRefractiveIndex(1.5);
+
+    const auto sqrt2by2 = sqrtd(2)/2;
+    const Ray ray{make_point(0, 0, sqrt2by2), predefined_tuples::y1};
+    const std::vector<Intersection> xs{Intersection{-sqrt2by2, shape}, Intersection{sqrt2by2, shape}};
+    const auto hit = Intersection::prepareHit(xs[1], ray, xs);
+    const auto colour = w.refractedColour(hit);
+    REQUIRE(colour == predefined_colours::black);
+}
+
+TEST_CASE("World: Refracted colour with refracted ray") {
+    auto w = World::getDefaultWorld();
+    REQUIRE(w.getObjects().size() >= 2);
+
+    std::shared_ptr<Pattern> pattern = std::make_shared<TestPattern>();
+    auto &shape1 = w.getObjects()[0];
+    shape1->getMaterial().setAmbient(1);
+    shape1->getMaterial().setPattern(pattern);
+
+    auto &shape2 = w.getObjects()[1];
+    shape2->getMaterial().setTransparency(1);
+    shape2->getMaterial().setRefractiveIndex(1.5);
+
+    const Ray ray{make_point(0, 0, 0.1), predefined_tuples::y1};
+    const std::vector<Intersection> xs{Intersection{-0.9899, shape1},
+                                       Intersection{-0.4899, shape2},
+                                       Intersection{ 0.4899, shape2},
+                                       Intersection{ 0.9899, shape1}};
+
+    auto hit = Intersection::prepareHit(xs[2], ray, xs);
+    auto colour = w.refractedColour(hit, 5);
+    REQUIRE(colour == make_colour(0, 0.99878, 0.04724));
+}
+
+TEST_CASE("World: shadeHit with transparent material") {
+    auto w = World::getDefaultWorld();
+
+    std::shared_ptr<Shape> plane = std::make_shared<Plane>();
+    plane->setTransformation(translation(0, -1, 0));
+    plane->getMaterial().setTransparency(0.5);
+    plane->getMaterial().setRefractiveIndex(1.5);
+    w.getObjects().emplace_back(plane);
+
+    std::shared_ptr<Shape> ball = std::make_shared<Sphere>();
+    ball->setTransformation(translation(0, -3.5, -0.5));
+    ball->getMaterial().setPattern(std::make_shared<SolidPattern>(predefined_colours::red));
+    ball->getMaterial().setAmbient(0.5);
+    w.getObjects().emplace_back(ball);
+
+    const auto sqrt2 = sqrtd(2);
+    const auto sqrt2by2 = sqrt2/2;
+    const Ray ray{make_point(0, 0, -3), make_vector(0, -sqrt2by2, sqrt2by2)};
+    const std::vector<Intersection> xs{Intersection{sqrt2, plane}};
+    const auto hit = Intersection::prepareHit(xs[0], ray, xs);
+
+    const auto colour = w.shadeHit(hit);
+    REQUIRE(colour == make_colour(0.93642, 0.68642, 0.68642));
 }

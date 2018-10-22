@@ -41,8 +41,8 @@ namespace raytracer {
         void setLightSource(const PointLight&) noexcept;
         void clearLightSource() noexcept;
 
-        std::vector<std::shared_ptr<Shape>> getObjects() noexcept;
-        const std::vector<std::shared_ptr<Shape>> getObjects() const noexcept;
+        std::vector<std::shared_ptr<Shape>> &getObjects() noexcept;
+        const std::vector<std::shared_ptr<Shape>> &getObjects() const noexcept;
         const bool contains(const Shape &s) const noexcept;
 
         const std::vector<Intersection> intersect(const Ray &ray) const noexcept;
@@ -55,6 +55,9 @@ namespace raytracer {
 
         /// Get the reflected colour for a hit. Limit the recursion.
         const Colour reflectedColour(const Hit&, int remaining = MAX_RECURSIONS) const noexcept;
+
+        /// Get the refracted colour for a hit. Limit the recursion.
+        const Colour refractedColour(const Hit&, int remaining = MAX_RECURSIONS) const noexcept;
 
         static World getDefaultWorld() noexcept;
 

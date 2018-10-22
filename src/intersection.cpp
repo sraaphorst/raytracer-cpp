@@ -37,7 +37,7 @@ namespace raytracer {
                                                             const std::vector<Intersection> &xs) noexcept {
         if (!hit.has_value())
             return {};
-        return prepareHit(hit.value(), ray);
+        return prepareHit(hit.value(), ray, xs);
     }
 
     const Hit Intersection::prepareHit(const Intersection &hit,
@@ -48,15 +48,16 @@ namespace raytracer {
         const auto normalv = hit.getObject().normalAt(point);
         const auto reflectv = ray.getDirection().reflect(normalv);
         const bool inside = normalv.dot_product(eyev) < 0;
+        const auto adj_normalv = inside ? -normalv : normalv; ///
 
         // Slightly offset the point from the expected value to prevent acne.
         // 1e-4 is arbitrary and depends on the scale of the scene; it is sufficient unless dealing with very
         // small distances.
-        const auto adjusted_point = point + normalv * 1e-4;
+        const auto adjusted_point = point + adj_normalv * 1e-4;
 
         // This is where the refracted rays will originate.
         // As with adjusted_point, we have to slightly offset this, but in the opposite direction.
-        const auto under_point = point - normalv * 1e-4;
+        const auto under_point = point - adj_normalv * 1e-4;
 
         double n1, n2;
         std::vector<std::reference_wrapper<const Shape>> containers;
@@ -65,7 +66,7 @@ namespace raytracer {
                 n1 = containers.empty() ? 1 : containers.back().get().getMaterial().getRefractiveIndex();
 
             auto iter = std::find_if(std::begin(containers), std::end(containers),
-                    [&x](const auto &c) { return c.get() == x.getObject();});
+                    [&x](const auto &c) { return c.get() == x.getObject(); });
             if (iter != std::end(containers))
                 containers.erase(iter);
             else
@@ -77,6 +78,6 @@ namespace raytracer {
             }
         }
 
-        return Hit{hit, adjusted_point, under_point, eyev, (inside ? -1 : 1) * normalv, reflectv, inside, n1, n2};
+        return Hit{hit, adjusted_point, under_point, eyev, adj_normalv, reflectv, inside, n1, n2};
     }
 }

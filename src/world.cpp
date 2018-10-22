@@ -36,11 +36,11 @@ namespace raytracer {
         light = {};
     }
 
-    std::vector<std::shared_ptr<Shape>> World::getObjects() noexcept {
+    std::vector<std::shared_ptr<Shape>> &World::getObjects() noexcept {
         return shapes;
     }
 
-    const std::vector<std::shared_ptr<Shape>> World::getObjects() const noexcept {
+    const std::vector<std::shared_ptr<Shape>> &World::getObjects() const noexcept {
         return shapes;
     }
 
@@ -74,7 +74,8 @@ namespace raytracer {
         const auto surface = hit->getObject().getMaterial().lighting(light.value(), hit->getObject(),
                 hit->getPoint(), hit->getEyeVector(), hit->getNormalVector(), shadowed);
         const auto reflected = reflectedColour(*hit, remaining);
-        return surface + reflected;
+        const auto refracted = refractedColour(*hit, remaining);
+        return surface + reflected + refracted;
     }
 
     const Colour World::colourAt(const Ray &ray, int remaining) const noexcept {
@@ -83,7 +84,7 @@ namespace raytracer {
         if (!hit.has_value())
             return predefined_colours::black;
 
-        const auto populated_hit = Intersection::prepareHit(hit, ray);
+        const auto populated_hit = Intersection::prepareHit(hit, ray, xs);
         const auto shade = shadeHit(populated_hit, remaining);
         return shade.value_or(predefined_colours::black);
     }
@@ -112,6 +113,33 @@ namespace raytracer {
         const Ray reflect_ray{hit.getPoint(), hit.getReflectVector()};
         const auto colour = colourAt(reflect_ray, remaining - 1);
         return colour * reflectivity;
+    }
+
+    const Colour World::refractedColour(const Hit &hit, int remaining) const noexcept {
+        if (remaining < 1)
+            return predefined_colours::black;
+
+        const auto transparency = hit.getObject().getMaterial().getTransparency();
+        if (transparency == 0)
+            return predefined_colours::black;
+
+        // Apply Snell's Law to find the angle of refraction.
+        const auto n_ratio = hit.getN1() / hit.getN2();
+        const auto cos_i = hit.getEyeVector().dot_product(hit.getNormalVector());
+        const auto sin2_t = n_ratio * n_ratio * (1 - cos_i * cos_i);
+
+        // If sin2_t > 1, we have total internal reflection.
+        if (sin2_t > 1)
+            return predefined_colours::black;
+
+        // Create the refracted ray.
+        const auto cos_t = sqrtd(1 - sin2_t);
+        const auto direction = hit.getNormalVector() * (n_ratio * cos_i - cos_t) - hit.getEyeVector() * n_ratio;
+        const Ray refract_ray{hit.getUnderPoint(), direction};
+
+        // Find its colour.
+        const auto colour = colourAt(refract_ray, remaining - 1) * transparency;
+        return colour;
     }
 
     World World::getDefaultWorld() noexcept {

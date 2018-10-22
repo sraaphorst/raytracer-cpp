@@ -37,7 +37,7 @@ namespace raytracer {
         Intersection &operator=(const Intersection &other) noexcept = default;
 
         constexpr bool operator==(const Intersection &other) const {
-            return t == other.t && o == other.o;
+            return ALMOST_EQUALS(t, other.t) && *o == *other.o;
         }
 
         constexpr double getT() const noexcept {
@@ -55,9 +55,9 @@ namespace raytracer {
 
         static const std::optional<const Hit> prepareHit(const std::optional<const Intersection> &hit,
                                                          const Ray &ray,
-                                                         const std::vector<Intersection> &xs = {}) noexcept;
+                                                         const std::vector<Intersection> &xs) noexcept;
         static const Hit prepareHit(const Intersection &hit,
                                     const Ray &ray,
-                                    const std::vector<Intersection> &xs = {}) noexcept;
+                                    const std::vector<Intersection> &xs) noexcept;
     };
 }
