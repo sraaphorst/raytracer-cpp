@@ -44,5 +44,12 @@ namespace raytracer {
         double getN1() const noexcept;
         double getN2() const noexcept;
         bool isInside() const noexcept;
+
+        /**
+         * Calculate the Fresnel effect using the Schlick approximation.
+         * This returns the reflectance, a number in [0,1] that represents the fraction of light that should be
+         * reflected, given the surface information.
+         */
+        double schlick() const noexcept;
     };
 }

@@ -16,15 +16,16 @@ using namespace raytracer;
 
 int main() {
     WorldConditions w{make_vector(0, -0.1, 0), make_vector(-0.01, 0, 0)};
-    std::unique_ptr<Projectile> ptr = std::make_unique<Projectile>(make_point(0, 1, 0), make_vector(1, 1, 0).normalize());
+    //std::unique_ptr<Projectile> ptr = std::make_unique<Projectile>(make_point(0, 1, 0), make_vector(1, 1, 0).normalize());
+    Projectile p{make_point(0, 1, 0), make_vector(1, 1, 0).normalize()};
 
-    std::cout << "In " << w << "\n\tbeginning with " << *ptr << "\n\n";
+    std::cout << "In " << w << "\n\tbeginning with " << p << "\n\n";
 
     size_t ticks = 0;
     std::cout << "Time" << std::setw(34) << "Velocity" << std::setw(42) << "Position" << '\n';
-    for (; ptr->inAir(); ptr = ptr->tick(w), ++ticks) {
-        const Tuple &position = ptr->getPosition();
-        const Tuple &velocity = ptr->getVelocity();
+    for (; p.inAir(); p = p.tick(w), ++ticks) {
+        const Tuple &position = p.getPosition();
+        const Tuple &velocity = p.getVelocity();
 
         std::cout << std::fixed
                   << std::setw( 4)                                                << ticks

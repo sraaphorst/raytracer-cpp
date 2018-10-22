@@ -30,10 +30,10 @@ namespace raytracer {
 
         constexpr Projectile(const Projectile &other) = default;
 
+        Projectile &operator=(const Projectile&) = default;
+
         Projectile tick(const WorldConditions w) const {
-//            position = position + velocity;
-//            velocity = velocity + w.gravity + w.wind;
-return Projectile{position + velocity, velocity + w.gravity + w.wind};
+            return Projectile{position + velocity, velocity + w.gravity + w.wind};
         }
 
         constexpr const Tuple &getPosition() const {

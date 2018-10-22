@@ -166,3 +166,34 @@ TEST_CASE("Intersection: The under point is offset below the surface") {
     REQUIRE(z > -1);
     REQUIRE(z < -0.9);
 }
+
+TEST_CASE("Intersection: Schlick approximation under total internal reflection") {
+    const auto sphere = Sphere::createGlassSphere();
+    constexpr auto sqrt2by2 = sqrtd(2)/2;
+    const Ray ray{make_point(0, 0, sqrt2by2), predefined_tuples::y1};
+    const std::vector<Intersection> xs{Intersection{-sqrt2by2, sphere},
+                                       Intersection{ sqrt2by2, sphere}};
+    const auto hit = Intersection::prepareHit(xs[1], ray, xs);
+    const auto reflectance = hit.schlick();
+    REQUIRE(reflectance == 1.0);
+}
+
+TEST_CASE("Intersection: Schlick approximation with a perpendicular viewing angle") {
+    const auto sphere = Sphere::createGlassSphere();
+    const Ray ray{predefined_tuples::zero_point, predefined_tuples::y1};
+    const std::vector<Intersection> xs{Intersection{-1, sphere},
+                                       Intersection{ 1, sphere}};
+    const auto hit = Intersection::prepareHit(xs[1], ray, xs);
+    const auto reflectance = hit.schlick();
+    std::cout << reflectance << std::endl;
+    REQUIRE(ALMOST_EQUALS(reflectance, 0.04));
+}
+
+TEST_CASE("Schlick approximation with small angle and n2 > n1") {
+    const auto sphere = Sphere::createGlassSphere();
+    const Ray ray{make_point(0, 0.99, -2), predefined_tuples::z1};
+    const std::vector<Intersection> xs{Intersection{1.8589, sphere}};
+    const auto hit = Intersection::prepareHit(xs[0], ray, xs);
+    const auto reflectance = hit.schlick();
+    REQUIRE(ALMOST_EQUALS(reflectance, 0.48873));
+}

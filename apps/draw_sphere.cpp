@@ -7,9 +7,12 @@
 #include <fstream>
 
 #include "canvas.h"
+#include "intersection.h"
 #include "material.h"
+#include "pattern.h"
 #include "pointlight.h"
 #include "ray.h"
+#include "solidpattern.h"
 #include "sphere.h"
 #include "vector.h"
 
@@ -38,7 +41,8 @@ int main() {
     // Give the sphere a purple-ish colour.
     Sphere s;
     Material m;
-    m.setColour(make_colour(1, 0.2, 1));
+    std::shared_ptr<Pattern> pattern = std::make_shared<SolidPattern>(make_colour(1, 0.2, 1));
+    m.setPattern(pattern);
     s.setMaterial(m);
 
     //s.setTransformation(scale(0.5, 1, 1).andThen(rotation_z(M_PI_4)));
@@ -67,7 +71,7 @@ int main() {
                 const auto point = r.position(intersection.getT());
                 const auto normal = intersection.getObject().normalAt(point);
                 const auto eye = -r.getDirection();
-                c[x][y] = intersection.getObject().getMaterial().lighting(light, point, eye, normal);
+                c[x][y] = intersection.getObject().getMaterial().lighting(light, s, point, eye, normal, false);
             }
         }
     }

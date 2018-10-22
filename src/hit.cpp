@@ -46,4 +46,24 @@ namespace raytracer {
     bool Hit::isInside() const noexcept {
         return inside;
     }
+
+    double Hit::schlick() const noexcept {
+        auto cos = eyev.dot_product(normalv);
+
+        // Total internal reflection can only occur if n1 > n2.
+        if (n1 > n2) {
+            const auto n = n1 / n2;
+            const auto sin2_t = n * n * (1 - cos * cos);
+            if (sin2_t > 1)
+                return 1;
+
+            // Use cost(theta_t) instead.
+            cos = sqrtd(1 - sin2_t);
+        }
+        
+        const auto rcalc = (n1 - n2) / (n1 + n2);
+        const auto r0 = rcalc * rcalc;
+        const auto mcos = 1 - cos;
+        return r0 + (1 - r0) * mcos * mcos * mcos * mcos * mcos;
+    }
 }
