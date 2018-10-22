@@ -156,3 +156,13 @@ TEST_CASE("Intersection: n1 and n2 at various intersections") {
         REQUIRE(hit.getN2() == n2s[idx]);
     }
 }
+
+TEST_CASE("Intersection: The under point is offset below the surface") {
+    const std::shared_ptr<Shape> sphere = Sphere::createGlassSphere();
+    const Ray ray{make_point(0, 0, -5), predefined_tuples::z1};
+    const std::vector<Intersection> xs{Intersection{4, sphere}};
+    const auto hit = Intersection::prepareHit(xs[0], ray, xs);
+    const auto z = hit.getUnderPoint()[tuple_constants::z];
+    REQUIRE(z > -1);
+    REQUIRE(z < -0.9);
+}

@@ -8,14 +8,19 @@
 #include "vector.h"
 
 namespace raytracer {
-    Hit::Hit(const Intersection &i, const Tuple &point, const Tuple &eyev,
-             const Tuple &normalv, const Tuple &reflectv, bool inside,
-             double n1, double n2):
-             Intersection{i}, point{point}, eyev{eyev}, normalv{normalv}, reflectv{reflectv}, inside{inside},
-             n1{n1}, n2{n2} {}
+    Hit::Hit(const Intersection &i, const Tuple &point, const Tuple &under_point,
+             const Tuple &eyev, const Tuple &normalv, const Tuple &reflectv,
+             bool inside, double n1, double n2):
+             Intersection{i}, point{point}, under_point{under_point},
+             eyev{eyev}, normalv{normalv}, reflectv{reflectv},
+             inside{inside}, n1{n1}, n2{n2} {}
 
     const Tuple &Hit::getPoint() const noexcept {
         return point;
+    }
+
+    const Tuple &Hit::getUnderPoint() const noexcept {
+        return under_point;
     }
 
     const Tuple &Hit::getEyeVector() const noexcept {

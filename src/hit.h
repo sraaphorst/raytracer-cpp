@@ -20,6 +20,7 @@ namespace raytracer {
      */
     class Hit final: public Intersection {
         const Tuple point;
+        const Tuple under_point;
         const Tuple eyev;
         const Tuple normalv;
         const Tuple reflectv;
@@ -29,13 +30,14 @@ namespace raytracer {
 
     public:
         Hit() = delete;
-        Hit(const Intersection &i, const Tuple &point, const Tuple &eyev,
-                const Tuple &normalv, const Tuple &reflectv, bool inside,
-                double n1, double n2);
+        Hit(const Intersection &i, const Tuple &point, const Tuple &under_point,
+                const Tuple &eyev, const Tuple &normalv, const Tuple &reflectv,
+                bool inside, double n1, double n2);
         Hit(const Hit&) = default;
         Hit(Hit&&) = default;
 
         const Tuple &getPoint() const noexcept;
+        const Tuple &getUnderPoint() const noexcept;
         const Tuple &getEyeVector() const noexcept;
         const Tuple &getNormalVector() const noexcept;
         const Tuple &getReflectVector() const noexcept;

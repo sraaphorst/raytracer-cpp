@@ -54,6 +54,10 @@ namespace raytracer {
         // small distances.
         const auto adjusted_point = point + normalv * 1e-4;
 
+        // This is where the refracted rays will originate.
+        // As with adjusted_point, we have to slightly offset this, but in the opposite direction.
+        const auto under_point = point - normalv * 1e-4;
+
         double n1, n2;
         std::vector<std::reference_wrapper<const Shape>> containers;
         for (const auto &x: xs) {
@@ -73,6 +77,6 @@ namespace raytracer {
             }
         }
 
-        return Hit{hit, adjusted_point, eyev, (inside ? -1 : 1) * normalv, reflectv, inside, n1, n2};
+        return Hit{hit, adjusted_point, under_point, eyev, (inside ? -1 : 1) * normalv, reflectv, inside, n1, n2};
     }
 }
