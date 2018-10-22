@@ -125,3 +125,34 @@ TEST_CASE("Intersection: Precomputing the reflection vector") {
     const auto prepared_hit = Intersection::prepareHit(hit, ray);
     REQUIRE(prepared_hit.getReflectVector() == make_vector(0, sqrt2by2, sqrt2by2));
 }
+
+TEST_CASE("Intersection: n1 and n2 at various intersections") {
+    std::shared_ptr<Shape> sphere1 = Sphere::createGlassSphere();
+    sphere1->setTransformation(scale(2, 2, 2));
+    sphere1->getMaterial().setRefractiveIndex(1.5);
+
+    std::shared_ptr<Shape> sphere2 = Sphere::createGlassSphere();
+    sphere2->setTransformation(translation(0, 0, -0.25));
+    sphere2->getMaterial().setRefractiveIndex(2);
+
+    std::shared_ptr<Shape> sphere3 = Sphere::createGlassSphere();
+    sphere3->setTransformation(translation(0, 0, 0.25));
+    sphere3->getMaterial().setRefractiveIndex(2.5);
+
+    const Ray ray{make_point(0, 0, -4), predefined_tuples::z1};
+    std::vector<Intersection> xs{Intersection{2, sphere1},
+                                 Intersection{2.75, sphere2},
+                                 Intersection{3.25, sphere3},
+                                 Intersection{4.75, sphere2},
+                                 Intersection{5.25, sphere3},
+                                 Intersection{6,    sphere1}};
+
+    std::vector<double> n1s{1.0, 1.5, 2.0, 2.5, 2.5, 1.5};
+    std::vector<double> n2s{1.5, 2.0, 2.5, 2.5, 1.5, 1.0};
+
+    for (auto idx = 0; idx < 6; ++idx) {
+        const auto hit = Intersection::prepareHit(xs[idx], ray, xs);
+        REQUIRE(hit.getN1() == n1s[idx]);
+        REQUIRE(hit.getN2() == n2s[idx]);
+    }
+}

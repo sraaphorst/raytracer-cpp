@@ -26,8 +26,8 @@ namespace raytracer {
         template<typename T, typename M>
         Sphere(T&& t, M&& m): Shape{t, m} {}
 
-        /// Create a specific instance of a glassy sphere.
-        const static std::shared_ptr<Shape> createGlassySphere() noexcept;
+        /// Create a specific instance of a glass sphere.
+        static std::shared_ptr<Shape> createGlassSphere() noexcept;
 
     private:
         const std::vector<Intersection> localIntersection(const Ray&) const noexcept override;

@@ -9,8 +9,10 @@
 
 namespace raytracer {
     Hit::Hit(const Intersection &i, const Tuple &point, const Tuple &eyev,
-             const Tuple &normalv, const Tuple &reflectv, bool inside):
-             Intersection{i}, point{point}, eyev{eyev}, normalv{normalv}, reflectv{reflectv}, inside{inside} {}
+             const Tuple &normalv, const Tuple &reflectv, bool inside,
+             double n1, double n2):
+             Intersection{i}, point{point}, eyev{eyev}, normalv{normalv}, reflectv{reflectv}, inside{inside},
+             n1{n1}, n2{n2} {}
 
     const Tuple &Hit::getPoint() const noexcept {
         return point;
@@ -28,7 +30,15 @@ namespace raytracer {
         return reflectv;
     }
 
-    const bool Hit::isInside() const noexcept {
+    double Hit::getN1() const noexcept {
+        return n1;
+    }
+
+    double Hit::getN2() const noexcept {
+        return n2;
+    }
+
+    bool Hit::isInside() const noexcept {
         return inside;
     }
 }

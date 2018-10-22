@@ -10,6 +10,7 @@
 #include "hit.h"
 #include "intersection.h"
 #include "ray.h"
+#include "shape.h"
 
 namespace raytracer {
     const std::optional<const Intersection> Intersection::hit(const std::vector<Intersection> &ints) noexcept {
@@ -32,13 +33,16 @@ namespace raytracer {
     }
 
     const std::optional<const Hit> Intersection::prepareHit(const std::optional<const Intersection> &hit,
-                                                            const Ray &ray) noexcept {
+                                                            const Ray &ray,
+                                                            const std::vector<Intersection> &xs) noexcept {
         if (!hit.has_value())
             return {};
         return prepareHit(hit.value(), ray);
     }
 
-    const Hit Intersection::prepareHit(const Intersection &hit, const Ray &ray) noexcept {
+    const Hit Intersection::prepareHit(const Intersection &hit,
+                                       const Ray &ray,
+                                       const std::vector<Intersection> &xs) noexcept {
         const auto point = ray.position(hit.getT());
         const auto eyev  = -ray.getDirection();
         const auto normalv = hit.getObject().normalAt(point);
@@ -50,6 +54,25 @@ namespace raytracer {
         // small distances.
         const auto adjusted_point = point + normalv * 1e-4;
 
-        return Hit{hit, adjusted_point, eyev, (inside ? -1 : 1) * normalv, reflectv, inside};
+        double n1, n2;
+        std::vector<std::reference_wrapper<const Shape>> containers;
+        for (const auto &x: xs) {
+            if (x == hit)
+                n1 = containers.empty() ? 1 : containers.back().get().getMaterial().getRefractiveIndex();
+
+            auto iter = std::find_if(std::begin(containers), std::end(containers),
+                    [&x](const auto &c) { return c.get() == x.getObject();});
+            if (iter != std::end(containers))
+                containers.erase(iter);
+            else
+                containers.emplace_back(x.getObject());
+
+            if (x == hit) {
+                n2 = containers.empty() ? 1 : containers.back().get().getMaterial().getRefractiveIndex();
+                break;
+            }
+        }
+
+        return Hit{hit, adjusted_point, eyev, (inside ? -1 : 1) * normalv, reflectv, inside, n1, n2};
     }
 }

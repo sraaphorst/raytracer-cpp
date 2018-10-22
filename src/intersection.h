@@ -54,7 +54,10 @@ namespace raytracer {
         static const std::optional<const Intersection> hit(const std::vector<Intersection> &ints) noexcept;
 
         static const std::optional<const Hit> prepareHit(const std::optional<const Intersection> &hit,
-                                                         const Ray &ray) noexcept;
-        static const Hit prepareHit(const Intersection &hit, const Ray &ray) noexcept;
+                                                         const Ray &ray,
+                                                         const std::vector<Intersection> &xs = {}) noexcept;
+        static const Hit prepareHit(const Intersection &hit,
+                                    const Ray &ray,
+                                    const std::vector<Intersection> &xs = {}) noexcept;
     };
 }

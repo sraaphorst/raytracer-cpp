@@ -14,7 +14,7 @@
 #include "vector.h"
 
 namespace raytracer {
-    const std::shared_ptr<Shape> Sphere::createGlassySphere() noexcept {
+    std::shared_ptr<Shape> Sphere::createGlassSphere() noexcept {
         std::shared_ptr<Shape> sphere = std::make_shared<Sphere>();
         sphere->getMaterial().setTransparency(1);
         sphere->getMaterial().setRefractiveIndex(1.5);

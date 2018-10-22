@@ -24,22 +24,23 @@ namespace raytracer {
         const Tuple normalv;
         const Tuple reflectv;
         const bool inside;
+        const double n1;
+        const double n2;
 
     public:
         Hit() = delete;
         Hit(const Intersection &i, const Tuple &point, const Tuple &eyev,
-                const Tuple &normalv, const Tuple &reflectv, bool inside);
+                const Tuple &normalv, const Tuple &reflectv, bool inside,
+                double n1, double n2);
         Hit(const Hit&) = default;
         Hit(Hit&&) = default;
 
         const Tuple &getPoint() const noexcept;
-
         const Tuple &getEyeVector() const noexcept;
-
         const Tuple &getNormalVector() const noexcept;
-
         const Tuple &getReflectVector() const noexcept;
-
-        const bool isInside() const noexcept;
+        double getN1() const noexcept;
+        double getN2() const noexcept;
+        bool isInside() const noexcept;
     };
 }
