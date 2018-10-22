@@ -8,7 +8,6 @@
 
 #include <optional>
 #include <vector>
-#include <iostream>
 
 #include "affine_transform.h"
 #include "constmath.h"

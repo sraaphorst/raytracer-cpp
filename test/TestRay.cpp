@@ -5,8 +5,8 @@
  */
 
 #include <catch.hpp>
-#include <affine_transform.h>
 
+#include "affine_transform.h"
 #include "transformers.h"
 #include "ray.h"
 #include "vector.h"
