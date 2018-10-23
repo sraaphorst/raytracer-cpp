@@ -16,7 +16,7 @@ namespace raytracer {
         if (absd(ray.getDirection()[tuple_constants::y]) < 1e-4)
             return {};
 
-        const auto ptr = std::make_shared<const Plane>(transformation, material);
+        const auto ptr = std::make_shared<const Plane>(*this);
         const auto t = -ray.getOrigin()[tuple_constants::y] / ray.getDirection()[tuple_constants::y];
         return {Intersection{t, ptr}};
     }

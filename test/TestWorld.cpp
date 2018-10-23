@@ -317,3 +317,29 @@ TEST_CASE("World: shadeHit with transparent material") {
     const auto colour = w.shadeHit(hit);
     REQUIRE(colour == make_colour(0.93642, 0.68642, 0.68642));
 }
+
+TEST_CASE("World: shadeHit with reflective, transparent material") {
+    auto w = World::getDefaultWorld();
+
+    std::shared_ptr<Shape> plane = std::make_shared<Plane>();
+    plane->setTransformation(translation(0, -1, 0));
+    plane->getMaterial().setReflectivity(0.5);
+    plane->getMaterial().setTransparency(0.5);
+    plane->getMaterial().setRefractiveIndex(1.5);
+    w.getObjects().emplace_back(plane);
+
+    std::shared_ptr<Shape> ball = std::make_shared<Sphere>();
+    ball->setTransformation(translation(0, -3.5, -0.5));
+    ball->getMaterial().setPattern(std::make_shared<SolidPattern>(predefined_colours::red));
+    ball->getMaterial().setAmbient(0.5);
+    w.getObjects().emplace_back(ball);
+
+    const auto sqrt2 = sqrtd(2);
+    const auto sqrt2by2 = sqrt2/2;
+    const Ray ray{make_point(0, 0, -3), make_vector(0, -sqrt2by2, sqrt2by2)};
+    const std::vector<Intersection> xs{Intersection{sqrt2, plane}};
+    const auto hit = Intersection::prepareHit(xs[0], ray, xs);
+
+    const auto colour = w.shadeHit(hit);
+    REQUIRE(colour == make_colour(0.93391, 0.69643, 0.69243));
+}

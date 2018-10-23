@@ -35,7 +35,7 @@ namespace raytracer {
 
         const auto t1 = (-b - sqrtd(discriminant)) / (2 * a);
         const auto t2 = (-b + sqrtd(discriminant)) / (2 * a);
-        const auto ptr = std::make_shared<const Sphere>(transformation, material);
+        const auto ptr = std::make_shared<const Sphere>(*this);
         if (t1 < t2) return {Intersection{t1, ptr}, Intersection{t2, ptr}};
         else return {Intersection{t2, ptr}, Intersection{t1, ptr}};
     }

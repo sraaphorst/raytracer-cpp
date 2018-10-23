@@ -6,7 +6,9 @@
 
 #include <catch.hpp>
 
+#include <array>
 #include <memory>
+#include <vector>
 
 #include "constmath.h"
 #include "hit.h"
@@ -147,8 +149,8 @@ TEST_CASE("Intersection: n1 and n2 at various intersections") {
                                  Intersection{5.25, sphere3},
                                  Intersection{6,    sphere1}};
 
-    std::vector<double> n1s{1.0, 1.5, 2.0, 2.5, 2.5, 1.5};
-    std::vector<double> n2s{1.5, 2.0, 2.5, 2.5, 1.5, 1.0};
+    constexpr std::array<double, 7> n1s{1.0, 1.5, 2.0, 2.5, 2.5, 1.5};
+    constexpr std::array<double, 7> n2s{1.5, 2.0, 2.5, 2.5, 1.5, 1.0};
 
     for (auto idx = 0; idx < 6; ++idx) {
         const auto hit = Intersection::prepareHit(xs[idx], ray, xs);

@@ -71,10 +71,16 @@ namespace raytracer {
             return {};
 
         const auto shadowed = isShadowed(hit->getPoint());
-        const auto surface = hit->getObject().getMaterial().lighting(light.value(), hit->getObject(),
+        const auto &material = hit->getObject().getMaterial();
+        const auto surface = material.lighting(light.value(), hit->getObject(),
                 hit->getPoint(), hit->getEyeVector(), hit->getNormalVector(), shadowed);
         const auto reflected = reflectedColour(*hit, remaining);
         const auto refracted = refractedColour(*hit, remaining);
+
+        if (material.getReflectivity() > 0 && material.getTransparency() > 0) {
+            const auto reflectance = hit->schlick();
+            return surface + reflected * reflectance + refracted * (1 - reflectance);
+        }
         return surface + reflected + refracted;
     }
 

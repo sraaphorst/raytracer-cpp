@@ -12,6 +12,8 @@ add_library(raytracer SHARED
         constmath.h
         checkerpattern.h
         checkerpattern.cpp
+        cube.h
+        cube.cpp
         gradientpattern.h
         gradientpattern.cpp
         hit.h

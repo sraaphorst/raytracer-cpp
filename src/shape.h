@@ -17,6 +17,14 @@ namespace raytracer {
     class Intersection;
     class Ray;
 
+    /**
+     * Note that there is some ghastliness in how the intersections are created right now, since they need a
+     * shared_ptr to this. We could use std::enabled_shared_from_this, and then use make_shared_from_this(),
+     * but then we need to have a shared_ptr to this stored somewhere as a prerequisite to doing so.
+     *
+     * So right now, we duplicate the objects, which is horrible.
+     * TODO: Fix this. All Shapes should be factory managed and use shared_ptr.
+     */
     class Shape {
     public:
         Shape() noexcept;

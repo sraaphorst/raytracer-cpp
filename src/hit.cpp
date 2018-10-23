@@ -60,7 +60,7 @@ namespace raytracer {
             // Use cost(theta_t) instead.
             cos = sqrtd(1 - sin2_t);
         }
-        
+
         const auto rcalc = (n1 - n2) / (n1 + n2);
         const auto r0 = rcalc * rcalc;
         const auto mcos = 1 - cos;
