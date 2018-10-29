@@ -20,7 +20,7 @@
 using namespace raytracer;
 
 TEST_CASE("Cube: A ray intersecting a cube") {
-    Cube cube;
+    const Cube cube;
 
     /**
      * Cases:
@@ -61,5 +61,58 @@ TEST_CASE("Cube: A ray intersecting a cube") {
         REQUIRE(xs.size() == 2);
         REQUIRE(xs[0].getT() == t0);
         REQUIRE(xs[1].getT() == t1);
+    }
+}
+
+TEST_CASE("Cube: A ray misses a cube") {
+    const Cube cube;
+
+    constexpr std::array<Tuple, 6> origins{make_point(-2,  0,  0),
+                                           make_point( 0, -2,  0),
+                                           make_point( 0,  0, -2),
+                                           make_point( 2,  0,  2),
+                                           make_point( 0,  2,  2),
+                                           make_point( 2,  2,  0)};
+    constexpr std::array<Tuple, 6> directions{make_vector(0.2673, 0.5345, 0.8018),
+                                              make_vector(0.8018, 0.2673, 0.5345),
+                                              make_vector(0.5345, 0.8018, 0.2673),
+                                              make_vector( 0, 0,  -1),
+                                              make_vector( 0, -1,  0),
+                                              make_vector(-1,  0,  0)};
+
+    for (size_t i = 0; i < 6; ++i) {
+        const auto &origin = origins[i];
+        const auto &direction = directions[i];
+
+        const Ray ray{origin, direction};
+        const auto xs = cube.localIntersection(ray);
+        REQUIRE(xs.empty());
+    }
+}
+
+TEST_CASE("Cube: The normal on the surface of a cube") {
+    const Cube cube;
+
+    constexpr std::array<Tuple, 8> origins{make_point( 1,    0.5, -0.8),
+                                           make_point(-1,   -0.2,  0.9),
+                                           make_point(-0.4,  1,   -0.1),
+                                           make_point( 0.3, -1,   -0.7),
+                                           make_point(-0.6,  0.3,  1),
+                                           make_point( 0.4,  0.4, -1),
+                                           make_point( 1,    1,     1),
+                                           make_point(-1,   -1,    -1)};
+    constexpr std::array<Tuple, 8> normals{make_vector( 1,  0,  0),
+                                           make_vector(-1,  0,  0),
+                                           make_vector( 0,  1,  0),
+                                           make_vector( 0, -1,  0),
+                                           make_vector( 0,  0,  1),
+                                           make_vector( 0,  0, -1),
+                                           make_vector( 1,  0,  0),
+                                           make_vector(-1,  0,  0)};
+
+    for (size_t i = 0; i < 8; ++i) {
+        const auto &origin = origins[i];
+        const auto &normal = cube.localNormalAt(origin);
+        REQUIRE(normal == normals[i]);
     }
 }

@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include <optional>
 #include <tuple>
 #include <vector>
 
@@ -31,9 +30,7 @@ namespace raytracer {
     private:
         const std::vector<Intersection> localIntersection(const Ray&) const noexcept override;
         const Tuple localNormalAt(const Tuple&) const noexcept override;
-
-        /// Determine the intersections with a given axis. Defined only if the direction is not parallel.
-        std::optional<std::pair<double, double>> checkAxis(const double origin, const double direction) const noexcept;
+        std::pair<double, double> checkAxis(const double origin, const double direction) const noexcept;
     };
 }
 
