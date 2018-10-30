@@ -15,12 +15,14 @@
 
 // A necessary evil to test the private members.
 #define private public
-#include "shapes/cube.h"
+#include "cube.h"
 
 using namespace raytracer;
+using namespace raytracer::impl;
+using namespace raytracer::shapes;
 
 TEST_CASE("Cube: A ray intersecting a cube") {
-    const Cube cube;
+    const auto c = Cube::createCube();
 
     /**
      * Cases:
@@ -57,7 +59,7 @@ TEST_CASE("Cube: A ray intersecting a cube") {
         const auto t1 = t1s[i];
 
         const Ray ray{origin, direction};
-        const auto xs = cube.localIntersection(ray);
+        const auto xs = c->localIntersection(ray);
         REQUIRE(xs.size() == 2);
         REQUIRE(xs[0].getT() == t0);
         REQUIRE(xs[1].getT() == t1);
@@ -65,7 +67,7 @@ TEST_CASE("Cube: A ray intersecting a cube") {
 }
 
 TEST_CASE("Cube: A ray misses a cube") {
-    const Cube cube;
+    const auto c = Cube::createCube();
 
     constexpr std::array<Tuple, 6> origins{make_point(-2,  0,  0),
                                            make_point( 0, -2,  0),
@@ -85,13 +87,13 @@ TEST_CASE("Cube: A ray misses a cube") {
         const auto &direction = directions[i];
 
         const Ray ray{origin, direction};
-        const auto xs = cube.localIntersection(ray);
+        const auto xs = c->localIntersection(ray);
         REQUIRE(xs.empty());
     }
 }
 
 TEST_CASE("Cube: The normal on the surface of a cube") {
-    const Cube cube;
+    const auto c = Cube::createCube();
 
     constexpr std::array<Tuple, 8> origins{make_point( 1,    0.5, -0.8),
                                            make_point(-1,   -0.2,  0.9),
@@ -112,7 +114,7 @@ TEST_CASE("Cube: The normal on the surface of a cube") {
 
     for (size_t i = 0; i < 8; ++i) {
         const auto &origin = origins[i];
-        const auto &normal = cube.localNormalAt(origin);
+        const auto &normal = c->localNormalAt(origin);
         REQUIRE(normal == normals[i]);
     }
 }

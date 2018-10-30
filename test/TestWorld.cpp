@@ -11,14 +11,14 @@
 
 #include "affine_transform.h"
 #include "constmath.h"
-#include "impl/hit.h"
+#include "hit.h"
 #include "material.h"
 #include "pattern.h"
-#include "shapes/plane.h"
+#include "plane.h"
 #include "pointlight.h"
-#include "impl/ray.h"
+#include "ray.h"
 #include "solidpattern.h"
-#include "shapes/sphere.h"
+#include "sphere.h"
 #include "vec.h"
 #include "world.h"
 

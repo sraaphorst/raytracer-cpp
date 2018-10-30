@@ -1,1 +1,2 @@
 1. Why does Shape have a setTransformation and setMaterial with no const argument? Can we get rid of it?
+2. Shape::normalAt can probably be made protected in the final API.

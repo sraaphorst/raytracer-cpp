@@ -12,42 +12,44 @@
 #include "vec.h"
 
 using namespace raytracer;
+using namespace raytracer::impl;
+using namespace raytracer::shapes;
 
 TEST_CASE("Plane: The normal of a plane is constant everywhere") {
-    const Plane p;
-    const auto n1 = p.normalAt(predefined_tuples::zero_point);
-    const auto n2 = p.normalAt(make_point(10, 0, -10));
-    const auto n3 = p.normalAt(make_point(-5, 0, 150));
+    const auto p = Plane::createPlane();
+    const auto n1 = p->normalAt(predefined_tuples::zero_point);
+    const auto n2 = p->normalAt(make_point(10, 0, -10));
+    const auto n3 = p->normalAt(make_point(-5, 0, 150));
     REQUIRE(n1 == predefined_tuples::y1);
     REQUIRE(n2 == predefined_tuples::y1);
     REQUIRE(n3 == predefined_tuples::y1);
 }
 
 TEST_CASE("Plane: Intersect with a ray parallel to the plane") {
-    const Plane p;
+    const auto p = Plane::createPlane();
     const Ray ray{make_point(0, 10, 0), predefined_tuples::z1};
-    REQUIRE(p.intersect(ray).empty());
+    REQUIRE(p->intersect(ray).empty());
 }
 
 TEST_CASE("Plane: Intersect with a coplanar ray") {
-    const Plane p;
+    const auto p = Plane::createPlane();
     const Ray ray{predefined_tuples::zero_point, predefined_tuples::z1};
-    REQUIRE(p.intersect(ray).empty());
+    REQUIRE(p->intersect(ray).empty());
 }
 
 TEST_CASE("Plane: A ray intersecting a plane from above") {
-    const Plane p;
+    const auto p = Plane::createPlane();
     const Ray ray{make_point(0, 1, 0), make_vector(0, -1, 0)};
-    const auto xs = p.intersect(ray);
+    const auto xs = p->intersect(ray);
     REQUIRE(xs.size() == 1);
     REQUIRE(ALMOST_EQUALS(xs[0].getT(), 1));
     REQUIRE(xs[0].getObject() == p);
 }
 
 TEST_CASE("Plane: A ray intersecting a plane from below") {
-    const Plane p;
+    const auto p = Plane::createPlane();
     const Ray ray{make_point(0, -1, 0), predefined_tuples::y1};
-    const auto xs = p.intersect(ray);
+    const auto xs = p->intersect(ray);
     REQUIRE(xs.size() == 1);
     REQUIRE(ALMOST_EQUALS(xs[0].getT(), 1));
     REQUIRE(xs[0].getObject() == p);
