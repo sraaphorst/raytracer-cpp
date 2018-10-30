@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "affine_transform.h"
+#include "instance_manager.h"
 #include "material.h"
 #include "vec.h"
 
@@ -26,15 +27,13 @@ namespace raytracer::shapes {
      * So right now, we duplicate the objects, which is horrible.
      * TODO: Fix this. All Shapes should be factory managed and use shared_ptr.
      */
-    class Shape {
+    class Shape: public impl::InstanceManager, public std::enable_shared_from_this<Shape> {
+    protected:
+        Transformation transformation;
+        Material material;
+
     public:
-        Shape() noexcept;
-
-        template<typename T>
-        explicit Shape(T&& t): transformation{t}, material{Material{}} {}
-
-        template<typename T, typename S>
-        Shape(T&& transformation, S&& material) noexcept: transformation{transformation}, material{material} {}
+        explicit Shape(dummy d) noexcept;
 
         /**
          * Compare type compatibility, transformation and material, and then invoke the concrete implementation,
@@ -88,9 +87,5 @@ namespace raytracer::shapes {
          * implemented Shape. The normalAt method then translates it back to world space.
          */
         virtual const Tuple localNormalAt(const Tuple&) const noexcept = 0;
-
-
-        Transformation transformation;
-        Material material;
     };
 }

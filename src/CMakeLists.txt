@@ -39,12 +39,12 @@ add_library(raytracer SHARED
         world.cpp
 
         impl/hit.cpp
+        impl/instance_manager.cpp
         impl/intersection.cpp
         impl/ray.cpp
 
         shapes/cube.cpp
         shapes/plane.cpp
         shapes/shape.cpp
-        shapes/shapefactory.cpp
         shapes/sphere.cpp
         )

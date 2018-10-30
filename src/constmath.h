@@ -17,9 +17,6 @@ namespace raytracer {
         template<typename T = double> constexpr T pi_by_three = pi<T> / 3;
         template<typename T = double> constexpr T pi_by_four = pi<T> / 4;
         template<typename T = double> constexpr T two_pi_by_three = 2 * pi<T> / 3;
-        template<typename T = double> constexpr T sqrt2 = 2 * std::sqrt<T>(2);
-        template<typename T = double> constexpr T sqrt2by2 = sqrt2<T> / 2;
-
     }
 
     namespace math_details {
@@ -147,5 +144,10 @@ namespace raytracer {
     constexpr std::enable_if_t<std::is_floating_point_v<T>, T>
     deg_to_rad(T deg) {
         return normalize_radians((deg * math_constants::pi<T>) / 180);
+    }
+
+    namespace math_constants {
+        constexpr double sqrt2 = 2 * sqrtd(2.0);
+        constexpr double sqrt2_by_2 = sqrt2 / 2;
     }
 }

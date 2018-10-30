@@ -4,6 +4,7 @@
  * By Sebastian Raaphorst, 2018.
  */
 
+#include <memory>
 #include <vector>
 
 #include "affine_transform.h"
@@ -18,23 +19,20 @@
  * This is a class that implements just enough of Shape to be a concrete implementation,
  * so as to be used to isolate and test the common characteristics of all subclasses of Shape.
  */
-struct TestShape final: raytracer::shapes::Shape {
+class TestShape final: public raytracer::shapes::Shape {
+
+public:
     // Saves the ray passed to localIntersection to make sure the proper transformation happens.
     raytracer::impl::Ray saved_ray;
 
-    TestShape() = default;
+public:
+    explicit TestShape(dummy d): Shape{d} {}
 
-    template<typename T>
-    explicit TestShape(T&& t):
-        Shape{std::forward(t)} {}
-
-    template<typename T, typename S>
-    TestShape(T&& transformation, S&& material) noexcept:
-        raytracer::shapes::Shape{std::forward(transformation), std::forward(material)} {}
-
-    TestShape(const TestShape&) noexcept = default;
-    TestShape(TestShape&&) noexcept = default;
-    TestShape &operator=(const TestShape&) noexcept = default;
+    static std::shared_ptr<TestShape> createTestShape() {
+        std::shared_ptr<TestShape> ts = std::make_shared<TestShape>(dummy{});
+        registerInstance(ts);
+        return ts;
+    }
 
 private:
     /// Since this has no actual form, it just saves the ray to make sure it is properly translated to object space.

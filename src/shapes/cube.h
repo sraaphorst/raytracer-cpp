@@ -20,16 +20,16 @@ namespace raytracer::impl {
 }
 
 namespace raytracer::shapes {
+    class ShapeFactory;
+
     /// An Axis Aligned Bounding Box cube.
-    class Cube: public Shape, public std::enable_shared_from_this<Cube> {
+    class Cube: public Shape {
     public:
-        Cube() = default;
+        /// Uninstantiable outside of factory method.
+        explicit Cube(dummy d) noexcept;
 
-        template <typename T>
-        explicit Cube(T&& t): Shape{t} {}
-
-        template <typename T, typename M>
-        Cube(T&& t, M&& m): Shape{t, m} {}
+        /// Factory method to create a cube at the origin extending +/-1 along all axes.
+        static std::shared_ptr<Cube> createCube() noexcept;
 
     private:
         const std::vector<impl::Intersection> localIntersection(const impl::Ray&) const noexcept override;

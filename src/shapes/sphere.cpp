@@ -17,8 +17,16 @@
 using namespace raytracer::impl;
 
 namespace raytracer::shapes {
-    std::shared_ptr<Shape> Sphere::createGlassSphere() noexcept {
-        std::shared_ptr<Shape> sphere = std::make_shared<Sphere>();
+    Sphere::Sphere(InstanceManager::dummy d) noexcept: Shape{d} {}
+
+    std::shared_ptr<Sphere> Sphere::createSphere() noexcept {
+        std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>(dummy{});
+        registerInstance(sphere);
+        return sphere;
+    }
+
+    std::shared_ptr<Sphere> Sphere::createGlassSphere() noexcept {
+        std::shared_ptr<Sphere> sphere = createSphere();
         sphere->getMaterial().setTransparency(1);
         sphere->getMaterial().setRefractiveIndex(1.5);
         return sphere;

@@ -17,7 +17,7 @@ using namespace raytracer;
 using namespace raytracer::impl;
 
 namespace raytracer::shapes {
-    Shape::Shape() noexcept: transformation{predefined_matrices::I<double, 4>}, material{} {}
+    Shape::Shape(dummy d) noexcept: InstanceManager{d}, transformation{predefined_matrices::I<double, 4>}, material{} {}
 
     bool Shape::operator==(const Shape &other) const noexcept {
         return typeid(*this) == typeid(other)

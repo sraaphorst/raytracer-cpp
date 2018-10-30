@@ -16,15 +16,13 @@ namespace raytracer::impl {
 }
 
 namespace raytracer::shapes {
-    class Plane final: public Shape, public std::enable_shared_from_this<Plane> {
+    class Plane final: public Shape {
     public:
-        Plane() = default;
+        /// Uninstantiable outside of factory method.
+        explicit Plane(dummy) noexcept;
 
-        template<typename T>
-        explicit Plane(T&& t): Shape{t} {}
-
-        template<typename T, typename M>
-        Plane(T&& t, M&& m): Shape{t, m} {}
+        /// Factory method to create an x-z plane through the origin.
+        static std::shared_ptr<Plane> createPlane() noexcept;
 
     private:
         const std::vector<impl::Intersection> localIntersection(const impl::Ray&) const noexcept override;

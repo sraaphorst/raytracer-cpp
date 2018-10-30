@@ -15,6 +15,14 @@
 using namespace raytracer::impl;
 
 namespace raytracer::shapes {
+    Plane::Plane(dummy d) noexcept: Shape{d} {}
+
+    std::shared_ptr<Plane> Plane::createPlane() noexcept {
+        std::shared_ptr<Plane> plane = std::make_shared<Plane>(dummy{});
+        registerInstance(plane);
+        return plane;
+    }
+
     const std::vector<Intersection> Plane::localIntersection(const Ray &ray) const noexcept {
         if (absd(ray.getDirection()[tuple_constants::y]) < 1e-4)
             return {};

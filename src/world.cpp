@@ -152,10 +152,12 @@ namespace raytracer {
     }
 
     World World::getDefaultWorld() noexcept {
-        std::shared_ptr<Shape> s1{new Sphere{notransform(),
-            Material{make_colour(0.8, 1.0, 0.6), Material::DEFAULT_AMBIENT, 0.7, 0.2, Material::DEFAULT_SHININESS}
-        }};
-        std::shared_ptr<Shape> s2{new Sphere{scale(0.5, 0.5, 0.5)}};
+        auto s1 = Sphere::createSphere();
+        s1->setMaterial(Material{make_colour(0.8, 1.0, 0.6), Material::DEFAULT_AMBIENT, 0.7, 0.2, Material::DEFAULT_SHININESS});
+
+        auto s2 = Sphere::createSphere();
+        s2->setTransformation(scale(0.5, 0.5, 0.5));
+
         std::vector<std::shared_ptr<Shape>> v = {s1, s2};
         return World{PointLight{make_point(-10, 10, -10), predefined_colours::white}, v};
     }

@@ -18,18 +18,17 @@ namespace raytracer::impl {
 }
 
 namespace raytracer::shapes {
-    class Sphere final: public Shape, public std::enable_shared_from_this<Sphere> {
+    class Sphere final: public Shape {
     public:
-        Sphere() = default;
+        /// Uninstantiable outside of factory method.
+        explicit Sphere(dummy) noexcept;
 
-        template<typename T>
-        explicit Sphere(T&& t): Shape{t} {}
+        /// Factory method to create a radius 1 sphere at the origin.
+        static std::shared_ptr<Sphere> createSphere() noexcept;
 
-        template<typename T, typename M>
-        Sphere(T&& t, M&& m): Shape{t, m} {}
-
-        /// Create a specific instance of a glass sphere.
-        static std::shared_ptr<Shape> createGlassSphere() noexcept;
+        // TODO: MOVE OR DELETE
+        /// Factory method to create a radius 1 glassy sphere at the origin.
+        static std::shared_ptr<Sphere> createGlassSphere() noexcept;
 
     private:
         const std::vector<impl::Intersection> localIntersection(const impl::Ray&) const noexcept override;
