@@ -7,7 +7,7 @@
 #include <catch.hpp>
 
 #include "common.h"
-#include "vector.h"
+#include "vec.h"
 
 using namespace raytracer;
 

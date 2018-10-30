@@ -8,7 +8,7 @@
 
 #include "affine_transform.h"
 #include "matrix.h"
-#include "vector.h"
+#include "vec.h"
 
 #include <iostream>
 

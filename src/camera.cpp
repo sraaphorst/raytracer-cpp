@@ -9,8 +9,10 @@
 #include "common.h"
 #include "constmath.h"
 #include "ray.h"
-#include "vector.h"
+#include "vec.h"
 #include "world.h"
+
+using namespace raytracer::impl;
 
 namespace raytracer {
     Camera::Camera(int hsize, int vsize, double fov, const Transformation &transformation) :

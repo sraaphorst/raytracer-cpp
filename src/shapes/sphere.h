@@ -10,13 +10,15 @@
 #include <vector>
 
 #include "shape.h"
-#include "vector.h"
+#include "vec.h"
 
-namespace raytracer {
+namespace raytracer::impl {
     class Intersection;
     class Ray;
+}
 
-    class Sphere final: public Shape {
+namespace raytracer::shapes {
+    class Sphere final: public Shape, public std::enable_shared_from_this<Sphere> {
     public:
         Sphere() = default;
 
@@ -30,7 +32,7 @@ namespace raytracer {
         static std::shared_ptr<Shape> createGlassSphere() noexcept;
 
     private:
-        const std::vector<Intersection> localIntersection(const Ray&) const noexcept override;
+        const std::vector<impl::Intersection> localIntersection(const impl::Ray&) const noexcept override;
         const Tuple localNormalAt(const Tuple&) const noexcept override;
     };
 }

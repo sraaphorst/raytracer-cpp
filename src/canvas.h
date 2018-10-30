@@ -13,7 +13,7 @@
 #include <vector>
 
 #include "constmath.h"
-#include "vector.h"
+#include "vec.h"
 
 namespace raytracer {
     class Canvas final {

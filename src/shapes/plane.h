@@ -6,10 +6,17 @@
 
 #pragma once
 
+#include <memory>
+
 #include "shape.h"
 
-namespace raytracer {
-    class Plane final: public Shape {
+namespace raytracer::impl {
+    class Intersection;
+    class Ray;
+}
+
+namespace raytracer::shapes {
+    class Plane final: public Shape, public std::enable_shared_from_this<Plane> {
     public:
         Plane() = default;
 
@@ -20,7 +27,7 @@ namespace raytracer {
         Plane(T&& t, M&& m): Shape{t, m} {}
 
     private:
-        const std::vector<Intersection> localIntersection(const Ray&) const noexcept override;
+        const std::vector<impl::Intersection> localIntersection(const impl::Ray&) const noexcept override;
         const Tuple localNormalAt(const Tuple&) const noexcept override;
     };
 }

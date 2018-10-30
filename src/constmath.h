@@ -1,15 +1,12 @@
 /**
- * sqrt.h
+ * constmath.h
  *
  * By Sebastian Raaphorst, 2018.
  */
 
 #pragma once
 
-#include <iostream>
-#include <array>
 #include <cmath>
-#include <limits>
 
 namespace raytracer {
     namespace math_constants {
@@ -20,10 +17,13 @@ namespace raytracer {
         template<typename T = double> constexpr T pi_by_three = pi<T> / 3;
         template<typename T = double> constexpr T pi_by_four = pi<T> / 4;
         template<typename T = double> constexpr T two_pi_by_three = 2 * pi<T> / 3;
+        template<typename T = double> constexpr T sqrt2 = 2 * std::sqrt<T>(2);
+        template<typename T = double> constexpr T sqrt2by2 = sqrt2<T> / 2;
+
     }
 
     namespace math_details {
-        /// Caclulates factorials.
+        /// Calculates factorials.
         constexpr size_t factorial_helper(size_t sz, size_t accum) {
             if (sz == 0)
                 return accum;

@@ -10,7 +10,7 @@
 #include <array>
 
 #include "transformers.h"
-#include "vector.h"
+#include "vec.h"
 
 namespace raytracer {
     using namespace transformers;
@@ -191,26 +191,27 @@ namespace raytracer {
         template<size_t i, size_t j>
         constexpr T minor() const {
             static_assert(rows == cols, "Matrix::minor() only for use with square matrices");
-            return raytracer::details::array_minor<T, rows, i, j>(contents);
+            return ::raytracer::details::array_minor<T, rows, i, j>(contents);
         }
 
         /// Calculate the cofactor(i,j) of a matrix, which is just (i+j)^(-1) * minor(i,j).
         template<size_t i, size_t j>
         constexpr T cofactor() const {
             static_assert(rows == cols, "Matrix::cofactor() only for use with square matrices");
-            return raytracer::details::array_cofactor<T, rows, i, j>(contents);
+            return ::raytracer::details::array_cofactor<T, rows, i, j>(contents);
         }
 
         constexpr T determinant() const {
             static_assert(rows == cols, "Matrix::determinant() only for use with square matrices");
-            return raytracer::details::array_determinant<T, rows>(contents);
+            return ::raytracer::details::array_determinant<T, rows>(contents);
         }
 
         constexpr Matrix invert() const {
             static_assert(rows == cols, "Matrix::invert() only for use with square matrices");
             static_assert(std::is_floating_point_v<T> && std::is_signed_v<T>,
                     "Matrix::invert() only for use with signed floating point matrices");
-            return Matrix{raytracer::details::array_cofactors<T, rows>(contents)}.transpose() / raytracer::details::array_determinant<T,rows>(contents);
+            return Matrix{::raytracer::details::array_cofactors<T, rows>(contents)}.transpose() /
+                ::raytracer::details::array_determinant<T,rows>(contents);
         }
 
         constexpr Matrix andThen(const Matrix &other) const {
@@ -223,7 +224,7 @@ namespace raytracer {
         /// Omit row i and column j to get a submatrix of one dimension less in rows and cols.
         template<size_t i, size_t j>
         constexpr Matrix<T, rows-1, cols-1> submatrix() const {
-            return Matrix<T, rows-1, cols-1>{{raytracer::details::array_submatrix<T, rows, cols, i, j>(contents)}};
+            return Matrix<T, rows-1, cols-1>{{::raytracer::details::array_submatrix<T, rows, cols, i, j>(contents)}};
         }
 
         /// Make all matrices friends so they can access each others' contents.

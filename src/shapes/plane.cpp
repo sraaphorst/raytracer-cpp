@@ -4,21 +4,23 @@
  * By Sebastian Raaphorst, 2018.
  */
 
+#include <memory>
 #include <vector>
 
 #include "intersection.h"
 #include "plane.h"
 #include "ray.h"
-#include "vector.h"
+#include "vec.h"
 
-namespace raytracer {
+using namespace raytracer::impl;
+
+namespace raytracer::shapes {
     const std::vector<Intersection> Plane::localIntersection(const Ray &ray) const noexcept {
         if (absd(ray.getDirection()[tuple_constants::y]) < 1e-4)
             return {};
 
-        const auto ptr = std::make_shared<const Plane>(*this);
         const auto t = -ray.getOrigin()[tuple_constants::y] / ray.getDirection()[tuple_constants::y];
-        return {Intersection{t, ptr}};
+        return {Intersection{t, shared_from_this()}};
     }
 
     const Tuple Plane::localNormalAt(const Tuple &point) const noexcept {

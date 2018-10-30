@@ -10,13 +10,14 @@
 
 #include "affine_transform.h"
 #include "material.h"
-#include "vector.h"
+#include "vec.h"
 
-
-namespace raytracer {
+namespace raytracer::impl {
     class Intersection;
     class Ray;
+}
 
+namespace raytracer::shapes {
     /**
      * Note that there is some ghastliness in how the intersections are created right now, since they need a
      * shared_ptr to this. We could use std::enabled_shared_from_this, and then use make_shared_from_this(),
@@ -42,51 +43,23 @@ namespace raytracer {
         bool operator==(const Shape&) const noexcept;
         bool operator!=(const Shape&) const noexcept;
 
-        const Transformation &getTransformation() const {
-            return transformation;
-        }
+        const Transformation &getTransformation() const;
+        Transformation &getTransformation();
+        void setTransformation(Transformation&&);
+        void setTransformation(const Transformation&);
+        void setTransformation(Transformation&);
 
-        Transformation &getTransformation() {
-            return transformation;
-        }
-
-        void setTransformation(Transformation&& t) {
-            transformation = std::move(t);
-        }
-
-        void setTransformation(const Transformation &t) {
-            transformation = t;
-        }
-
-        void setTransformation(Transformation &t) {
-            transformation = t;
-        }
-
-        const Material &getMaterial() const {
-            return material;
-        }
-
-        Material &getMaterial() {
-            return material;
-        }
-
-        void setMaterial(Material &&m) {
-            material = std::move(m);
-        }
-
-        void setMaterial(const Material &m) {
-            material = m;
-        }
-
-        void setMaterial(Material &m) {
-            material = m;
-        }
+        const Material &getMaterial() const;
+        Material &getMaterial();
+        void setMaterial(Material&&);
+        void setMaterial(const Material&);
+        void setMaterial(Material&);
 
         /**
          * Convert the ray to object space and then pass it to the concrete implementation of local_intersect,
          * which is subclass-dependent.
          */
-        const std::vector<Intersection> intersect(const Ray&) const noexcept;
+        const std::vector<impl::Intersection> intersect(const impl::Ray&) const noexcept;
 
         /**
          * Takes a point and transforms it to object space. It is then passed to localNormalAt, which is
@@ -106,7 +79,8 @@ namespace raytracer {
          * The intersect method transforms the ray to object space and passes it to this method, which
          * should comprise the concrete implementation of calculating the intersections with the implemented Shape.
          */
-        virtual const std::vector<Intersection> localIntersection(const Ray &r) const noexcept = 0;
+        virtual const std::vector<impl::Intersection> localIntersection(const impl::Ray &r)
+            const noexcept = 0;
 
         /**
          * The normalAt method transforms the point to object space and passes it to this method, which

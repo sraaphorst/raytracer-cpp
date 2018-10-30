@@ -8,7 +8,7 @@
 
 #include "common.h"
 #include "matrix.h"
-#include "vector.h"
+#include "vec.h"
 #include "transformers.h"
 
 using namespace raytracer;

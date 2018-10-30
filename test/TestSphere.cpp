@@ -10,10 +10,10 @@
 
 #include "affine_transform.h"
 #include "constmath.h"
-#include "intersection.h"
-#include "ray.h"
-#include "sphere.h"
-#include "vector.h"
+#include "impl/intersection.h"
+#include "impl/ray.h"
+#include "shapes/sphere.h"
+#include "vec.h"
 
 using namespace raytracer;
 

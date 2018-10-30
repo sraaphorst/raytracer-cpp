@@ -13,9 +13,9 @@
 #include "gradientpattern.h"
 #include "pattern.h"
 #include "ringpattern.h"
-#include "sphere.h"
+#include "shapes/sphere.h"
 #include "stripepattern.h"
-#include "vector.h"
+#include "vec.h"
 #include "TestPattern.h"
 
 using namespace raytracer;

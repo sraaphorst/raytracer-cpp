@@ -4,15 +4,29 @@
  * By Sebastian Raaphorst, 2018.
  */
 
-#include "hit.h"
-#include "vector.h"
+#include <cmath>
 
-namespace raytracer {
-    Hit::Hit(const Intersection &i, const Tuple &point, const Tuple &under_point,
-             const Tuple &eyev, const Tuple &normalv, const Tuple &reflectv,
+#include <vec.h>
+
+#include "intersection.h"
+#include "hit.h"
+
+using namespace raytracer;
+
+namespace raytracer::impl {
+    Hit::Hit(const Intersection &i,
+             const Tuple &point,
+             const Tuple &under_point,
+             const Tuple &eyev,
+             const Tuple &normalv,
+             const Tuple &reflectv,
              bool inside, double n1, double n2):
-             Intersection{i}, point{point}, under_point{under_point},
-             eyev{eyev}, normalv{normalv}, reflectv{reflectv},
+             Intersection{i},
+             point{point},
+             under_point{under_point},
+             eyev{eyev},
+             normalv{normalv},
+             reflectv{reflectv},
              inside{inside}, n1{n1}, n2{n2} {}
 
     const Tuple &Hit::getPoint() const noexcept {
@@ -58,12 +72,15 @@ namespace raytracer {
                 return 1;
 
             // Use cost(theta_t) instead.
-            cos = sqrtd(1 - sin2_t);
+            cos = std::sqrt(1 - sin2_t);
         }
 
         const auto rcalc = (n1 - n2) / (n1 + n2);
         const auto r0 = rcalc * rcalc;
         const auto mcos = 1 - cos;
-        return r0 + (1 - r0) * mcos * mcos * mcos * mcos * mcos;
+        const auto mcos2 = mcos * mcos;
+
+        // Yes, really: mcos^5.
+        return r0 + (1 - r0) * mcos2 * mcos2 * mcos;
     }
 }

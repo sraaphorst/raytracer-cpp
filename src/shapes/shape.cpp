@@ -13,7 +13,10 @@
 #include "matrix.h"
 #include "ray.h"
 
-namespace raytracer {
+using namespace raytracer;
+using namespace raytracer::impl;
+
+namespace raytracer::shapes {
     Shape::Shape() noexcept: transformation{predefined_matrices::I<double, 4>}, material{} {}
 
     bool Shape::operator==(const Shape &other) const noexcept {
@@ -25,6 +28,46 @@ namespace raytracer {
 
     bool Shape::operator!=(const Shape &other) const noexcept {
         return !(*this == other);
+    }
+
+    const Transformation &Shape::getTransformation() const {
+        return transformation;
+    }
+
+    Transformation &Shape::getTransformation() {
+        return transformation;
+    }
+
+    void Shape::setTransformation(Transformation&& t) {
+        transformation = std::move(t);
+    }
+
+    void Shape::setTransformation(const Transformation &t) {
+        transformation = t;
+    }
+
+    void Shape::setTransformation(Transformation &t) {
+        transformation = t;
+    }
+
+    const Material &Shape::getMaterial() const {
+        return material;
+    }
+
+    Material &Shape::getMaterial() {
+        return material;
+    }
+
+    void Shape::setMaterial(Material &&m) {
+        material = std::move(m);
+    }
+
+    void Shape::setMaterial(const Material &m) {
+        material = m;
+    }
+
+    void Shape::setMaterial(Material &m) {
+        material = m;
     }
 
     const std::vector<Intersection> Shape::intersect(const Ray &r0) const noexcept {

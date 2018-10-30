@@ -13,7 +13,7 @@
 #include "pattern.h"
 #include "pointlight.h"
 #include "solidpattern.h"
-#include "sphere.h"
+#include "shapes/sphere.h"
 #include "stripepattern.h"
 
 using namespace raytracer;

@@ -11,7 +11,7 @@
 #include <sstream>
 
 #include "canvas.h"
-#include "vector.h"
+#include "vec.h"
 
 using namespace raytracer;
 

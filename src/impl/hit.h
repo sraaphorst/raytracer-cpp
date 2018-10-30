@@ -6,16 +6,18 @@
 
 #pragma once
 
+#include <vec.h>
 #include "intersection.h"
-#include "vector.h"
 
-namespace raytracer {
+namespace raytracer::impl {
     /**
-     * A Hit is a subclass of Intersection that contains additional information:
-     * 1. The point in world-space where the intersection occurred.
-     * 2. The eye vector (pointing back to the camera / eye).
-     * 3. The normal vector.
-     * 4. Whether or not the intersection occurs inside the object (in which case, the normal is inverted to
+     * A Hit is a subclass of \see{Intersection} that contains additional information:
+     * 1. The point in world-space where the intersection occurred, adjusted slightly to prevent acne.
+     * 2. The "under point", i.e. the point adjusted slightly in the opposite direction for reflection.
+     * 3. The eye vector (pointing back to the camera / eye).
+     * 4. The normal vector of the \see{Shape} at the point.
+     * 5. A vector indicating the reflection effect.
+     * 6. Whether or not the intersection occurs inside the object (in which case, the normal is inverted to
      *    illuminate the surface properly).
      */
     class Hit final: public Intersection {
@@ -30,9 +32,15 @@ namespace raytracer {
 
     public:
         Hit() = delete;
-        Hit(const Intersection &i, const Tuple &point, const Tuple &under_point,
-                const Tuple &eyev, const Tuple &normalv, const Tuple &reflectv,
-                bool inside, double n1, double n2);
+
+        Hit(const Intersection &i,
+            const Tuple &point,
+            const Tuple &under_point,
+            const Tuple &eyev,
+            const Tuple &normalv,
+            const Tuple &reflectv,
+            bool inside, double n1, double n2);
+
         Hit(const Hit&) = default;
         Hit(Hit&&) = default;
 

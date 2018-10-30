@@ -9,6 +9,8 @@
 #include "pattern.h"
 #include "shape.h"
 
+using namespace raytracer::shapes;
+
 namespace raytracer {
     Pattern::Pattern(): transformation{predefined_matrices::I<>} {}
     Pattern::Pattern(const Transformation &t): transformation{t} {}
@@ -28,13 +30,13 @@ namespace raytracer {
         return typeid(*this) == typeid(other) && doCompare(other);
     }
 
-    bool Pattern::operator!=(const raytracer::Pattern &other) const noexcept {
+    bool Pattern::operator!=(const Pattern &other) const noexcept {
         return !(*this == other);
     }
 
-    const Colour Pattern::colourAtObject(const Shape &shape,
+    const Colour Pattern::colourAtObject(const std::shared_ptr<const Shape> &shape,
             const Tuple &world_point) const noexcept {
-        const auto object_point = shape.getTransformation().invert() * world_point;
+        const auto object_point = shape->getTransformation().invert() * world_point;
         const auto pattern_point = transformation.invert() * object_point;
         return colourAt(pattern_point);
     }

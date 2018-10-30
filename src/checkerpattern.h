@@ -7,7 +7,7 @@
 #pragma once
 
 #include "pattern.h"
-#include "vector.h"
+#include "vec.h"
 
 namespace raytracer {
     class CheckerPattern final: public Pattern {

@@ -11,13 +11,13 @@
 #include "constmath.h"
 #include "material.h"
 #include "pointlight.h"
-#include "ray.h"
+#include "impl/ray.h"
 #include "solidpattern.h"
-#include "sphere.h"
-#include "vector.h"
+#include "shapes/sphere.h"
+#include "vec.h"
 #include "world.h"
 
-#include "timer.h"
+#include "../timer.h"
 
 using namespace raytracer;
 

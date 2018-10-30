@@ -6,10 +6,10 @@
 
 #include <catch.hpp>
 
-#include "intersection.h"
-#include "plane.h"
-#include "ray.h"
-#include "vector.h"
+#include "impl/intersection.h"
+#include "shapes/plane.h"
+#include "impl/ray.h"
+#include "vec.h"
 
 using namespace raytracer;
 

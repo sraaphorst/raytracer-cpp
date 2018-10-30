@@ -15,6 +15,9 @@
 #include "sphere.h"
 #include "world.h"
 
+using namespace raytracer::impl;
+using namespace raytracer::shapes;
+
 namespace raytracer {
     bool World::operator==(const World &other) const noexcept {
         return light == other.light && shapes == other.shapes;
@@ -71,7 +74,7 @@ namespace raytracer {
             return {};
 
         const auto shadowed = isShadowed(hit->getPoint());
-        const auto &material = hit->getObject().getMaterial();
+        const auto &material = hit->getObject()->getMaterial();
         const auto surface = material.lighting(light.value(), hit->getObject(),
                 hit->getPoint(), hit->getEyeVector(), hit->getNormalVector(), shadowed);
         const auto reflected = reflectedColour(*hit, remaining);
@@ -113,7 +116,7 @@ namespace raytracer {
         if (remaining < 1)
             return predefined_colours::black;
 
-        const auto reflectivity = hit.getObject().getMaterial().getReflectivity();
+        const auto reflectivity = hit.getObject()->getMaterial().getReflectivity();
         if (reflectivity == 0)
             return predefined_colours::black;
         const Ray reflect_ray{hit.getPoint(), hit.getReflectVector()};
@@ -125,7 +128,7 @@ namespace raytracer {
         if (remaining < 1)
             return predefined_colours::black;
 
-        const auto transparency = hit.getObject().getMaterial().getTransparency();
+        const auto transparency = hit.getObject()->getMaterial().getTransparency();
         if (transparency == 0)
             return predefined_colours::black;
 

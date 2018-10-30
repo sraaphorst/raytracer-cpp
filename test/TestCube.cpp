@@ -9,13 +9,13 @@
 #include <array>
 #include <vector>
 
-#include "intersection.h"
-#include "ray.h"
-#include "vector.h"
+#include "impl/intersection.h"
+#include "impl/ray.h"
+#include "vec.h"
 
 // A necessary evil to test the private members.
 #define private public
-#include "cube.h"
+#include "shapes/cube.h"
 
 using namespace raytracer;
 

@@ -11,7 +11,7 @@
 #include <ostream>
 #include <stdexcept>
 
-#include "vector.h"
+#include "vec.h"
 #include "worldconditions.h"
 
 namespace raytracer {

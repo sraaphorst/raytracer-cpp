@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "pattern.h"
-#include "vector.h"
+#include "vec.h"
 
 namespace raytracer {
     class StripePattern final: public Pattern {

@@ -14,6 +14,8 @@
 #include "matrix.h"
 
 using namespace raytracer;
+using namespace raytracer::impl;
+using namespace raytracer::shapes;
 
 TEST_CASE("Shape: The default transformation") {
     const TestShape s;

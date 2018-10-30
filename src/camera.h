@@ -8,9 +8,12 @@
 
 #include "affine_transform.h"
 
+namespace raytracer::impl {
+    class Ray;
+}
+
 namespace raytracer {
     class Canvas;
-    class Ray;
     class World;
 
     class Camera final {
@@ -40,7 +43,7 @@ namespace raytracer {
         double getHalfHeight() const noexcept;
         double getPixelSize() const noexcept;
 
-        const Ray ray_for_pixel(double px, double py) const noexcept;
+        const impl::Ray ray_for_pixel(double px, double py) const noexcept;
 
         const Canvas render(const World &w) const noexcept;
     };

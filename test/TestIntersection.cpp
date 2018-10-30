@@ -11,11 +11,11 @@
 #include <vector>
 
 #include "constmath.h"
-#include "hit.h"
-#include "intersection.h"
-#include "plane.h"
-#include "ray.h"
-#include "sphere.h"
+#include "impl/hit.h"
+#include "impl/intersection.h"
+#include "shapes/plane.h"
+#include "impl/ray.h"
+#include "shapes/sphere.h"
 #include "transformers.h"
 #include "tuple"
 

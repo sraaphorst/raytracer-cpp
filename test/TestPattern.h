@@ -7,7 +7,7 @@
 #pragma once
 
 #include "pattern.h"
-#include "vector.h"
+#include "vec.h"
 
 /**
  * This is a class that implements just enough of Pattern to be a concrete implementation

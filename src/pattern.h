@@ -9,10 +9,12 @@
 #include <memory>
 
 #include "affine_transform.h"
-#include "vector.h"
+#include "vec.h"
 
 namespace raytracer {
-    class Shape;
+    namespace shapes {
+        class Shape;
+    }
 
     class Pattern {
         Transformation transformation;
@@ -40,10 +42,10 @@ namespace raytracer {
         virtual const Colour colourAt(const Tuple&) const noexcept = 0;
 
         /// Computes the colour for a specific object at a given world point.
-        const Colour colourAtObject(const Shape&, const Tuple&) const noexcept;
+        const Colour colourAtObject(const std::shared_ptr<const shapes::Shape>&, const Tuple&) const noexcept;
 
     protected:
-        /// Subclass comparison implementations should override this method.xs
+        /// Subclass comparison implementations should override this method.
         virtual bool doCompare(const Pattern &other) const noexcept;
     };
 }

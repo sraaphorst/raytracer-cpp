@@ -6,7 +6,7 @@
 
 #include <catch.hpp>
 
-#include "vector.h"
+#include "vec.h"
 #include "pointlight.h"
 
 using namespace raytracer;

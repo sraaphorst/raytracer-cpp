@@ -9,8 +9,11 @@
 #include "material.h"
 #include "pattern.h"
 #include "pointlight.h"
+#include "shape.h"
 #include "solidpattern.h"
-#include "vector.h"
+#include "vec.h"
+
+using namespace raytracer::shapes;
 
 namespace raytracer {
     Material::Material() noexcept:
@@ -123,7 +126,7 @@ namespace raytracer {
     }
 
     Colour Material::lighting(const PointLight &light,
-                              const Shape &shape,
+                              const std::shared_ptr<const Shape> &shape,
                               const Tuple &point,
                     const Tuple &eyev, const Tuple &normalv, bool in_shadow) const noexcept {
         const auto colour = pattern->colourAtObject(shape, point);

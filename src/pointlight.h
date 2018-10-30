@@ -8,7 +8,7 @@
 
 #include <optional>
 
-#include "vector.h"
+#include "vec.h"
 
 namespace raytracer {
     class PointLight final {

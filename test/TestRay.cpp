@@ -8,8 +8,8 @@
 
 #include "affine_transform.h"
 #include "transformers.h"
-#include "ray.h"
-#include "vector.h"
+#include "impl/ray.h"
+#include "vec.h"
 
 using namespace raytracer;
 using namespace raytracer::transformers;

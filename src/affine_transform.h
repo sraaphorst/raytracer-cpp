@@ -9,7 +9,7 @@
 #include <array>
 
 #include "matrix.h"
-#include "vector.h"
+#include "vec.h"
 
 namespace raytracer {
     using Transformation = SquareMatrix<4>;

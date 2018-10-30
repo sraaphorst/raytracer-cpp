@@ -11,7 +11,7 @@
 #include "constmath.h"
 #include "pattern.h"
 #include "ringpattern.h"
-#include "vector.h"
+#include "vec.h"
 
 namespace raytracer {
     RingPattern::RingPattern() noexcept: colours{predefined_colours::white, predefined_colours::black} {}

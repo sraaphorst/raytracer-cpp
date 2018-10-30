@@ -22,11 +22,14 @@
 #include <memory>
 
 #include "pointlight.h"
-#include "vector.h"
+#include "vec.h"
 
 namespace raytracer {
     class Pattern;
-    class Shape;
+
+    namespace shapes {
+        class Shape;
+    }
 
     class Material final {
     private:
@@ -100,7 +103,7 @@ namespace raytracer {
 
         // Calculate the lighting of this material.
         Colour lighting(const PointLight &light,
-                        const Shape &shape,
+                        const std::shared_ptr<const shapes::Shape> &shape,
                         const Tuple &point,
                         const Tuple &eyev,
                         const Tuple &normalv,

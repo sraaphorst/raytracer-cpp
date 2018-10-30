@@ -8,9 +8,9 @@
 #include <iostream>
 #include <memory>
 
-#include <projectile.h>
-#include <vector.h>
-#include <worldconditions.h>
+#include "projectile.h"
+#include <vec.h>
+#include "worldconditions.h"
 
 using namespace raytracer;
 

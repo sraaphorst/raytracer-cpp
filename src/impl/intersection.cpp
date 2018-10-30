@@ -12,24 +12,41 @@
 #include "ray.h"
 #include "shape.h"
 
-namespace raytracer {
+using namespace raytracer::shapes;
+
+namespace raytracer::impl {
+    Intersection::Intersection(const double t, const std::shared_ptr<const Shape> &o) noexcept: t{t}, o{o} {}
+
+    bool Intersection::operator==(const Intersection &other) const noexcept {
+        return typeid(*this) == typeid(other)
+            && ALMOST_EQUALS(t, other.t) && *o == *other.o
+            && doCompare(other);
+    }
+
+    bool Intersection::operator!=(const Intersection &other) const noexcept {
+        return !(*this == other);
+    }
+
+    double Intersection::getT() const noexcept {
+        return t;
+    }
+
+    const std::shared_ptr<const Shape> &Intersection::getObject() const noexcept {
+        return o;
+    }
+
     const std::optional<const Intersection> Intersection::hit(const std::vector<Intersection> &ints) noexcept {
         if (ints.empty())
-            return {};
+            return std::nullopt;
 
         Intersection const *curr = nullptr;
         for (const Intersection &i: ints) {
             if (i.getT() > 0 && (curr == nullptr || i.getT() < curr->getT()))
                 curr = &i;
         }
-        if (curr == nullptr || curr->getT() < 0)
-            return {};
-        else
-            return {*curr};
-    }
 
-    std::vector<Intersection> Intersection::aggregate(std::initializer_list<Intersection> lst) noexcept {
-        return std::vector<Intersection>{lst};
+        if (curr == nullptr) return std::nullopt;
+        return {*curr};
     }
 
     const std::optional<const Hit> Intersection::prepareHit(const std::optional<const Intersection> &hit,
@@ -45,7 +62,7 @@ namespace raytracer {
                                        const std::vector<Intersection> &xs) noexcept {
         const auto point = ray.position(hit.getT());
         const auto eyev  = -ray.getDirection();
-        const auto normalv = hit.getObject().normalAt(point);
+        const auto normalv = hit.getObject()->normalAt(point);
         const auto reflectv = ray.getDirection().reflect(normalv);
         const bool inside = normalv.dot_product(eyev) < 0;
         const auto adj_normalv = inside ? -normalv : normalv; ///
@@ -60,24 +77,28 @@ namespace raytracer {
         const auto under_point = point - adj_normalv * 1e-4;
 
         double n1, n2;
-        std::vector<std::reference_wrapper<const Shape>> containers;
+        std::vector<std::shared_ptr<const Shape>> containers;
         for (const auto &x: xs) {
             if (x == hit)
-                n1 = containers.empty() ? 1 : containers.back().get().getMaterial().getRefractiveIndex();
+                n1 = containers.empty() ? 1 : containers.back().get()->getMaterial().getRefractiveIndex();
 
             auto iter = std::find_if(std::begin(containers), std::end(containers),
-                    [&x](const auto &c) { return c.get() == x.getObject(); });
+                    [&x](const auto &c) { return *c.get() == *x.getObject(); });
             if (iter != std::end(containers))
                 containers.erase(iter);
             else
                 containers.emplace_back(x.getObject());
 
             if (x == hit) {
-                n2 = containers.empty() ? 1 : containers.back().get().getMaterial().getRefractiveIndex();
+                n2 = containers.empty() ? 1 : containers.back().get()->getMaterial().getRefractiveIndex();
                 break;
             }
         }
 
         return Hit{hit, adjusted_point, under_point, eyev, adj_normalv, reflectv, inside, n1, n2};
+    }
+
+    bool Intersection::doCompare(const Intersection &other) const noexcept {
+        return true;
     }
 }

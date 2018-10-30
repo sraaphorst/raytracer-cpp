@@ -5,7 +5,11 @@ set(CMAKE_CXX_STANDARD 17)
 
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-narrowing -std=c++17 -ftemplate-depth=10000 -fconstexpr-depth=2000")
 
-include_directories("${PROJECT_SOURCE_DIR}/src")
+include_directories(
+        "${PROJECT_SOURCE_DIR}/src"
+        "${PROJECT_SOURCE_DIR}/src/impl"
+        "${PROJECT_SOURCE_DIR}/src/shapes"
+)
 
 add_subdirectory(src)
 add_subdirectory(test)

@@ -6,7 +6,7 @@
 
 #include "pattern.h"
 #include "solidpattern.h"
-#include "vector.h"
+#include "vec.h"
 
 namespace raytracer {
     SolidPattern::SolidPattern() noexcept: colour{predefined_colours::white} {}

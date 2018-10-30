@@ -12,8 +12,8 @@
 #include "common.h"
 #include "constmath.h"
 #include "matrix.h"
-#include "ray.h"
-#include "vector.h"
+#include "impl/ray.h"
+#include "vec.h"
 #include "world.h"
 
 using namespace raytracer;

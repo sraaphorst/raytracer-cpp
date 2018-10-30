@@ -7,7 +7,7 @@
 #include <cmath>
 
 #include "gradientpattern.h"
-#include "vector.h"
+#include "vec.h"
 
 namespace raytracer {
     GradientPattern::GradientPattern() noexcept:

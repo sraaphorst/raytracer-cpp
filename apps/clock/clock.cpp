@@ -15,7 +15,7 @@
 #include "affine_transform.h"
 #include "canvas.h"
 #include "constmath.h"
-#include "vector.h"
+#include "vec.h"
 
 using namespace raytracer;
 

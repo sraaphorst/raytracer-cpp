@@ -10,7 +10,7 @@
 
 #include "constmath.h"
 #include "stripepattern.h"
-#include "vector.h"
+#include "vec.h"
 
 namespace raytracer {
     StripePattern::StripePattern() noexcept: colours{predefined_colours::white, predefined_colours::black} {}

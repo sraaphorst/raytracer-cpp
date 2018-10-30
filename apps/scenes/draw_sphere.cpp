@@ -7,14 +7,14 @@
 #include <fstream>
 
 #include "canvas.h"
-#include "intersection.h"
+#include "impl/intersection.h"
 #include "material.h"
 #include "pattern.h"
 #include "pointlight.h"
-#include "ray.h"
+#include "impl/ray.h"
 #include "solidpattern.h"
-#include "sphere.h"
-#include "vector.h"
+#include "shapes/sphere.h"
+#include "vec.h"
 
 using namespace raytracer;
 

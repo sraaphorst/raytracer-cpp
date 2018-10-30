@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "pattern.h"
-#include "vector.h"
+#include "vec.h"
 
 namespace raytracer {
     /// Depends on x and z to decide which colour to return, working similarly to stripes but using circular stripes.

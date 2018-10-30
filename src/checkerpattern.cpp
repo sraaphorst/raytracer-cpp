@@ -7,7 +7,7 @@
 #include <cmath>
 
 #include "checkerpattern.h"
-#include "vector.h"
+#include "vec.h"
 
 namespace raytracer {
     CheckerPattern::CheckerPattern() noexcept:

@@ -22,7 +22,6 @@ set(TEST_LIST
         TestIntersection
         TestLights
         TestMaterial
-        TestMath
         TestMatrix
         TestPattern
         TestPlane
@@ -43,6 +42,6 @@ foreach(testname ${TEST_LIST})
 endforeach()
 
 # Add cpp to everything in TEST_LIST and make a "TestAll" target to run all test cases.
-list(TRANSFORM TEST_LIST APPEND ".cpp")
-add_executable(TestAll ${TEST_LIST} ${TEST_SOURCES})
-target_link_libraries(TestAll Catch raytracer)
+#list(TRANSFORM TEST_LIST APPEND ".cpp")
+#add_executable(TestAll ${TEST_LIST} ${TEST_SOURCES})
+#target_link_libraries(TestAll Catch raytracer)

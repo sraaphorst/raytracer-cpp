@@ -13,16 +13,19 @@
 #include <vector>
 
 #include "pointlight.h"
-#include "shape.h"
-#include "vector.h"
+#include "shapes/shape.h"
+#include "vec.h"
 
 namespace raytracer {
-    class Intersection;
-    class Hit;
+    namespace impl {
+        class Intersection;
+        class Hit;
+        class Ray;
+    }
 
     class World final {
         std::optional<PointLight> light;
-        std::vector<std::shared_ptr<Shape>> shapes;
+        std::vector<std::shared_ptr<shapes::Shape>> shapes;
 
     public:
         World() noexcept = default;
@@ -32,7 +35,7 @@ namespace raytracer {
         template<typename L, typename S>
         World(const L &light, const std::vector<S> &shapes) noexcept : light{light}, shapes{shapes} {}
 
-        World &operator=(const World &other) noexcept = default;
+        World &operator=(const World &other) = default;
 
         bool operator==(const World &other) const noexcept;
         bool operator!=(const World &other) const noexcept;
@@ -41,28 +44,26 @@ namespace raytracer {
         void setLightSource(const PointLight&) noexcept;
         void clearLightSource() noexcept;
 
-        std::vector<std::shared_ptr<Shape>> &getObjects() noexcept;
-        const std::vector<std::shared_ptr<Shape>> &getObjects() const noexcept;
-        const bool contains(const Shape &s) const noexcept;
+        std::vector<std::shared_ptr<shapes::Shape>> &getObjects() noexcept;
+        const std::vector<std::shared_ptr<shapes::Shape>> &getObjects() const noexcept;
+        const bool contains(const shapes::Shape &s) const noexcept;
 
-        const std::vector<Intersection> intersect(const Ray &ray) const noexcept;
-        const std::optional<const Colour> shadeHit(const std::optional<const Hit>&,
+        const std::vector<impl::Intersection> intersect(const impl::Ray &ray) const noexcept;
+        const std::optional<const Colour> shadeHit(const std::optional<const impl::Hit>&,
                 int remaining = MAX_RECURSIONS) const noexcept;
-        const Colour colourAt(const Ray &ray, int remaining = MAX_RECURSIONS) const noexcept;
+        const Colour colourAt(const impl::Ray &ray, int remaining = MAX_RECURSIONS) const noexcept;
 
         /// Determine if a point is in shadow, i.e. there is something between this point and the light source.
         bool isShadowed(const Tuple &point) const noexcept;
 
         /// Get the reflected colour for a hit. Limit the recursion.
-        const Colour reflectedColour(const Hit&, int remaining = MAX_RECURSIONS) const noexcept;
+        const Colour reflectedColour(const impl::Hit&, int remaining = MAX_RECURSIONS) const noexcept;
 
         /// Get the refracted colour for a hit. Limit the recursion.
-        const Colour refractedColour(const Hit&, int remaining = MAX_RECURSIONS) const noexcept;
+        const Colour refractedColour(const impl::Hit&, int remaining = MAX_RECURSIONS) const noexcept;
 
         static World getDefaultWorld() noexcept;
 
         constexpr static int MAX_RECURSIONS = 5;
     };
 }
-
-

@@ -14,9 +14,11 @@
 #include "intersection.h"
 #include "ray.h"
 #include "shape.h"
-#include "vector.h"
+#include "vec.h"
 
-namespace raytracer {
+using namespace raytracer::impl;
+
+namespace raytracer::shapes {
     const std::vector<Intersection> Cube::localIntersection(const Ray &ray) const noexcept {
         std::vector<double> mins;
         std::vector<double> maxs;
@@ -31,9 +33,8 @@ namespace raytracer {
         const auto tmin = *std::max_element(std::cbegin(mins), std::cend(mins));
         const auto tmax = *std::min_element(std::cbegin(maxs), std::cend(maxs));
         if (tmin <= tmax) {
-            const auto ptr = std::make_shared<const Cube>(*this);
-            xs.emplace_back(Intersection{tmin, ptr});
-            xs.emplace_back(Intersection{tmax, ptr});
+            xs.emplace_back(Intersection{tmin, shared_from_this()});
+            xs.emplace_back(Intersection{tmax, shared_from_this()});
         }
 
         return xs;
