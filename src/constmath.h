@@ -147,7 +147,7 @@ namespace raytracer {
     }
 
     namespace math_constants {
-        constexpr double sqrt2 = 2 * sqrtd(2.0);
+        constexpr double sqrt2 = sqrtd(2.0);
         constexpr double sqrt2_by_2 = sqrt2 / 2;
     }
 }

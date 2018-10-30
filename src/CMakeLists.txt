@@ -34,7 +34,6 @@ add_library(raytracer SHARED
         stripepattern.cpp
         transformers.h
         vec.h
-        variant_ops.h
         world.h
         world.cpp
 

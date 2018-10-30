@@ -21,42 +21,42 @@ TEST_CASE("Colour: Colours are RGB tuples") {
 TEST_CASE("Colour: Colours can be added") {
     constexpr Colour c1{0.9, 0.6, 0.75};
     constexpr Colour c2{0.7, 0.1, 0.25};
-    constexpr auto res1 = c1 + c2;
-    constexpr auto res2 = c1 + c2 == Colour{1.6, 0.7, 1.0};
+    [[maybe_unused]] constexpr auto res1 = c1 + c2;
+    [[maybe_unused]] constexpr auto res2 = c1 + c2 == Colour{1.6, 0.7, 1.0};
     REQUIRE(c1 + c2 == Colour{1.6, 0.7, 1.0});
 }
 
 TEST_CASE("Colour: Colours can be subtracted") {
     constexpr Colour c1{0.9, 0.6, 0.75};
     constexpr Colour c2{0.7, 0.1, 0.25};
-    constexpr auto res1 = c1 - c2;
-    constexpr auto res2 = c1 - c2 == Colour{0.2, 0.5, 0.5};
+    [[maybe_unused]] constexpr auto res1 = c1 - c2;
+    [[maybe_unused]] constexpr auto res2 = c1 - c2 == Colour{0.2, 0.5, 0.5};
     REQUIRE(c1 - c2 == Colour{0.2, 0.5, 0.5});
 }
 
 TEST_CASE("Colour: Colours can be multiplied by a scalar") {
     constexpr Colour c{0.2, 0.3, 0.4};
-    constexpr auto res1 = 2 * c;
-    constexpr auto res2 = 2 * c == Colour{0.4, 0.6, 0.8};
+    [[maybe_unused]] constexpr auto res1 = 2 * c;
+    [[maybe_unused]] constexpr auto res2 = 2 * c == Colour{0.4, 0.6, 0.8};
     REQUIRE(2 * c == Colour{0.4, 0.6, 0.8});
 }
 
 TEST_CASE("Colour: Colours can be multiplied by the hadamard product") {
     constexpr Colour c1{1  , 0.2, 0.4};
     constexpr Colour c2{0.9, 1,   0.1};
-    constexpr auto res1 = c1 * c2;
-    constexpr auto res2 = c1 * c2 == Colour{0.9, 0.2, 0.04};
+    [[maybe_unused]] constexpr auto res1 = c1 * c2;
+    [[maybe_unused]] constexpr auto res2 = c1 * c2 == Colour{0.9, 0.2, 0.04};
     REQUIRE(c1 * c2 == Colour{0.9, 0.2, 0.04});
 }
 
 TEST_CASE("Colour: Colours should be able to determine when they are valid") {
     constexpr Colour c{0.5, 0, 1};
-    constexpr auto res = c.isValidColour();
+    [[maybe_unused]] constexpr auto res = c.isValidColour();
     REQUIRE(c.isValidColour());
 }
 
 TEST_CASE("Colour: Colours should be able to determine when they are invalid") {
     constexpr Colour c{0.5, 0, 1.1};
-    constexpr auto res = c.isValidColour();
+    [[maybe_unused]] constexpr auto res = c.isValidColour();
     REQUIRE_FALSE(c.isValidColour());
 }

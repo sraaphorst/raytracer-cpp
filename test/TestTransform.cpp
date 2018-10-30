@@ -82,25 +82,22 @@ TEST_CASE("Transform: rotation_x should rotate around the x axis") {
     constexpr auto p = make_point(0, 1, 0);
     constexpr auto half_quarter = rotation_x(math_constants::pi_by_four<>);
     constexpr auto full_quarter = rotation_x(math_constants::pi_by_two<>);
-    constexpr auto sqrt2_by_2 = sqrtd(2)/2;
-    REQUIRE(half_quarter * p == make_point(0, sqrt2_by_2, sqrt2_by_2));
+    REQUIRE(half_quarter * p == make_point(0, math_constants::sqrt2_by_2, math_constants::sqrt2_by_2));
     REQUIRE(full_quarter * p == make_point(0, 0, 1));
 }
 
 TEST_CASE("Transform: rotation_x inverse should rotate in the opposite direction") {
     constexpr auto p = make_point(0, 1, 0);
     constexpr auto half_quarter = rotation_x(math_constants::pi_by_four<>);
-    constexpr auto sqrt2_by_2 = sqrtd(2)/2;
     REQUIRE(half_quarter * half_quarter.invert() == predefined_matrices::I<double, 4>);
-    REQUIRE(half_quarter.invert() * p == make_point(0, sqrt2_by_2, -sqrt2_by_2));
+    REQUIRE(half_quarter.invert() * p == make_point(0, math_constants::sqrt2_by_2, -math_constants::sqrt2_by_2));
 }
 
 TEST_CASE("Transform: rotation_y should rotate a point around the y axis") {
     constexpr auto p = make_point(0, 0, 1);
     constexpr auto half_quarter = rotation_y(math_constants::pi_by_four<>);
     constexpr auto full_quarter = rotation_y(math_constants::pi_by_two<>);
-    constexpr auto sqrt2_by_2 = sqrtd(2) / 2;
-    REQUIRE(half_quarter * p == make_point(sqrt2_by_2, 0, sqrt2_by_2));
+    REQUIRE(half_quarter * p == make_point(math_constants::sqrt2_by_2, 0, math_constants::sqrt2_by_2));
     REQUIRE(full_quarter * p == make_point(1, 0, 0));
 }
 
@@ -108,8 +105,7 @@ TEST_CASE("Transform: rotation_z should rotate a point around the z axis") {
     constexpr auto p = make_point(0, 1, 0);
     constexpr auto half_quarter = rotation_z(math_constants::pi_by_four<>);
     constexpr auto full_quarter = rotation_z(math_constants::pi_by_two<>);
-    constexpr auto sqrt2_by_2 = sqrtd(2) / 2;
-    REQUIRE(half_quarter * p == make_point(-sqrt2_by_2, sqrt2_by_2, 0));
+    REQUIRE(half_quarter * p == make_point(-math_constants::sqrt2_by_2, math_constants::sqrt2_by_2, 0));
     REQUIRE(full_quarter * p == make_point(-1, 0, 0));
 }
 

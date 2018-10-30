@@ -30,8 +30,7 @@ TEST_CASE("Matrix: Matrix should be constructible via initializer list and index
                                    { 9,   10,   11,   12},
                                    {13.5, 14.5, 15.5, 16.5}};
 
-    // Make sure indexing is constexpr.
-    constexpr auto res = m[0][0];
+    [[maybe_unused]] constexpr auto res = m[0][0];
     REQUIRE(ALMOST_EQUALS(m[0][0],  1));
     REQUIRE(ALMOST_EQUALS(m[0][3],  4));
     REQUIRE(ALMOST_EQUALS(m[1][0],  5.1));
@@ -42,24 +41,20 @@ TEST_CASE("Matrix: Matrix should be constructible via initializer list and index
 }
 
 TEST_CASE("Matrix: Matrix should know its size") {
-    // Make sure size elements are constexpr.
-    constexpr auto res1 = m1.row_count();
-    constexpr auto res2 = m1.column_count();
-    constexpr auto res3 = m3.size();
+    [[maybe_unused]] constexpr auto res1 = m1.row_count();
+    [[maybe_unused]] constexpr auto res2 = m1.column_count();
+    [[maybe_unused]] constexpr auto res3 = m3.size();
     REQUIRE(m1.row_count() == 2);
     REQUIRE(m1.column_count() == 3);
     REQUIRE(m2.row_count() == 3);
     REQUIRE(m2.column_count() == 2);
 
-    // Only m3 has size as it is square.
-    constexpr auto res4 = m3.size();
+    [[maybe_unused]] constexpr auto res4 = m3.size();
     REQUIRE(m3.size() == 3);
 }
 
 TEST_CASE("Matrix: Matrix should be able to determine equality") {
-    // Make sure equality is constexpr.
-    constexpr auto res1 = (m1 == m1);
-
+    [[maybe_unused]] constexpr auto res1 = (m1 == m1);
     REQUIRE(m1 == m1);
     REQUIRE(m2 == m2);
     REQUIRE(m1 != m1 + m1);
@@ -68,15 +63,15 @@ TEST_CASE("Matrix: Matrix should be able to determine equality") {
 
 TEST_CASE("Matrix: Matrix comparison equality should be able to tolerate slight offsets") {
     // Make sure expressions are constexpr.
-    constexpr auto res1 = predefined_matrices::I<double, 3> + EPSILON/2 * predefined_matrices::I<double, 3>;
-    constexpr auto res2 = m1 - EPSILON/2 * predefined_matrices::ones<double, 2, 3>;
+    [[maybe_unused]] constexpr auto res1 = predefined_matrices::I<double, 3> + EPSILON/2 * predefined_matrices::I<double, 3>;
+    [[maybe_unused]] constexpr auto res2 = m1 - EPSILON/2 * predefined_matrices::ones<double, 2, 3>;
     REQUIRE(m1 == m1 - EPSILON/2 * predefined_matrices::ones<double, 2, 3>);
     REQUIRE(predefined_matrices::I<double, 3> == predefined_matrices::I<double, 3> + EPSILON/2 * predefined_matrices::I<double, 3>);
 }
 
 TEST_CASE("Matrix: Matrix should be transposable") {
     // Make sure transpose is constexpr.
-    constexpr auto res = m1.transpose();
+    [[maybe_unused]] constexpr auto res = m1.transpose();
     REQUIRE(m1.transpose() == m2);
 }
 
@@ -88,9 +83,8 @@ TEST_CASE("Matrix: Matrix multiplication should multiply compatibly sized matric
     constexpr SquareMatrix<2> prod = {{ 5, 14},
                                       {14, 50}};
 
-    // Make sure multiplication is constexpr.
-    constexpr auto res1 = m1 * m2;
-    constexpr auto res2 = res1 == prod;
+    [[maybe_unused]] constexpr auto res1 = m1 * m2;
+    [[maybe_unused]] constexpr auto res2 = res1 == prod;
     REQUIRE(m1 * m2 == prod);
 }
 
@@ -110,9 +104,8 @@ TEST_CASE("Matrix: Matrix multiplication should multiply square matrices") {
                                     {38, 79, 158, 316},
                                     {45, 94, 188, 376}};
 
-    // Make sure large multiplication is constexpr.
-    constexpr auto res1 = m1 * m2;
-    constexpr auto res2 = m1 * m2 == m3;
+    [[maybe_unused]] constexpr auto res1 = m1 * m2;
+    [[maybe_unused]] constexpr auto res2 = m1 * m2 == m3;
     REQUIRE(m1 * m2 == m3);
 }
 
@@ -123,16 +116,14 @@ TEST_CASE("Matrix: Matrix multiplied with a vector should give a vector") {
     constexpr Vector<double, 4> v = {1, 2, 3, 1};
     constexpr Vector<double, 3> prod = {18, 24, 33};
 
-    // Make sure matrix-vector multiplication is constexpr.
-    constexpr auto res = m * v;
+    [[maybe_unused]] constexpr auto res = m * v;
     REQUIRE(m * v == prod);
 }
 
 TEST_CASE("Matrix: Matrix multiplied on the left by a vector should give a vector") {
     constexpr Vector<double, 3> v = {1, 2, 3};
 
-    // Make sure vector-matrix multiplication is constexpr.
-    constexpr auto res = v * m2;
+    [[maybe_unused]] constexpr auto res = v * m2;
     REQUIRE(v * m2 == Vector<double, 2>{8, 26});
 }
 
@@ -154,8 +145,7 @@ TEST_CASE("Identity matrix should not change the value of vectors, whether on le
 TEST_CASE("Matrix: Matrix of size 1x1 should be able to calculate its determinant") {
     constexpr Matrix<double, 1, 1> m = {{5}};
 
-    // Check that determinant is constexpr.
-    constexpr auto res = m.determinant();
+    [[maybe_unused]] constexpr auto res = m.determinant();
     REQUIRE(m.determinant() == 5);
 }
 
@@ -163,15 +153,14 @@ TEST_CASE("Matrix: Matrix of size 2x2 should be able to calculate its determinan
     constexpr SquareMatrix<2> m = {{ 1, 5},
                                    {-3, 2}};
 
-    // Check that determinant is constexpr.
-    constexpr auto res = m.determinant();
+    [[maybe_unused]] constexpr auto res = m.determinant();
     REQUIRE(m.determinant() == 17);
 }
 
 TEST_CASE("Matrix: Matrix of size 2x2 should be able to get submatrix") {
     constexpr SquareMatrix<2> m = {{0, 1},
                                    {2, 3}};
-    constexpr auto res = m.submatrix<0,0>();
+    [[maybe_unused]] constexpr auto res = m.submatrix<0,0>();
     REQUIRE(m.submatrix<0,0>() == Matrix<double, 1, 1>{{3}});
 }
 
@@ -183,7 +172,7 @@ TEST_CASE("Matrix: Matrix of size 3x3 should be able to get submatrix") {
     constexpr SquareMatrix<2> sm = {{-3, 2},
                                     {0, 6}};
 
-    constexpr auto res = m.submatrix<0,2>();
+    [[maybe_unused]] constexpr auto res = m.submatrix<0,2>();
     REQUIRE(m.submatrix<0, 2>() == sm);
 }
 
@@ -197,8 +186,7 @@ TEST_CASE("Matrix: Matrix of size 4x4 should be able to get submatrix") {
                                     {-8,  8, 6},
                                     {-7, -1, 1}};
 
-    // Check that submatrix is constexpr.
-    constexpr auto res = m.submatrix<2,1>();
+    [[maybe_unused]] constexpr auto res = m.submatrix<2,1>();
     REQUIRE(m.submatrix<2, 1>() == sm);
 }
 
@@ -213,9 +201,9 @@ TEST_CASE("Matrix: Matrix of non-square size should be able to get submatrix") {
                                          {6, 7}};
 
     // Check that submatrix is constexpr.
-    constexpr auto res1 = m.submatrix<0,0>();
-    constexpr auto res2 = m.submatrix<1,1>();
-    constexpr auto res3 = m.submatrix<3,2>();
+    [[maybe_unused]] constexpr auto res1 = m.submatrix<0,0>();
+    [[maybe_unused]] constexpr auto res2 = m.submatrix<1,1>();
+    [[maybe_unused]] constexpr auto res3 = m.submatrix<3,2>();
     REQUIRE(m.submatrix<3, 2>() == sm);
 }
 
@@ -225,7 +213,7 @@ TEST_CASE("Matrix: Matrix of size 3x3 should be able to calculate its minors") {
                                    {6, -1,  5}};
 
     // Check that minor is constexpr.
-    constexpr auto res = m.minor<0,0>();
+    [[maybe_unused]] constexpr auto res = m.minor<0,0>();
     REQUIRE(m.minor<0, 0>() == -12);
     REQUIRE(m.minor<0, 1>() ==  52);
     REQUIRE(m.minor<0, 2>() ==   4);
@@ -243,7 +231,7 @@ TEST_CASE("Matrix: Matrix of size 3x3 should be able to calculate its cofactors"
                                    {6, -1,  5}};
 
     // Check that cofactor is constexpr.
-    constexpr auto res = m.cofactor<0, 0>();
+    [[maybe_unused]] constexpr auto res = m.cofactor<0, 0>();
     REQUIRE(m.cofactor<0, 0>() == -12);
     REQUIRE(m.cofactor<0, 1>() == -52);
     REQUIRE(m.cofactor<0, 2>() ==   4);
@@ -261,8 +249,8 @@ TEST_CASE("Matrix: Matrix of size 3x3 should be able to calculate its determinan
                                    { 2, 6,  4}};
 
     // Check that determinant is constexpr.
-    constexpr auto res1 = m.determinant();
-    constexpr auto res2 = m.cofactor<0,0>();
+    [[maybe_unused]] constexpr auto res1 = m.determinant();
+    [[maybe_unused]] constexpr auto res2 = m.cofactor<0,0>();
     REQUIRE(m.cofactor<0, 0>() ==   56);
     REQUIRE(m.cofactor<0, 1>() ==   12);
     REQUIRE(m.cofactor<0, 2>() ==  -46);
@@ -276,9 +264,9 @@ TEST_CASE("Matrix: Matrix of size 4x4 should be able to calculate its determinan
                                    {-6,  7,  7, -9}};
 
     // Check that determinant is constexpr.
-    constexpr auto res1 = m == m;
-    constexpr auto res2 = m.determinant();
-    constexpr auto res3 = m.cofactor<0,0>();
+    [[maybe_unused]] constexpr auto res1 = m == m;
+    [[maybe_unused]] constexpr auto res2 = m.determinant();
+    [[maybe_unused]] constexpr auto res3 = m.cofactor<0,0>();
     REQUIRE(m.cofactor<0, 0>() ==  690);
     REQUIRE(m.cofactor<0, 1>() ==  447);
     REQUIRE(m.cofactor<0, 2>() ==  210);
@@ -289,7 +277,7 @@ TEST_CASE("Matrix: Matrix of size 4x4 should be able to calculate its determinan
 TEST_CASE("Matrix: Matrix of size 2x2 should be able to calculate its inverse") {
     constexpr SquareMatrix<2> m = {{1, 2},
                                    {3, 4}};
-    constexpr auto minv = m.invert();
+    [[maybe_unused]] constexpr auto minv = m.invert();
     REQUIRE(m * minv == predefined_matrices::I<double, 2>);
     REQUIRE(minv * m == predefined_matrices::I<double, 2>);
 }
@@ -298,7 +286,7 @@ TEST_CASE("Matrix: Matrix of size 3x3 should be able to calculate its inverse") 
     constexpr SquareMatrix<3> m = {{0, 1, 2},
                                    {-1, -5, 6},
                                    {7, 8, 9}};
-    constexpr auto minv = m.invert();
+    [[maybe_unused]] constexpr auto minv = m.invert();
     REQUIRE(m * minv == predefined_matrices::I<double, 3>);
     REQUIRE(minv * m == predefined_matrices::I<double, 3>);
 }
@@ -315,7 +303,7 @@ TEST_CASE("Matrix: Matrix of size 4x4 should be able to calculate its inverse") 
                                           {-0.07895, -0.22368, -0.05263,  0.19737},
                                           {-0.52256, -0.81391, -0.30075,  0.30639}};
 
-    constexpr auto m1inv = m1.invert();
+    [[maybe_unused]] constexpr auto m1inv = m1.invert();
     REQUIRE(m1inv == m1invchk);
     REQUIRE(m1 * m1inv == predefined_matrices::I<double, 4>);
     REQUIRE(m1inv * m1 == predefined_matrices::I<double, 4>);
@@ -328,7 +316,7 @@ TEST_CASE("Matrix: Matrix of size 4x4 should be able to calculate its inverse") 
                                           {-0.07692,  0.12308,  0.02564,  0.03077},
                                           { 0.35897,  0.35897,  0.43590,  0.92308},
                                           {-0.69231, -0.69231, -0.76923, -1.92308}};
-    constexpr auto m2inv = m2.invert();
+    [[maybe_unused]] constexpr auto m2inv = m2.invert();
     REQUIRE(m2inv == m2invchk);
     REQUIRE(m2 * m2inv == predefined_matrices::I<double, 4>);
     REQUIRE(m2inv * m2 == predefined_matrices::I<double, 4>);

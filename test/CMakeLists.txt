@@ -30,7 +30,6 @@ set(TEST_LIST
         TestSphere
         TestTransform
         TestTuple
-        TestVariantOps
         TestWorld
         )
 
