@@ -11,73 +11,66 @@
 #include <vector>
 
 #include "constmath.h"
-#include "impl/hit.h"
-#include "impl/intersection.h"
-#include "shapes/plane.h"
-#include "impl/ray.h"
-#include "shapes/sphere.h"
+#include "hit.h"
+#include "intersection.h"
+#include "plane.h"
+#include "ray.h"
+#include "sphere.h"
 #include "transformers.h"
 #include "tuple"
 
 using namespace raytracer;
+using namespace raytracer::impl;
+using namespace raytracer::shapes;
 using namespace raytracer::transformers;
 
-TEST_CASE("Intersection: Intersection can be created and initialized", "[Intersection][constructor]") {
-    Intersection it{0.5, std::make_shared<Sphere>()};
-    REQUIRE(it.getObject() == Sphere{});
+TEST_CASE("Intersection: Intersection can be created and initialized") {
+    Intersection it{0.5, Sphere::createSphere()};
+    REQUIRE(*it.getObject() == *Sphere::createSphere());
     REQUIRE(it.getT() == 0.5);
-}
-
-TEST_CASE("Intersection: Intersections can be aggregated", "[Intersections][Intersection][aggregate]") {
-    Intersection i1{1, std::make_shared<Sphere>()};
-    Intersection i2{2, std::make_shared<Sphere>()};
-    const auto is = Intersection::aggregate({i1, i2});
-    REQUIRE(is.size() == 2);
-    REQUIRE(is[0] == i1);
-    REQUIRE(is[1] == i2);
 }
 
 TEST_CASE("Intersection: Intersect sets the object on the intersection") {
     const Ray r{make_point(0, 0, -5), make_vector(0, 0, 1)};
-    const Sphere s;
-    const auto xs = s.intersect(r);
+    const auto s = Sphere::createSphere();
+    const auto xs = s->intersect(r);
     REQUIRE(xs.size() == 2);
     REQUIRE(xs[0].getObject() == s);
     REQUIRE(xs[1].getObject() == s);
 }
 
 TEST_CASE("Intersection: The hit, when all intersections have positive t") {
-    const Intersection i1{1, std::make_shared<Sphere>()};
-    const Intersection i2{2, std::make_shared<Sphere>()};
-    const auto xs = Intersection::aggregate({i1, i2});
+    const Intersection i1{1, Sphere::createSphere()};
+    const Intersection i2{2, Sphere::createSphere()};
+    const std::vector<Intersection> xs{i1, i2};
     const auto hit = Intersection::hit(xs);
     REQUIRE(hit.has_value());
     REQUIRE(hit.value() == i1);
 }
 
 TEST_CASE("Intersection: The hit, when some intersections have negative t") {
-    const Intersection i1{-1, std::make_shared<Sphere>()};
-    const Intersection i2{1, std::make_shared<Sphere>()};
-    const auto xs = Intersection::aggregate({i1, i2});
+    const Intersection i1{-1, Sphere::createSphere()};
+    const Intersection i2{1, Sphere::createSphere()};
+    const std::vector<Intersection> xs{i1, i2};
     const auto hit = Intersection::hit(xs);
     REQUIRE(hit.has_value());
     REQUIRE(hit.value() == i2);
 }
 
 TEST_CASE("Intersection: The hit, when all intersections have negative t") {
-    const Intersection i1{-1, std::make_shared<Sphere>()};
-    const Intersection i2{-2, std::make_shared<Sphere>()};
-    const auto xs = Intersection::aggregate({i1, i2});
+    const Intersection i1{-1, Sphere::createSphere()};
+    const Intersection i2{-2, Sphere::createSphere()};
+    const std::vector<Intersection> xs{i1, i2};
     const auto hit = Intersection::hit(xs);
     REQUIRE_FALSE(hit.has_value());
 }
 
 TEST_CASE("Intersection: The hit is always the lowest non-negative intersection") {
-    const Intersection i1{5, std::make_shared<Sphere>()};
-    const Intersection i2{7, std::make_shared<Sphere>()};
-    const Intersection i3{-3, std::make_shared<Sphere>()};
-    const Intersection i4{2, std::make_shared<Sphere>()};
-    const auto xs = Intersection::aggregate({i1, i2, i3, i4});
+    const Intersection i1{5, Sphere::createSphere()};
+    const Intersection i2{7, Sphere::createSphere()};
+    const Intersection i3{-3, Sphere::createSphere()};
+    const Intersection i4{2, Sphere::createSphere()};
+    const std::vector<Intersection> xs{i1, i2, i3, i4};
     const auto hit = Intersection::hit(xs);
     REQUIRE(hit.has_value());
     REQUIRE(hit.value() == i4);
@@ -85,7 +78,7 @@ TEST_CASE("Intersection: The hit is always the lowest non-negative intersection"
 
 TEST_CASE("Intersection: Precomputing the state of an intersection") {
     const Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
-    const Intersection i{4, std::make_shared<const Sphere>()};
+    const Intersection i{4, Sphere::createSphere()};
     const auto hit = Intersection::prepareHit(i, ray, {});
     REQUIRE(hit.getPoint() == make_point(0, 0, -1));
     REQUIRE(hit.getEyeVector() == make_vector(0, 0, -1));
@@ -94,14 +87,14 @@ TEST_CASE("Intersection: Precomputing the state of an intersection") {
 
 TEST_CASE("Intersection: An intersection occurs on the outside") {
     const Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
-    const Intersection i{4, std::make_shared<const Sphere>()};
+    const Intersection i{4, Sphere::createSphere()};
     const auto hit = Intersection::prepareHit(i, ray, {});
     REQUIRE_FALSE(hit.isInside());
 }
 
 TEST_CASE("Intersection: An intersection occurs on the inside") {
     const Ray ray{make_point(0, 0, 0), make_vector(0, 0, 1)};
-    const Intersection i{1, std::make_shared<const Sphere>()};
+    const Intersection i{1, Sphere::createSphere()};
     const auto hit = Intersection::prepareHit(i, ray, {});
     REQUIRE(hit.isInside());
     REQUIRE(hit.getPoint() == make_point(0, 0, 1));
@@ -111,7 +104,7 @@ TEST_CASE("Intersection: An intersection occurs on the inside") {
 
 TEST_CASE("Intersection: The point is offset") {
     const Ray ray{make_point(0, 0, -5), predefined_tuples::z1};
-    const Intersection i{4, std::make_shared<const Sphere>()};
+    const Intersection i{4, Sphere::createSphere()};
     const auto hit = Intersection::prepareHit(i, ray, {});
     const auto z = hit.getPoint()[tuple_constants::z];
     REQUIRE(-1.1 < z);
@@ -119,7 +112,7 @@ TEST_CASE("Intersection: The point is offset") {
 }
 
 TEST_CASE("Intersection: Precomputing the reflection vector") {
-    const std::shared_ptr<Shape> shape = std::make_shared<Plane>();
+    const std::shared_ptr<Shape> shape = Plane::createPlane();
     constexpr double sqrt2 = sqrtd(2);
     constexpr double sqrt2by2 = sqrt2/2;
     const Ray ray{make_point(0, 1, -1), make_vector(0, -sqrt2by2, sqrt2by2)};

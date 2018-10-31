@@ -12,6 +12,7 @@
 #include "vec.h"
 
 using namespace raytracer;
+using namespace raytracer::impl;
 using namespace raytracer::transformers;
 
 TEST_CASE("Ray: Ray throws an exception if improper arguments are passed to it") {
