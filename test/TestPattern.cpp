@@ -19,6 +19,7 @@
 #include "TestPattern.h"
 
 using namespace raytracer;
+using namespace raytracer::shapes;
 
 TEST_CASE("Pattern: Creating default stripe pattern") {
     const StripePattern pattern;
@@ -51,27 +52,33 @@ TEST_CASE("Pattern: A stripe pattern alternates in x") {
 }
 
 TEST_CASE("Pattern: Pattern with an object transformation") {
+    auto s = Sphere::createSphere();
+    s->setTransformation(scale(2, 2, 2));
+    
     const std::shared_ptr<Pattern> pattern = std::make_shared<TestPattern>();
     Material material;
     material.setPattern(pattern);
-    const Sphere s{scale(2, 2, 2), material};
+    s->setMaterial(material);
+    
     const auto c = pattern->colourAtObject(s, make_point(2, 3, 4));
     REQUIRE(c == make_colour(1, 1.5, 2));
 }
 
 TEST_CASE("Pattern: Pattern with a pattern transformation") {
-    const Sphere s;
     std::shared_ptr<Pattern> pattern = std::make_shared<TestPattern>();
     pattern->setTransformation(scale(2, 2, 2));
-    const auto c = pattern->colourAtObject(s, make_point(2, 3, 4));
+    const auto c = pattern->colourAtObject(Sphere::createSphere(), make_point(2, 3, 4));
     REQUIRE(c == make_colour(1, 1.5, 2));
 
 }
 
 TEST_CASE("Pattern: Pattern with both an object and a pattern transformation") {
-    const Sphere s{scale(2, 2, 2)};
+    auto s = Sphere::createSphere();
+    s->setTransformation(scale(2, 2, 2));
+    
     std::shared_ptr<Pattern> pattern = std::make_shared<TestPattern>();
     pattern->setTransformation(translation(0.5, 1, 1.5));
+    
     const auto c = pattern->colourAtObject(s, make_point(2.5, 3, 3.5));
     REQUIRE(c == make_colour(0.75, 0.5, 0.25));
 }
