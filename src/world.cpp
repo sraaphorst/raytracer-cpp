@@ -47,6 +47,10 @@ namespace raytracer {
         return shapes;
     }
 
+    const bool World::contains(const std::shared_ptr<Shape> &sptr) const noexcept {
+        return contains(*sptr);
+    }
+
     const bool World::contains(const Shape &s) const noexcept {
         for (const auto i: shapes)
             if (*i == s)

@@ -25,6 +25,8 @@
 #include "TestPattern.h"
 
 using namespace raytracer;
+using namespace raytracer::impl;
+using namespace raytracer::shapes;
 
 TEST_CASE("World: Creating a world") {
     World w;
@@ -36,16 +38,17 @@ TEST_CASE("World: The default world") {
     const PointLight light{make_point(-10, 10, -10), predefined_colours::white};
 
     const Material m1{make_colour(0.8, 1.0, 0.6), Material::DEFAULT_AMBIENT, 0.7, 0.2, Material::DEFAULT_SHININESS};
-    Sphere s1{};
-    s1.setMaterial(m1);
+    auto s1 = Sphere::createSphere();
+    s1->setMaterial(m1);
 
-    Sphere s2{scale(0.5, 0.5, 0.5)};
+    auto s2 = Sphere::createSphere();
+    s2->setTransformation(scale(0.5, 0.5, 0.5));
 
     auto w = World::getDefaultWorld();
     REQUIRE(w.getLightSource().has_value());
     REQUIRE(w.getLightSource().value() == light);
-    REQUIRE(w.contains(s1));
-    REQUIRE(w.contains(s2));
+    REQUIRE(w.contains(*s1));
+    REQUIRE(w.contains(*s2));
 }
 
 TEST_CASE("World: Intersect a world with a ray") {

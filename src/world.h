@@ -46,6 +46,8 @@ namespace raytracer {
 
         std::vector<std::shared_ptr<shapes::Shape>> &getObjects() noexcept;
         const std::vector<std::shared_ptr<shapes::Shape>> &getObjects() const noexcept;
+
+        const bool contains(const std::shared_ptr<shapes::Shape> &sptr) const noexcept;
         const bool contains(const shapes::Shape &s) const noexcept;
 
         const std::vector<impl::Intersection> intersect(const impl::Ray &ray) const noexcept;
