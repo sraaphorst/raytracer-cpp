@@ -22,7 +22,6 @@ add_library(raytracer SHARED
         material.h
         material.cpp
         matrix.h
-        meta.h
         pattern.h
         pattern.cpp
         pointlight.h

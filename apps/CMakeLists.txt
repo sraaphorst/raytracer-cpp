@@ -17,4 +17,5 @@ add_executable(draw_scene2 scenes/draw_scene2.cpp)
 target_link_libraries(draw_scene2 raytracer)
 
 add_executable(draw_scene3 scenes/draw_scene3.cpp)
-target_link_libraries(draw_scene3 raytracer)
+#target_link_libraries(draw_scene3 raytracer)
+target_link_libraries(draw_scene3 PRIVATE raytracer OpenMP::OpenMP_CXX)

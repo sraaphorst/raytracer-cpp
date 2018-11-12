@@ -6,6 +6,7 @@
 
 #include <climits>
 #include <memory>
+#include <mutex>
 #include <vector>
 
 #include "hit.h"
@@ -59,11 +60,16 @@ namespace raytracer {
     }
 
     const std::vector<Intersection> World::intersect(const Ray &ray) const noexcept {
+        std::mutex intersection_mutex;
         std::vector<Intersection> intersections;
-        std::for_each(std::cbegin(shapes), std::cend(shapes), [&ray, &intersections](const auto &s) {
+#pragma omp parallel for shared(intersections, ray)
+        for (int i = 0; i < shapes.size(); ++i) {
+            const auto &s = shapes[i];
             const std::vector<Intersection> vi = s->intersect(ray);
+
+            std::lock_guard<std::mutex> guard(intersection_mutex);
             intersections.insert(std::end(intersections), std::cbegin(vi), std::cend(vi));
-        });
+        }
 
         std::sort(std::begin(intersections), std::end(intersections), [](const auto i1, const auto i2) {
             return i1.getT() < i2.getT();

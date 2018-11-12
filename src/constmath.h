@@ -114,7 +114,7 @@ namespace raytracer {
         T numerator = x;
         T result = 0;
         for (size_t i = 0; i < 8; ++i) {
-            result = result + numerator / factorial(2 * i + 1);
+            result += numerator / factorial(2 * i + 1);
             numerator *= -1 * x * x;
         }
         return result;
@@ -128,7 +128,7 @@ namespace raytracer {
         T numerator = 1;
         T result = 0;
         for (size_t i = 0; i < 8; ++i) {
-            result = result + numerator / factorial(2 * i);
+            result += numerator / factorial(2 * i);
             numerator *= -1 * x * x;
         }
         return result;

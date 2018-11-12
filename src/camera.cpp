@@ -4,6 +4,8 @@
  * By Sebastian Raaphorst, 2018.
  */
 
+#include <omp.h>
+
 #include "camera.h"
 #include "canvas.h"
 #include "common.h"
@@ -83,13 +85,15 @@ namespace raytracer {
     const Canvas Camera::render(const World &w) const noexcept {
         auto image = Canvas{hsize, vsize};
 
-        for (size_t y = 0; y < vsize; ++y)
+#pragma omp parallel for
+        for (size_t y = 0; y < vsize; ++y) {
+#pragma omp parallel for
             for (size_t x = 0; x < hsize; ++x) {
                 const auto ray = ray_for_pixel(x, y);
                 const auto colour = w.colourAt(ray);
                 image[x][y] = colour;
             }
-
+        }
         return image;
     }
 }
