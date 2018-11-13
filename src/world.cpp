@@ -62,6 +62,8 @@ namespace raytracer {
     const std::vector<Intersection> World::intersect(const Ray &ray) const noexcept {
         std::mutex intersection_mutex;
         std::vector<Intersection> intersections;
+
+        // Unless we have a lot of shapes here, this is unlikely to have a lot of benefit.
 #pragma omp parallel for shared(intersections, ray)
         for (int i = 0; i < shapes.size(); ++i) {
             const auto &s = shapes[i];
