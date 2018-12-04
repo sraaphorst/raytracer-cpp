@@ -1,3 +1,6 @@
+# CMakeLists.txt
+# By Sebastian Raaphorst, 2018.
+
 cmake_minimum_required(VERSION 3.12)
 project(raytracer_test)
 
