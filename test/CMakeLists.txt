@@ -38,7 +38,6 @@ set(TEST_LIST
 
 foreach(testname ${TEST_LIST})
     set(testfile ${testname}.cpp)
-#    message("Preparing to make ${testname} with ${testfile}")
     add_executable(${testname} ${testfile} ${TEST_SOURCES})
     target_link_libraries(${testname} Catch raytracer)
 endforeach()

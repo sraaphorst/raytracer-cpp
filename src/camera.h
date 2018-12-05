@@ -34,8 +34,8 @@ namespace raytracer {
 
         bool operator==(const Camera&) const noexcept;
 
-        int getHSize() const noexcept;
-        int getVSize() const noexcept;
+        size_t getHSize() const noexcept;
+        size_t getVSize() const noexcept;
         double getFOV() const noexcept;
         const Transformation &getTransformation() const noexcept;
 

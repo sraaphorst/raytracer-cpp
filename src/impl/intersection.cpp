@@ -76,7 +76,8 @@ namespace raytracer::impl {
         // As with adjusted_point, we have to slightly offset this, but in the opposite direction.
         const auto under_point = point - adj_normalv * 1e-4;
 
-        double n1, n2;
+        double n1 = 0;
+        double n2 = 0;
         std::vector<std::shared_ptr<const Shape>> containers;
         for (const auto &x: xs) {
             if (x == hit)
@@ -98,7 +99,7 @@ namespace raytracer::impl {
         return Hit{hit, adjusted_point, under_point, eyev, adj_normalv, reflectv, inside, n1, n2};
     }
 
-    bool Intersection::doCompare(const Intersection &other) const noexcept {
+    bool Intersection::doCompare(const Intersection&) const noexcept {
         return true;
     }
 }

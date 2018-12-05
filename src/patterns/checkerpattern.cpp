@@ -16,9 +16,9 @@ namespace raytracer {
 
     const Colour CheckerPattern::colourAt(const Tuple &point) const noexcept {
         const auto idx =
-                static_cast<size_t>(floor(point[tuple_constants::x])) +
+                (static_cast<size_t>(floor(point[tuple_constants::x])) +
                 static_cast<size_t>(floor(point[tuple_constants::y])) +
-                static_cast<size_t>(floor(point[tuple_constants::z])) % 2;
+                static_cast<size_t>(floor(point[tuple_constants::z]))) % 2;
         return idx == 0 ? colour1 : colour2;
 
     }

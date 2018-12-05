@@ -10,8 +10,9 @@
 #include <iostream>
 
 #include <canvas.h>
-#include "projectile.h"
 #include <vec.h>
+
+#include "projectile.h"
 #include "worldconditions.h"
 
 using namespace raytracer;

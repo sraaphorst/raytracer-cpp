@@ -51,7 +51,7 @@ namespace raytracer::impl {
         return Ray{t * origin, t * direction};
     }
 
-    bool Ray::doCompare(const Ray &other) const noexcept {
+    bool Ray::doCompare(const Ray&) const noexcept {
         return true;
     }
 }

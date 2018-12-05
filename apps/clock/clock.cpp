@@ -12,10 +12,10 @@
 #include <functional>
 #include <memory>
 
-#include "affine_transform.h"
-#include "canvas.h"
-#include "constmath.h"
-#include "vec.h"
+#include <affine_transform.h>
+#include <canvas.h>
+#include <constmath.h>
+#include <vec.h>
 
 using namespace raytracer;
 

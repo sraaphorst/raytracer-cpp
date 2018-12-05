@@ -16,7 +16,6 @@ using namespace raytracer;
 
 int main() {
     WorldConditions w{make_vector(0, -0.1, 0), make_vector(-0.01, 0, 0)};
-    //std::unique_ptr<Projectile> ptr = std::make_unique<Projectile>(make_point(0, 1, 0), make_vector(1, 1, 0).normalize());
     Projectile p{make_point(0, 1, 0), make_vector(1, 1, 0).normalize()};
 
     std::cout << "In " << w << "\n\tbeginning with " << p << "\n\n";

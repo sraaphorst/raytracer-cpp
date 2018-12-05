@@ -146,7 +146,15 @@ namespace raytracer {
 
         template<size_t C2>
         constexpr Matrix<T, rows, C2> operator*(const Matrix<T, cols, C2> &other) const {
-            return Matrix<T, rows, C2>{transformers::details::mat_mult<T, rows, cols, C2>(contents, other.contents)};
+            std::array<std::array<T, C2>, rows> result{};
+            for (size_t r = 0; r < rows; ++r) {
+                for (size_t c2 = 0; c2 < C2; ++c2) {
+                    result[r][c2] = 0;
+                    for (size_t c = 0; c < cols; ++c)
+                        result[r][c2] += contents[r][c] * other.contents[c][c2];
+                }
+            }
+            return Matrix<T, rows, C2>(result);
         }
 
         constexpr Vector<T, rows> operator*(const Vector<T, cols> &v) const {

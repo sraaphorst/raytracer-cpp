@@ -124,13 +124,23 @@ namespace raytracer {
         const auto left    = forward.cross_product(upn);
         const auto true_up = left.cross_product(forward);
 
-        for (size_t i = 0; i < 4; ++i)
-            m[i][3] = m[3][i] = (i == 3 ? 1 : 0);
+        // Set the rightmost column and bottom-most row to (0, 0, 0, 1).
+        for (size_t i = 0; i < 3; ++i) {
+            m[i][3] = 0;
+            m[3][i] = 0;
+        }
+        m[3][3] = 1;
+
+        // Set the rest of the matrix.
         for (size_t i = 0; i < 3; ++i) {
             m[0][i] = left[i];
             m[1][i] = true_up[i];
             m[2][i] = -forward[i];
         }
+
+        const auto trans = translation(-from[0], -from[1], -from[2]);
+        const auto transm = Transformation{m};
+        const auto result = transm * trans;
         return Transformation{m} * translation(-from[0], -from[1], -from[2]);
     }
 }

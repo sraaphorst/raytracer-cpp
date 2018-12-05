@@ -132,7 +132,7 @@ namespace raytracer {
 
         friend std::ostream &operator<<(std::ostream &os, const Vector &t) noexcept {
             os << "Vector(";
-            for (int i=0; i < t.size(); ++i)
+            for (size_t i = 0; i < t.size(); ++i)
                 os << t[i] << (i == t.size() - 1 ? "" : ", ");
             return os << ')';
         }

@@ -39,11 +39,11 @@ namespace raytracer {
             && transformation == other.transformation;
     }
 
-    int Camera::getHSize() const noexcept {
+    size_t Camera::getHSize() const noexcept {
         return hsize;
     }
 
-    int Camera::getVSize() const noexcept {
+    size_t Camera::getVSize() const noexcept {
         return vsize;
     }
 
