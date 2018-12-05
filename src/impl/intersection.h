@@ -12,7 +12,7 @@
 #include <optional>
 #include <vector>
 
-#include "shapes/shape.h"
+#include "shape.h"
 #include "transformers.h"
 
 namespace raytracer::shapes {

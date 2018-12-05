@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "pattern.h"
+#include "patterns/pattern.h"
 #include "vec.h"
 
 /**

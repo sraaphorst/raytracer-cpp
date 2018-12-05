@@ -17,8 +17,8 @@ namespace raytracer {
     class World;
 
     class Camera final {
-        int hsize;
-        int vsize;
+        size_t hsize;
+        size_t vsize;
         double fov;
         Transformation transformation;
         double half_width;
@@ -26,7 +26,7 @@ namespace raytracer {
         double pixel_size;
 
     public:
-        Camera(int hsize, int vsize, double fov,
+        Camera(size_t hsize, size_t vsize, double fov,
                 const Transformation &transformation = predefined_matrices::I<double, 4>);
         Camera(const Camera&) = default;
         Camera(Camera&&) = default;

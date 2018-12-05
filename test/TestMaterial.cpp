@@ -10,11 +10,11 @@
 
 #include "constmath.h"
 #include "material.h"
-#include "pattern.h"
+#include "patterns/pattern.h"
 #include "pointlight.h"
-#include "solidpattern.h"
+#include "patterns/solidpattern.h"
 #include "shapes/sphere.h"
-#include "stripepattern.h"
+#include "patterns/stripepattern.h"
 
 using namespace raytracer;
 using namespace raytracer::shapes;

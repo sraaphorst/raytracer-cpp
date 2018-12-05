@@ -6,17 +6,18 @@
 
 #include <fstream>
 
-#include "canvas.h"
-#include "impl/intersection.h"
-#include "material.h"
-#include "pattern.h"
-#include "pointlight.h"
-#include "impl/ray.h"
-#include "solidpattern.h"
-#include "shapes/sphere.h"
-#include "vec.h"
+#include <canvas.h>
+#include <impl/intersection.h>
+#include <material.h>
+#include <patterns/pattern.h>
+#include <pointlight.h>
+#include <impl/ray.h>
+#include <patterns/solidpattern.h>
+#include <shapes/sphere.h>
+#include <vec.h>
 
 using namespace raytracer;
+using namespace raytracer::shapes;
 
 int main() {
     constexpr int canvas_pixels = 1000;
@@ -36,16 +37,12 @@ int main() {
     constexpr double half = wall_size / 2;
 
     Canvas c{canvas_pixels, canvas_pixels};
-    const auto colour = predefined_colours::red;
 
     // Give the sphere a purple-ish colour.
-    Sphere s;
-    Material m;
-    std::shared_ptr<Pattern> pattern = std::make_shared<SolidPattern>(make_colour(1, 0.2, 1));
-    m.setPattern(pattern);
-    s.setMaterial(m);
-
-    //s.setTransformation(scale(0.5, 1, 1).andThen(rotation_z(M_PI_4)));
+    auto s = Sphere::createSphere();
+    Material m{std::make_shared<SolidPattern>(make_colour(1, 0.2, 1))};
+    s->setMaterial(m);
+    s->setTransformation(scale(0.5, 1, 1).andThen(rotation_z(M_PI_4)));
 
     // Add a light source:
     const PointLight light{make_point(-10, 10, -10), predefined_colours::white};
@@ -63,15 +60,15 @@ int main() {
             // Describe the point on the wall that the ray will target.
             const auto position = make_point(world_x, world_y, wall_z);
 
-            const Ray r{ray_origin, (position - ray_origin).normalize()};
-            const auto xs = s.intersect(r);
-            const auto hit = Intersection::hit(xs);
+            const impl::Ray r{ray_origin, (position - ray_origin).normalize()};
+            const auto xs = s->intersect(r);
+            const auto hit = impl::Intersection::hit(xs);
             if (hit.has_value()) {
-                const auto intersection = hit.value();
+                const auto &intersection = hit.value();
                 const auto point = r.position(intersection.getT());
-                const auto normal = intersection.getObject().normalAt(point);
+                const auto normal = intersection.getObject()->normalAt(point);
                 const auto eye = -r.getDirection();
-                c[x][y] = intersection.getObject().getMaterial().lighting(light, s, point, eye, normal, false);
+                c[x][y] = intersection.getObject()->getMaterial().lighting(light, s, point, eye, normal, false);
             }
         }
     }

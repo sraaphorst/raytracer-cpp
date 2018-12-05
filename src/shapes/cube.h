@@ -13,15 +13,12 @@
 #include "shape.h"
 #include "vec.h"
 
-// Class forwards
 namespace raytracer::impl {
     class Intersection;
     class Ray;
 }
 
 namespace raytracer::shapes {
-    class ShapeFactory;
-
     /// An Axis Aligned Bounding Box cube.
     class Cube: public Shape {
     public:

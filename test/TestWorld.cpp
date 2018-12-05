@@ -13,11 +13,11 @@
 #include "constmath.h"
 #include "hit.h"
 #include "material.h"
-#include "pattern.h"
+#include "patterns/pattern.h"
 #include "plane.h"
 #include "pointlight.h"
 #include "ray.h"
-#include "solidpattern.h"
+#include "patterns/solidpattern.h"
 #include "sphere.h"
 #include "vec.h"
 #include "world.h"
@@ -153,8 +153,9 @@ TEST_CASE("World: There is no shadow when an object is behind the point") {
 
 TEST_CASE("World: When shadeHit is given an intersection in shadow") {
     const PointLight light{make_point(0, 0, -10), predefined_colours::white};
-    const std::shared_ptr<Shape> s1{std::make_shared<Sphere>()};
-    const std::shared_ptr<Shape> s2{std::make_shared<Sphere>(translation(0, 0, 10))};
+    std::shared_ptr<Shape> s1 = Sphere::createSphere();
+    std::shared_ptr<Shape> s2 = Sphere::createSphere();
+    s2->setTransformation(translation(0, 0, 10));
     const std::vector<std::shared_ptr<Shape>> shapes = {s1, s2};
     const World w{light, shapes};
     const Ray ray{make_point(0, 0, 5), predefined_tuples::z1};
@@ -179,12 +180,14 @@ TEST_CASE("World: Reflected colour for non-reflective material") {
 
 TEST_CASE("World: Reflected colour for reflective material") {
     auto w = World::getDefaultWorld();
-    std::shared_ptr<Shape> shape = std::make_shared<Plane>(translation(0, -1, 0));
-    shape->getMaterial().setReflectivity(0.5);
+    std::shared_ptr<Shape> plane = Plane::createPlane();
+    plane->setTransformation(translation(0, -1, 0));
+    plane->getMaterial().setReflectivity(0.5);
+
     const auto sqrt2    = sqrtd(2);
     const auto sqrt2by2 = sqrt2/2;
     const Ray ray{make_point(0, 0, -3), make_vector(0, -sqrt2by2, sqrt2by2)};
-    const Intersection x{sqrt2, shape};
+    const Intersection x{sqrt2, plane};
     const auto hit = Intersection::prepareHit(x, ray, {});
     const auto colour = w.reflectedColour(hit);
     REQUIRE(colour == make_colour(0.19032, 0.2379, 0.14274));
@@ -192,25 +195,29 @@ TEST_CASE("World: Reflected colour for reflective material") {
 
 TEST_CASE("World: shadeHit with reflective material") {
     auto w = World::getDefaultWorld();
-    std::shared_ptr<Shape> shape = std::make_shared<Plane>(translation(0, -1, 0));
-    shape->getMaterial().setReflectivity(0.5);
+    std::shared_ptr<Shape> plane = Plane::createPlane();
+    plane->setTransformation(translation(0, -1, 0));
+    plane->getMaterial().setReflectivity(0.5);
+
     const auto sqrt2    = sqrtd(2);
     const auto sqrt2by2 = sqrt2/2;
     const Ray ray{make_point(0, 0, -3), make_vector(0, -sqrt2by2, sqrt2by2)};
-    const Intersection x{sqrt2, shape};
+    const Intersection x{sqrt2, plane};
     const auto hit = Intersection::prepareHit(x, ray, {});
     const auto colour = w.shadeHit(hit);
     REQUIRE(colour == make_colour(0.87677, 0.92436, 0.82918));
 }
 
 TEST_CASE("World: colorAt with mutually reflective surfaces") {
-    std::shared_ptr<Shape> lower = std::make_shared<Plane>(translation(0, -1, 0));
-    lower->getMaterial().setReflectivity(1);
+    std::shared_ptr<Shape> lower_plane = Plane::createPlane();
+    lower_plane->setTransformation(translation(0, -1, 0));
+    lower_plane->getMaterial().setReflectivity(1);
 
-    std::shared_ptr<Shape> upper = std::make_shared<Plane>(translation(0, 1, 0));
-    upper->getMaterial().setReflectivity(1);
+    std::shared_ptr<Shape> upper_plane = Plane::createPlane();
+    upper_plane->setTransformation(translation(0, 1, 0));
+    upper_plane->getMaterial().setReflectivity(1);
 
-    const std::vector<std::shared_ptr<Shape>> shapes{lower, upper};
+    const std::vector<std::shared_ptr<Shape>> shapes{lower_plane, upper_plane};
     const World w{PointLight{predefined_tuples::zero_point, predefined_colours::white}, shapes};
     const Ray ray{predefined_tuples::zero_point, predefined_tuples::y1};
     REQUIRE_NOTHROW(w.colourAt(ray));
@@ -218,12 +225,14 @@ TEST_CASE("World: colorAt with mutually reflective surfaces") {
 
 TEST_CASE("World: Reflected colour at maximum recursive depth") {
     auto w = World::getDefaultWorld();
-    std::shared_ptr<Shape> shape = std::make_shared<Plane>(translation(0, -1, 0));
-    shape->getMaterial().setReflectivity(0.5);
+    std::shared_ptr<Shape> plane = Plane::createPlane();
+    plane->setTransformation(translation(0, -1, 0));
+    plane->getMaterial().setReflectivity(0.5);
+
     const auto sqrt2    = sqrtd(2);
     const auto sqrt2by2 = sqrt2/2;
     const Ray ray{make_point(0, 0, -3), make_vector(0, -sqrt2by2, sqrt2by2)};
-    const Intersection x{sqrt2, shape};
+    const Intersection x{sqrt2, plane};
     const auto hit = Intersection::prepareHit(x, ray, {});
     const auto colour = w.reflectedColour(hit, 0);
     REQUIRE(colour == predefined_colours::black);
@@ -299,13 +308,13 @@ TEST_CASE("World: Refracted colour with refracted ray") {
 TEST_CASE("World: shadeHit with transparent material") {
     auto w = World::getDefaultWorld();
 
-    std::shared_ptr<Shape> plane = std::make_shared<Plane>();
+    std::shared_ptr<Shape> plane = Plane::createPlane();
     plane->setTransformation(translation(0, -1, 0));
     plane->getMaterial().setTransparency(0.5);
     plane->getMaterial().setRefractiveIndex(1.5);
     w.getObjects().emplace_back(plane);
 
-    std::shared_ptr<Shape> ball = std::make_shared<Sphere>();
+    std::shared_ptr<Shape> ball = Sphere::createSphere();
     ball->setTransformation(translation(0, -3.5, -0.5));
     ball->getMaterial().setPattern(std::make_shared<SolidPattern>(predefined_colours::red));
     ball->getMaterial().setAmbient(0.5);
@@ -324,14 +333,14 @@ TEST_CASE("World: shadeHit with transparent material") {
 TEST_CASE("World: shadeHit with reflective, transparent material") {
     auto w = World::getDefaultWorld();
 
-    std::shared_ptr<Shape> plane = std::make_shared<Plane>();
+    std::shared_ptr<Shape> plane = Plane::createPlane();
     plane->setTransformation(translation(0, -1, 0));
     plane->getMaterial().setReflectivity(0.5);
     plane->getMaterial().setTransparency(0.5);
     plane->getMaterial().setRefractiveIndex(1.5);
     w.getObjects().emplace_back(plane);
 
-    std::shared_ptr<Shape> ball = std::make_shared<Sphere>();
+    std::shared_ptr<Shape> ball = Sphere::createSphere();
     ball->setTransformation(translation(0, -3.5, -0.5));
     ball->getMaterial().setPattern(std::make_shared<SolidPattern>(predefined_colours::red));
     ball->getMaterial().setAmbient(0.5);

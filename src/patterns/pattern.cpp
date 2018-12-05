@@ -41,7 +41,7 @@ namespace raytracer {
         return colourAt(pattern_point);
     }
 
-    bool Pattern::doCompare(const Pattern &other) const noexcept {
+    bool Pattern::doCompare(const Pattern&) const noexcept {
         return true;
     }
 }

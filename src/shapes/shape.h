@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <memory>
+#include <tuple>
 #include <vector>
 
 #include "affine_transform.h"
@@ -70,7 +72,7 @@ namespace raytracer::shapes {
         /**
          * Any additional implementation for equality comparison in subclasses, should be implemented here.
          */
-        virtual bool doCompare(const Shape &other) const noexcept {
+        virtual bool doCompare(const Shape&) const noexcept {
             return true;
         }
 

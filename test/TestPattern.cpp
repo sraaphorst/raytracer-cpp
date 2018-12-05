@@ -9,12 +9,12 @@
 #include <stdexcept>
 #include <vector>
 
-#include "checkerpattern.h"
-#include "gradientpattern.h"
-#include "pattern.h"
-#include "ringpattern.h"
+#include "patterns/checkerpattern.h"
+#include "patterns/gradientpattern.h"
+#include "patterns/pattern.h"
+#include "patterns/ringpattern.h"
 #include "shapes/sphere.h"
-#include "stripepattern.h"
+#include "patterns/stripepattern.h"
 #include "vec.h"
 #include "TestPattern.h"
 

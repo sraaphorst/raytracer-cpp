@@ -17,7 +17,7 @@
 using namespace raytracer::impl;
 
 namespace raytracer {
-    Camera::Camera(int hsize, int vsize, double fov, const Transformation &transformation) :
+    Camera::Camera(size_t hsize, size_t vsize, double fov, const Transformation &transformation) :
             hsize{hsize}, vsize{vsize}, fov{fov}, transformation{transformation} {
         const auto half_view = tanc(fov / 2);
         const auto aspect    = (double) hsize / vsize;

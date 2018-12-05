@@ -30,7 +30,7 @@ namespace raytracer::transformers {
         template<typename T, size_t N>
         constexpr T dot_product(const std::array<T,N> &a1, const std::array<T,N> &a2) {
             T t{};
-            for (int i=0; i < N; ++i)
+            for (size_t i=0; i < N; ++i)
                 t += a1[i] * a2[i];
             return t;
         }

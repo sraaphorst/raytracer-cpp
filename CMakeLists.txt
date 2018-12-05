@@ -5,8 +5,11 @@ cmake_minimum_required(VERSION 3.12)
 project(raytracer_top)
 
 set(CMAKE_CXX_STANDARD 17)
-
-SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-narrowing -std=c++17 -ftemplate-depth=10000 -fconstexpr-depth=2000")
+if (MSVC)
+    add_compile_options(/W4)
+else()
+    add_compile_options(-Wall -Wextra -Wpedantic -Wno-narrowing -ftemplate-depth=10000 -fconstexpr-depth=2000 -std=c++17 -O3)
+endif()
 
 find_package(OpenMP REQUIRED)
 if (OPENMP_FOUND)
@@ -18,6 +21,7 @@ endif()
 include_directories(
         "${PROJECT_SOURCE_DIR}/src"
         "${PROJECT_SOURCE_DIR}/src/impl"
+        "${PROJECT_SOURCE_DIR}/stc/patterns"
         "${PROJECT_SOURCE_DIR}/src/shapes"
 )
 

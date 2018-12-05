@@ -5,6 +5,7 @@
  */
 
 #include <memory>
+#include <tuple>
 #include <vector>
 
 #include "constmath.h"

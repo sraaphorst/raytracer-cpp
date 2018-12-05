@@ -15,22 +15,22 @@ add_library(raytracer SHARED
         canvas.cpp
         common.h
         constmath.h
-        checkerpattern.h
-        checkerpattern.cpp
-        gradientpattern.h
-        gradientpattern.cpp
+        patterns/checkerpattern.h
+        patterns/checkerpattern.cpp
+        patterns/gradientpattern.h
+        patterns/gradientpattern.cpp
         material.h
         material.cpp
         matrix.h
-        pattern.h
-        pattern.cpp
+        patterns/pattern.h
+        patterns/pattern.cpp
         pointlight.h
-        ringpattern.h
-        ringpattern.cpp
-        solidpattern.h
-        solidpattern.cpp
-        stripepattern.h
-        stripepattern.cpp
+        patterns/ringpattern.h
+        patterns/ringpattern.cpp
+        patterns/solidpattern.h
+        patterns/solidpattern.cpp
+        patterns/stripepattern.h
+        patterns/stripepattern.cpp
         transformers.h
         vec.h
         world.h

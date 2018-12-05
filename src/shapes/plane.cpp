@@ -5,6 +5,7 @@
  */
 
 #include <memory>
+#include <tuple>
 #include <vector>
 
 #include "intersection.h"
@@ -31,7 +32,7 @@ namespace raytracer::shapes {
         return {Intersection{t, shared_from_this()}};
     }
 
-    const Tuple Plane::localNormalAt(const Tuple &point) const noexcept {
+    const Tuple Plane::localNormalAt(const Tuple&) const noexcept {
         return predefined_tuples::y1;
     }
 }

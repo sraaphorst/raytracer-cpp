@@ -38,11 +38,11 @@ namespace raytracer {
             return pixels[idx];
         }
 
-        const size_t getWidth() const noexcept {
+        size_t getWidth() const noexcept {
             return width;
         }
 
-        const size_t getHeight() const noexcept {
+        size_t getHeight() const noexcept {
             return height;
         }
 

@@ -7,10 +7,10 @@
 #include <memory>
 
 #include "material.h"
-#include "pattern.h"
+#include "patterns/pattern.h"
 #include "pointlight.h"
 #include "shape.h"
-#include "solidpattern.h"
+#include "patterns/solidpattern.h"
 #include "vec.h"
 
 using namespace raytracer::shapes;

@@ -4,6 +4,8 @@
  * By Sebastian Raaphorst, 2018.
  */
 
+#include <memory>
+#include <tuple>
 #include <vector>
 
 #include "affine_transform.h"

@@ -48,11 +48,11 @@ namespace raytracer {
         return shapes;
     }
 
-    const bool World::contains(const std::shared_ptr<Shape> &sptr) const noexcept {
+    bool World::contains(const std::shared_ptr<Shape> &sptr) const noexcept {
         return contains(*sptr);
     }
 
-    const bool World::contains(const Shape &s) const noexcept {
+    bool World::contains(const Shape &s) const noexcept {
         for (const auto i: shapes)
             if (*i == s)
                 return true;
@@ -65,7 +65,7 @@ namespace raytracer {
 
         // Unless we have a lot of shapes here, this is unlikely to have a lot of benefit.
 #pragma omp parallel for shared(intersections, ray)
-        for (int i = 0; i < shapes.size(); ++i) {
+        for (size_t i = 0; i < shapes.size(); ++i) {
             const auto &s = shapes[i];
             const std::vector<Intersection> vi = s->intersect(ray);
 
