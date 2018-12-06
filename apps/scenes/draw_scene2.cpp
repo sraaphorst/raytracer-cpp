@@ -25,13 +25,14 @@ using namespace raytracer;
 using namespace raytracer::shapes;
 
 int main() {
-    Material wall_material{};
+    auto wall_material = std::make_shared<Material>();
     std::vector<Colour> wall_colours{predefined_colours::red, predefined_colours::white};
-    wall_material.setPattern(std::make_shared<StripePattern>(wall_colours));
-    wall_material.setSpecular(0);
+    wall_material->setPattern(std::make_shared<StripePattern>(wall_colours));
+    wall_material->setSpecular(0);
     
     std::vector<Colour> ball_colours{predefined_colours::white, predefined_colours::blue};
-    Material ball_material{std::make_shared<StripePattern>(ball_colours), Material::DEFAULT_AMBIENT, 0.7, 0.3, Material::DEFAULT_SHININESS};
+    const auto ball_material = std::make_shared<Material>(std::make_shared<StripePattern>(ball_colours),
+            Material::DEFAULT_AMBIENT, 0.7, 0.3, Material::DEFAULT_SHININESS);
 
     auto floor = Plane::createPlane();
     floor->setTransformation(scale(10, 0.01, 10));

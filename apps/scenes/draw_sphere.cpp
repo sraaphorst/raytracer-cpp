@@ -40,7 +40,7 @@ int main() {
 
     // Give the sphere a purple-ish colour.
     auto s = Sphere::createSphere();
-    Material m{std::make_shared<SolidPattern>(make_colour(1, 0.2, 1))};
+    const auto m = std::make_shared<Material>(std::make_shared<SolidPattern>(make_colour(1, 0.2, 1)));
     s->setMaterial(m);
     s->setTransformation(scale(0.5, 1, 1).andThen(rotation_z(M_PI_4)));
 
@@ -68,7 +68,7 @@ int main() {
                 const auto point = r.position(intersection.getT());
                 const auto normal = intersection.getObject()->normalAt(point);
                 const auto eye = -r.getDirection();
-                c[x][y] = intersection.getObject()->getMaterial().lighting(light, s, point, eye, normal, false);
+                c[x][y] = intersection.getObject()->getMaterial()->lighting(light, s, point, eye, normal, false);
             }
         }
     }

@@ -26,17 +26,15 @@ using namespace raytracer;
 using namespace raytracer::shapes;
 
 int main() {
-    Material wall_material{};
+    auto wall_material = std::make_shared<Material>();
     std::vector<Colour> wall_colours{predefined_colours::red, predefined_colours::white};
-    wall_material.setPattern(std::make_shared<StripePattern>(wall_colours));
-    wall_material.setSpecular(0);
+    wall_material->setPattern(std::make_shared<StripePattern>(wall_colours));
+    wall_material->setSpecular(0);
 
     std::vector<Colour> ball_colours{predefined_colours::white, predefined_colours::blue};
-    Material ball_material{std::make_shared<StripePattern>(ball_colours), Material::DEFAULT_AMBIENT, 0.7, 0.3, Material::DEFAULT_SHININESS};
-    //ball_material.setPattern(std::make_shared<StripePattern>(ball_colours));
-    //ball_material.setSpecular(0);
+    auto ball_material = std::make_shared<Material>(std::make_shared<StripePattern>(ball_colours),
+            Material::DEFAULT_AMBIENT, 0.7, 0.3, Material::DEFAULT_SHININESS);
 
-    //auto floor = std::make_shared<Sphere>(scale(10, 0.01, 10), wall_material);
     auto floor = Plane::createPlane();
     floor->setTransformation(scale(10, 0.01, 10));
     floor->setMaterial(wall_material);
@@ -55,8 +53,8 @@ int main() {
                                   * scale(10, 0.01, 10));
     right_wall->setMaterial(wall_material);
 
-    Material middle_ball_material{};
-    middle_ball_material.setReflectivity(1);
+    auto middle_ball_material = std::make_shared<Material>();
+    middle_ball_material->setReflectivity(1);
     auto middle_sphere = Sphere::createSphere();
     middle_sphere->setTransformation(translation(-0.5, 1, -0.5));
     middle_sphere->setMaterial(middle_ball_material);
