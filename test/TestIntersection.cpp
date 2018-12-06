@@ -124,15 +124,15 @@ TEST_CASE("Intersection: Precomputing the reflection vector") {
 TEST_CASE("Intersection: n1 and n2 at various intersections") {
     std::shared_ptr<Shape> sphere1 = Sphere::createGlassSphere();
     sphere1->setTransformation(scale(2, 2, 2));
-    sphere1->getMaterial().setRefractiveIndex(1.5);
+    sphere1->getMaterial()->setRefractiveIndex(1.5);
 
     std::shared_ptr<Shape> sphere2 = Sphere::createGlassSphere();
     sphere2->setTransformation(translation(0, 0, -0.25));
-    sphere2->getMaterial().setRefractiveIndex(2);
+    sphere2->getMaterial()->setRefractiveIndex(2);
 
     std::shared_ptr<Shape> sphere3 = Sphere::createGlassSphere();
     sphere3->setTransformation(translation(0, 0, 0.25));
-    sphere3->getMaterial().setRefractiveIndex(2.5);
+    sphere3->getMaterial()->setRefractiveIndex(2.5);
 
     const Ray ray{make_point(0, 0, -4), predefined_tuples::z1};
     std::vector<Intersection> xs{Intersection{2, sphere1},

@@ -233,13 +233,13 @@ TEST_CASE("Tuple: Tuple comparison equality should be able to tolerate slight of
 
 TEST_CASE("Tuple: Tuple should calculate the magnitude of a vector") {
     constexpr Tuple t = make_vector(1, 4, 8);
-    constexpr auto res = t.magnitude();
+    [[maybe_unused]] constexpr auto res = t.magnitude();
     REQUIRE(t.magnitude() == 9);
 }
 
 TEST_CASE("Tuple: Tuple normalization should produce a vector of magnitude 1") {
     constexpr Tuple t = make_vector(1, 4, 8);
-    constexpr auto res = t.normalize();
+    [[maybe_unused]] constexpr auto res = t.normalize();
     REQUIRE(t.normalize().magnitude() == 1);
 }
 

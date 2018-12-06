@@ -53,7 +53,7 @@ namespace raytracer {
     }
 
     bool World::contains(const Shape &s) const noexcept {
-        for (const auto i: shapes)
+        for (const auto &i: shapes)
             if (*i == s)
                 return true;
         return false;
@@ -87,12 +87,12 @@ namespace raytracer {
 
         const auto shadowed = isShadowed(hit->getPoint());
         const auto &material = hit->getObject()->getMaterial();
-        const auto surface = material.lighting(light.value(), hit->getObject(),
+        const auto surface = material->lighting(light.value(), hit->getObject(),
                 hit->getPoint(), hit->getEyeVector(), hit->getNormalVector(), shadowed);
         const auto reflected = reflectedColour(*hit, remaining);
         const auto refracted = refractedColour(*hit, remaining);
 
-        if (material.getReflectivity() > 0 && material.getTransparency() > 0) {
+        if (material->getReflectivity() > 0 && material->getTransparency() > 0) {
             const auto reflectance = hit->schlick();
             return surface + reflected * reflectance + refracted * (1 - reflectance);
         }
@@ -128,7 +128,7 @@ namespace raytracer {
         if (remaining < 1)
             return predefined_colours::black;
 
-        const auto reflectivity = hit.getObject()->getMaterial().getReflectivity();
+        const auto reflectivity = hit.getObject()->getMaterial()->getReflectivity();
         if (reflectivity == 0)
             return predefined_colours::black;
         const Ray reflect_ray{hit.getPoint(), hit.getReflectVector()};
@@ -140,7 +140,7 @@ namespace raytracer {
         if (remaining < 1)
             return predefined_colours::black;
 
-        const auto transparency = hit.getObject()->getMaterial().getTransparency();
+        const auto transparency = hit.getObject()->getMaterial()->getTransparency();
         if (transparency == 0)
             return predefined_colours::black;
 
@@ -165,7 +165,10 @@ namespace raytracer {
 
     World World::getDefaultWorld() noexcept {
         auto s1 = Sphere::createSphere();
-        s1->setMaterial(Material{make_colour(0.8, 1.0, 0.6), Material::DEFAULT_AMBIENT, 0.7, 0.2, Material::DEFAULT_SHININESS});
+        auto material = std::make_shared<Material>(make_colour(0.8, 1.0, 0.6));
+        material->setDiffuse(0.7);
+        material->setSpecular(0.2);
+        s1->setMaterial(material);
 
         auto s2 = Sphere::createSphere();
         s2->setTransformation(scale(0.5, 0.5, 0.5));

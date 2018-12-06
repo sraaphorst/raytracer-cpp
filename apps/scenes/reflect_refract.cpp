@@ -26,7 +26,7 @@ using namespace raytracer;
 using namespace raytracer::shapes;
 
 int main() {
-    Camera camera{800, 600, math_constants::pi_by_three<>,
+    Camera camera{400, 200, math_constants::pi_by_three<>,
                   view_transform(make_point(-2.6, 1.5, -3.9), make_point(-0.6, 1, -0.8), predefined_tuples::y1)};
     PointLight light{make_point(-4.9, 4.9, -1), predefined_colours::white};
 

@@ -19,12 +19,15 @@ using namespace raytracer;
 using namespace raytracer::impl;
 
 namespace raytracer::shapes {
-    Shape::Shape(dummy d) noexcept: InstanceManager{d}, transformation{predefined_matrices::I<double, 4>}, material{} {}
+    Shape::Shape(dummy d) noexcept:
+        InstanceManager{d},
+        transformation{predefined_matrices::I<double, 4>},
+        material{std::make_shared<Material>()} {}
 
     bool Shape::operator==(const Shape &other) const noexcept {
         return typeid(*this) == typeid(other)
                && transformation == other.transformation
-               && material == other.material
+               && *material == *other.material
                && doCompare(other);
     }
 
@@ -52,23 +55,23 @@ namespace raytracer::shapes {
         transformation = t;
     }
 
-    const Material &Shape::getMaterial() const {
+    const std::shared_ptr<Material> &Shape::getMaterial() const {
         return material;
     }
 
-    Material &Shape::getMaterial() {
+    std::shared_ptr<Material> &Shape::getMaterial() {
         return material;
     }
 
-    void Shape::setMaterial(Material &&m) {
+    void Shape::setMaterial(std::shared_ptr<Material> &&m) {
         material = std::move(m);
     }
 
-    void Shape::setMaterial(const Material &m) {
+    void Shape::setMaterial(const std::shared_ptr<Material> &m) {
         material = m;
     }
 
-    void Shape::setMaterial(Material &m) {
+    void Shape::setMaterial(std::shared_ptr<Material> &m) {
         material = m;
     }
 

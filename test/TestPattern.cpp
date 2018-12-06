@@ -55,9 +55,8 @@ TEST_CASE("Pattern: Pattern with an object transformation") {
     auto s = Sphere::createSphere();
     s->setTransformation(scale(2, 2, 2));
     
-    const std::shared_ptr<Pattern> pattern = std::make_shared<TestPattern>();
-    Material material;
-    material.setPattern(pattern);
+    const auto pattern = std::make_shared<TestPattern>();
+    auto material = std::make_shared<Material>(pattern);
     s->setMaterial(material);
     
     const auto c = pattern->colourAtObject(s, make_point(2, 3, 4));

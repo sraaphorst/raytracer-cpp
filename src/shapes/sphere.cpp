@@ -28,8 +28,8 @@ namespace raytracer::shapes {
 
     std::shared_ptr<Sphere> Sphere::createGlassSphere() noexcept {
         std::shared_ptr<Sphere> sphere = createSphere();
-        sphere->getMaterial().setTransparency(1);
-        sphere->getMaterial().setRefractiveIndex(1.5);
+        sphere->getMaterial()->setTransparency(1);
+        sphere->getMaterial()->setRefractiveIndex(1.5);
         return sphere;
     }
 
@@ -43,7 +43,7 @@ namespace raytracer::shapes {
 
         const auto discriminant = b * b - 4 * a * c;
         if (discriminant < 0)
-        return {};
+            return {};
 
         const auto t1 = (-b - sqrtd(discriminant)) / (2 * a);
         const auto t2 = (-b + sqrtd(discriminant)) / (2 * a);

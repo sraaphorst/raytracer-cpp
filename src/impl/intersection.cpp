@@ -81,7 +81,7 @@ namespace raytracer::impl {
         std::vector<std::shared_ptr<const Shape>> containers;
         for (const auto &x: xs) {
             if (x == hit)
-                n1 = containers.empty() ? 1 : containers.back().get()->getMaterial().getRefractiveIndex();
+                n1 = containers.empty() ? 1 : containers.back().get()->getMaterial()->getRefractiveIndex();
 
             auto iter = std::find_if(std::begin(containers), std::end(containers),
                     [&x](const auto &c) { return *c.get() == *x.getObject(); });
@@ -91,7 +91,7 @@ namespace raytracer::impl {
                 containers.emplace_back(x.getObject());
 
             if (x == hit) {
-                n2 = containers.empty() ? 1 : containers.back().get()->getMaterial().getRefractiveIndex();
+                n2 = containers.empty() ? 1 : containers.back().get()->getMaterial()->getRefractiveIndex();
                 break;
             }
         }

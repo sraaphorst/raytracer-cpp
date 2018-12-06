@@ -113,13 +113,13 @@ TEST_CASE("Sphere: The normal is a normalized vector") {
 TEST_CASE("Sphere: A helper for producing a sphere with a glossy material") {
     const auto s = Sphere::createGlassSphere();
     REQUIRE(s->getTransformation() == predefined_matrices::I<>);
-    REQUIRE(s->getMaterial().getTransparency() == 1);
-    REQUIRE(s->getMaterial().getRefractiveIndex() == 1.5);
+    REQUIRE(s->getMaterial()->getTransparency() == 1);
+    REQUIRE(s->getMaterial()->getRefractiveIndex() == 1.5);
 }
 
 TEST_CASE("Sphere: Transparency and Refractive Index for the default material") {
     const auto s = Sphere::createSphere();
     const Material m{};
-    REQUIRE(s->getMaterial().getTransparency() == 0);
-    REQUIRE(s->getMaterial().getRefractiveIndex() == 1.0);
+    REQUIRE(s->getMaterial()->getTransparency() == 0);
+    REQUIRE(s->getMaterial()->getRefractiveIndex() == 1.0);
 }

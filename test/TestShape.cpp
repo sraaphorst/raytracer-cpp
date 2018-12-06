@@ -31,20 +31,20 @@ TEST_CASE("Shape: Assigning a transformation") {
 
 TEST_CASE("Shape: The default material") {
     const auto s = TestShape::createTestShape();
-    REQUIRE(s->getMaterial() == Material{});
+    REQUIRE(*s->getMaterial() == Material{});
 }
 
 TEST_CASE("Shape: Assigning a material") {
     auto s = TestShape::createTestShape();
-    Material m;
-    m.setAmbient(1.0);
+    auto m = std::make_shared<Material>();
+    m->setAmbient(1.0);
     s->setMaterial(m);
 
     Material m2;
     m2.setAmbient(1.0);
 
-    REQUIRE(s->getMaterial() == m2);
-    REQUIRE_FALSE(s->getMaterial() == Material{});
+    REQUIRE(*s->getMaterial() == m2);
+    REQUIRE_FALSE(*s->getMaterial() == Material{});
 }
 
 TEST_CASE("Shape: Intersecting a scaled shape with a ray") {

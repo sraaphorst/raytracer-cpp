@@ -32,7 +32,7 @@ namespace raytracer::shapes {
     class Shape: public impl::InstanceManager, public std::enable_shared_from_this<Shape> {
     protected:
         Transformation transformation;
-        Material material;
+        std::shared_ptr<Material> material;
 
     public:
         explicit Shape(dummy d) noexcept;
@@ -50,11 +50,11 @@ namespace raytracer::shapes {
         void setTransformation(const Transformation&);
         void setTransformation(Transformation&);
 
-        const Material &getMaterial() const;
-        Material &getMaterial();
-        void setMaterial(Material&&);
-        void setMaterial(const Material&);
-        void setMaterial(Material&);
+        const std::shared_ptr<Material> &getMaterial() const;
+        std::shared_ptr<Material> &getMaterial();
+        void setMaterial(std::shared_ptr<Material>&&);
+        void setMaterial(const std::shared_ptr<Material>&);
+        void setMaterial(std::shared_ptr<Material>&);
 
         /**
          * Convert the ray to object space and then pass it to the concrete implementation of local_intersect,
