@@ -27,3 +27,6 @@ target_link_libraries(shadow_puppets PRIVATE raytracer OpenMP::OpenMP_CXX)
 
 add_executable(reflect_refract scenes/reflect_refract.cpp)
 target_link_libraries(reflect_refract PRIVATE raytracer OpenMP::OpenMP_CXX)
+
+add_executable(uv_mapping scenes/uv_mapping.cpp)
+target_link_libraries(uv_mapping PRIVATE raytracer OpenMP::OpenMP_CXX)
