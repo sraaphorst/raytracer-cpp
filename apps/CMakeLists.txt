@@ -30,3 +30,6 @@ target_link_libraries(reflect_refract PRIVATE raytracer OpenMP::OpenMP_CXX)
 
 add_executable(uv_mapping scenes/uv_mapping.cpp)
 target_link_libraries(uv_mapping PRIVATE raytracer OpenMP::OpenMP_CXX)
+
+add_executable(table scenes/table.cpp)
+target_link_libraries(table PRIVATE raytracer OpenMP::OpenMP_CXX)
