@@ -22,6 +22,8 @@ namespace raytracer::shapes {
     Shape::Shape(dummy d) noexcept:
         InstanceManager{d},
         transformation{predefined_matrices::I<double, 4>},
+        transformationInverse{predefined_matrices::I<double, 4>},
+        transformationInverseTranspose{predefined_matrices::I<double, 4>},
         material{std::make_shared<Material>()} {}
 
     bool Shape::operator==(const Shape &other) const noexcept {
@@ -44,15 +46,21 @@ namespace raytracer::shapes {
     }
 
     void Shape::setTransformation(Transformation&& t) {
-        transformation = std::move(t);
+        transformation = t;
+        transformationInverse = transformation.invert();
+        transformationInverseTranspose = transformationInverse.transpose();
     }
 
     void Shape::setTransformation(const Transformation &t) {
         transformation = t;
+        transformationInverse = transformation.invert();
+        transformationInverseTranspose = transformationInverse.transpose();
     }
 
     void Shape::setTransformation(Transformation &t) {
         transformation = t;
+        transformationInverse = transformation.invert();
+        transformationInverseTranspose = transformationInverse.transpose();
     }
 
     const std::shared_ptr<Material> &Shape::getMaterial() const {
@@ -77,7 +85,7 @@ namespace raytracer::shapes {
 
     const std::vector<Intersection> Shape::intersect(const Ray &r0) const noexcept {
         // Transform the ray to object space.
-        const Ray r = r0.transform(getTransformation().invert());
+        const Ray r = r0.transform(transformationInverse);
 
         // Return the shape-dependent implementation results.
         return localIntersection(r);
@@ -85,9 +93,9 @@ namespace raytracer::shapes {
 
     const Tuple Shape::normalAt(const Tuple &point) const noexcept {
         // Transform the point to object space.
-        const auto local_point = transformation.invert() * point;
+        const auto local_point = transformationInverse * point;
         const auto local_normal = localNormalAt(local_point);
-        const auto world_normal = transformation.invert().transpose() * local_normal;
+        const auto world_normal = transformationInverseTranspose * local_normal;
 
         // w could have a value after this, so get rid of it.
         return make_vector(world_normal[tuple_constants::x],

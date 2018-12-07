@@ -11,8 +11,8 @@
 #include <constmath.h>
 #include <material.h>
 #include <pointlight.h>
-#include <patterns/solidpattern.h>
-#include <shapes/sphere.h>
+#include <solidpattern.h>
+#include <sphere.h>
 #include <vec.h>
 #include <world.h>
 

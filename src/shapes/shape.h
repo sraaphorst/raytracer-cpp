@@ -32,6 +32,8 @@ namespace raytracer::shapes {
     class Shape: public impl::InstanceManager, public std::enable_shared_from_this<Shape> {
     protected:
         Transformation transformation;
+        Transformation transformationInverse;
+        Transformation transformationInverseTranspose;
         std::shared_ptr<Material> material;
 
     public:

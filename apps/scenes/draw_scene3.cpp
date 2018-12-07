@@ -11,12 +11,11 @@
 #include <canvas.h>
 #include <constmath.h>
 #include <material.h>
-#include <patterns/pattern.h>
 #include <plane.h>
 #include <pointlight.h>
 #include <ray.h>
 #include <sphere.h>
-#include <patterns/stripepattern.h>
+#include <stripepattern.h>
 #include <vec.h>
 #include <world.h>
 

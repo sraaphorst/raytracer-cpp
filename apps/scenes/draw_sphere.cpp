@@ -7,12 +7,12 @@
 #include <fstream>
 
 #include <canvas.h>
-#include <impl/intersection.h>
+#include <intersection.h>
 #include <material.h>
-#include <patterns/pattern.h>
+#include <pattern.h>
 #include <pointlight.h>
-#include <impl/ray.h>
-#include <patterns/solidpattern.h>
+#include <ray.h>
+#include <solidpattern.h>
 #include <shapes/sphere.h>
 #include <vec.h>
 

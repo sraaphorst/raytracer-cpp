@@ -17,8 +17,8 @@
 
 namespace raytracer {
     class Canvas final {
-        const int width;
-        const int height;
+        const size_t width;
+        const size_t height;
 
         using col  = std::vector<Colour>;
         using grid = std::vector<col>;
@@ -27,7 +27,7 @@ namespace raytracer {
         grid pixels;
 
     public:
-        Canvas(int width, int height);
+        Canvas(size_t width, size_t height);
 
         /// This is mutable, so allow access to contents through indexing.
         col& operator[](const int idx) {
@@ -51,13 +51,13 @@ namespace raytracer {
             ostr << "P3\n" << c.width << ' ' << c.height << '\n' << colour_constants::maxvalue << '\n';
 
             int linewidth = 0;
-            for (auto j=0; j < c.height; ++j) {
+            for (size_t j=0; j < c.height; ++j) {
                 bool first = true;
 
-                for (auto i=0; i < c.width; ++i) {
+                for (size_t i=0; i < c.width; ++i) {
                     for (auto rgb = 0; rgb < 3; ++rgb) {
-                        auto cval = (int) (c[i][j][rgb] * colour_constants::maxvalue + 0.5);
-                        auto val = std::max(0, std::min(cval, colour_constants::maxvalue));
+                        auto cval = lround(c[i][j][rgb] * colour_constants::maxvalue);
+                        auto val = std::max<long>(0, std::min<long>(cval, colour_constants::maxvalue));
 
                         // Constrain lines to 70 characters as per PPM specifications.
                         auto valwidth = numDigits(val);

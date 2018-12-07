@@ -15,7 +15,7 @@
 #include <material.h>
 #include <pointlight.h>
 #include <sphere.h>
-#include <patterns/solidpattern.h>
+#include <solidpattern.h>
 #include <vec.h>
 #include <world.h>
 

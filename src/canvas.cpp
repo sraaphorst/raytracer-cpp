@@ -7,6 +7,6 @@
 #include "canvas.h"
 
 namespace raytracer {
-    Canvas::Canvas(int width, int height): width{width}, height{height},
+    Canvas::Canvas(size_t width, size_t height): width{width}, height{height},
         pixels{width, std::vector<Colour>{height, predefined_colours::black}} {}
 }

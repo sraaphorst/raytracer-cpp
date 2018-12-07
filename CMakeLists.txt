@@ -21,7 +21,7 @@ endif()
 include_directories(
         "${PROJECT_SOURCE_DIR}/src"
         "${PROJECT_SOURCE_DIR}/src/impl"
-        "${PROJECT_SOURCE_DIR}/stc/patterns"
+        "${PROJECT_SOURCE_DIR}/src/patterns"
         "${PROJECT_SOURCE_DIR}/src/shapes"
 )
 

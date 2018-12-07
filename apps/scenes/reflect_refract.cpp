@@ -14,9 +14,9 @@
 #include <plane.h>
 #include <pointlight.h>
 #include <sphere.h>
-#include <patterns/checkerpattern.h>
-#include <patterns/solidpattern.h>
-#include <patterns/stripepattern.h>
+#include <checkerpattern.h>
+#include <solidpattern.h>
+#include <stripepattern.h>
 #include <vec.h>
 #include <world.h>
 

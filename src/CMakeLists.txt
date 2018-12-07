@@ -6,6 +6,7 @@ project(raytracer VERSION 0.1.0 LANGUAGES CXX)
 include_directories(
         impl
         shapes
+        patterns
 )
 
 add_library(raytracer SHARED
@@ -15,22 +16,10 @@ add_library(raytracer SHARED
         canvas.cpp
         common.h
         constmath.h
-        patterns/checkerpattern.h
-        patterns/checkerpattern.cpp
-        patterns/gradientpattern.h
-        patterns/gradientpattern.cpp
         material.h
         material.cpp
         matrix.h
-        patterns/pattern.h
-        patterns/pattern.cpp
         pointlight.h
-        patterns/ringpattern.h
-        patterns/ringpattern.cpp
-        patterns/solidpattern.h
-        patterns/solidpattern.cpp
-        patterns/stripepattern.h
-        patterns/stripepattern.cpp
         transformers.h
         vec.h
         world.h
@@ -45,4 +34,17 @@ add_library(raytracer SHARED
         shapes/plane.cpp
         shapes/shape.cpp
         shapes/sphere.cpp
+
+        patterns/checkerpattern.h
+        patterns/checkerpattern.cpp
+        patterns/gradientpattern.h
+        patterns/gradientpattern.cpp
+        patterns/pattern.h
+        patterns/pattern.cpp
+        patterns/ringpattern.h
+        patterns/ringpattern.cpp
+        patterns/solidpattern.h
+        patterns/solidpattern.cpp
+        patterns/stripepattern.h
+        patterns/stripepattern.cpp
         )
