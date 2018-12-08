@@ -37,12 +37,16 @@ namespace raytracer::shapes {
         return !(*this == other);
     }
 
-    const Transformation &Shape::getTransformation() const {
+    const Transformation &Shape::getTransformation() const noexcept {
         return transformation;
     }
 
-    Transformation &Shape::getTransformation() {
+    Transformation &Shape::getTransformation() noexcept {
         return transformation;
+    }
+
+    const Transformation &Shape::getTransformationInverse() const noexcept {
+        return transformationInverse;
     }
 
     void Shape::setTransformation(Transformation&& t) {

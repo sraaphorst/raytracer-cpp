@@ -18,6 +18,7 @@ namespace raytracer {
 
     class Pattern {
         Transformation transformation;
+        Transformation transformationInverse;
     public:
         Pattern();
         Pattern(const Transformation&);

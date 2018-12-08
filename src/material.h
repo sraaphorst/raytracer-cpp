@@ -102,8 +102,8 @@ namespace raytracer {
         constexpr static double DEFAULT_REFRACTIVE_INDEX =   1;
 
         // Calculate the lighting of this material.
-        Colour lighting(const PointLight &light,
-                        const std::shared_ptr<const shapes::Shape> &shape,
+        Colour lighting(const std::shared_ptr<const shapes::Shape> &shape,
+                        const PointLight &light,
                         const Tuple &point,
                         const Tuple &eyev,
                         const Tuple &normalv,

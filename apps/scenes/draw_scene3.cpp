@@ -14,6 +14,7 @@
 #include <plane.h>
 #include <pointlight.h>
 #include <ray.h>
+#include <ringpattern.h>
 #include <sphere.h>
 #include <stripepattern.h>
 #include <vec.h>
@@ -27,16 +28,27 @@ using namespace raytracer::shapes;
 int main() {
     auto wall_material = std::make_shared<Material>();
     std::vector<Colour> wall_colours{predefined_colours::red, predefined_colours::white};
-    wall_material->setPattern(std::make_shared<StripePattern>(wall_colours));
+    auto wall_pattern = std::make_shared<StripePattern>(wall_colours);
+    wall_pattern->setTransformation(scale(0.01, 0.01, 0.01) * rotation_y(math_constants::pi_by_three<>));
+    wall_material->setPattern(wall_pattern);
     wall_material->setSpecular(0);
 
     std::vector<Colour> ball_colours{predefined_colours::white, predefined_colours::blue};
-    auto ball_material = std::make_shared<Material>(std::make_shared<StripePattern>(ball_colours),
+    auto ball_pattern = std::make_shared<StripePattern>(ball_colours);
+    ball_pattern->setTransformation(scale(0.1, 0.2, 0.3));
+    auto ball_material = std::make_shared<Material>(ball_pattern,
             Material::DEFAULT_AMBIENT, 0.7, 0.3, Material::DEFAULT_SHININESS);
+
+    auto floor_material = std::make_shared<Material>();
+    std::vector<Colour> floor_colours{make_colour(0.5, 1, 1), make_colour(1, 0.5, 1), make_colour(1, 1, 0)};
+    auto floor_pattern = std::make_shared<RingPattern>(floor_colours);
+    floor_pattern->setTransformation(scale(0.02, 0.03, 0.03));
+    floor_material->setPattern(floor_pattern);
+    floor_material->setSpecular(0);
 
     auto floor = Plane::createPlane();
     floor->setTransformation(scale(10, 0.01, 10));
-    floor->setMaterial(wall_material);
+    floor->setMaterial(floor_material);
 
     auto left_wall = Sphere::createSphere();
     left_wall->setTransformation(translation(0, 0, 5)

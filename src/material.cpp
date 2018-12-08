@@ -125,10 +125,12 @@ namespace raytracer {
         refractive_index = r;
     }
 
-    Colour Material::lighting(const PointLight &light,
-                              const std::shared_ptr<const Shape> &shape,
+    Colour Material::lighting(const std::shared_ptr<const Shape> &shape,
+                              const PointLight &light,
                               const Tuple &point,
-                    const Tuple &eyev, const Tuple &normalv, bool in_shadow) const noexcept {
+                              const Tuple &eyev,
+                              const Tuple &normalv,
+                              bool in_shadow) const noexcept {
         const auto colour = pattern->colourAtObject(shape, point);
         const auto effective_colour = colour * light.getIntensity();
         const auto lightv = (light.getPosition() - point).normalize();

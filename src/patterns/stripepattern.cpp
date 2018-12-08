@@ -26,6 +26,7 @@ namespace raytracer {
 
     const Colour StripePattern::colourAt(const Tuple &point) const noexcept {
         const auto idx = static_cast<size_t>(std::floor(point[tuple_constants::x]));
+        // Done to prevent negative modulus results.
         return colours[((idx % colours.size()) + colours.size()) % colours.size()];
     }
 

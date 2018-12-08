@@ -21,9 +21,11 @@ namespace raytracer {
     }
     void Pattern::setTransformation(const Transformation &t) noexcept {
         transformation = t;
+        transformationInverse = transformation.invert();
     }
     void Pattern::setTransformation(Transformation &&t) noexcept {
-        transformation = std::move(t);
+        transformation = t;
+        transformationInverse = transformation.invert();
     }
 
     bool Pattern::operator==(const Pattern &other) const noexcept {
@@ -35,9 +37,9 @@ namespace raytracer {
     }
 
     const Colour Pattern::colourAtObject(const std::shared_ptr<const Shape> &shape,
-            const Tuple &world_point) const noexcept {
-        const auto object_point = shape->getTransformation().invert() * world_point;
-        const auto pattern_point = transformation.invert() * object_point;
+                                         const Tuple &world_point) const noexcept {
+        const auto object_point = shape->getTransformationInverse() * world_point;
+        const auto pattern_point = transformationInverse * object_point;
         return colourAt(pattern_point);
     }
 

@@ -68,7 +68,7 @@ int main() {
                 const auto point = r.position(intersection.getT());
                 const auto normal = intersection.getObject()->normalAt(point);
                 const auto eye = -r.getDirection();
-                c[x][y] = intersection.getObject()->getMaterial()->lighting(light, s, point, eye, normal, false);
+                c[x][y] = intersection.getObject()->getMaterial()->lighting(s, light, point, eye, normal, false);
             }
         }
     }

@@ -46,8 +46,10 @@ namespace raytracer::shapes {
         bool operator==(const Shape&) const noexcept;
         bool operator!=(const Shape&) const noexcept;
 
-        const Transformation &getTransformation() const;
-        Transformation &getTransformation();
+        const Transformation &getTransformation() const noexcept;
+        Transformation &getTransformation() noexcept;
+        const Transformation &getTransformationInverse() const noexcept;
+
         void setTransformation(Transformation&&);
         void setTransformation(const Transformation&);
         void setTransformation(Transformation&);
