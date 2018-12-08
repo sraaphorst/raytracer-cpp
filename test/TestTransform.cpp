@@ -181,8 +181,8 @@ TEST_CASE("Transform: andThen should be the same as multiplying the transformati
     constexpr auto B = skew(1, 1.5, -2, -3, 1, -1);
     constexpr auto C = rotation_x(math_constants::pi_by_four<>);
     constexpr auto D = scale(0.1, -1.0, 2);
-    constexpr auto res1 = D * C * B * A;
-    constexpr auto res2 = D * C * B * A == A.andThen(B).andThen(C).andThen(D);
+    [[maybe_unused]] constexpr auto res1 = D * C * B * A;
+    [[maybe_unused]] constexpr auto res2 = D * C * B * A == A.andThen(B).andThen(C).andThen(D);
     REQUIRE(D * C * B * A == A.andThen(B).andThen(C).andThen(D));
 }
 

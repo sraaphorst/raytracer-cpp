@@ -110,6 +110,20 @@ TEST_CASE("Sphere: The normal is a normalized vector") {
     REQUIRE(n == n.normalize());
 }
 
+TEST_CASE("Computing the normal on a translated sphere") {
+    auto s = Sphere::createSphere();
+    s->setTransformation(translation(0, 1, 0));
+    auto n = s->normalAt(make_point(0, 1.70711, -0.70711));
+    REQUIRE(n == make_vector(0, 0.70711, -0.70711));
+}
+
+TEST_CASE("Computing the normal on a transformed sphere") {
+    auto s = Sphere::createSphere();
+    s->setTransformation(scale(1, 0.5, 1) * rotation_z(math_constants::pi<> / 5));
+    auto n = s->normalAt(make_point(0, math_constants::sqrt2_by_2, -math_constants::sqrt2_by_2));
+    REQUIRE(n == make_vector(0, 0.97014, -0.24254));
+}
+
 TEST_CASE("Sphere: A helper for producing a sphere with a glossy material") {
     const auto s = Sphere::createGlassSphere();
     REQUIRE(s->getTransformation() == predefined_matrices::I<>);
