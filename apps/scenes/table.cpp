@@ -27,7 +27,7 @@ using namespace raytracer;
 using namespace raytracer::shapes;
 
 int main() {
-    Camera camera{1600, 800, math_constants::pi_by_four<>,
+    Camera camera{800, 400, math_constants::pi_by_four<>,
                   view_transform(make_point(8, 6, -8), make_point(0, 3, 0), predefined_tuples::y1)};
     PointLight light{make_point(0, 6.9, -5), make_colour(1, 1, 0.9)};
 
@@ -64,7 +64,8 @@ int main() {
     tabletop->setTransformation(translation(0, 3.1, 0) * scale(3, 0.1, 2));
     std::vector<Colour> tabletop_stripes{make_colour(0.5529, 0.4235, 0.3255), make_colour(0.6588, 0.5098, 0.4000)};
     auto tabletop_pattern = std::make_shared<StripePattern>(tabletop_stripes);
-    tabletop_pattern->setTransformation(scale(0.05, 0.05, 0.05) * rotation_y(0.1));
+    //tabletop_pattern->setTransformation(scale(0.05, 0.05, 0.05) * rotation_y(0.1));
+    tabletop_pattern->setTransformation(scale(0.05, 0.05, 0.05) * rotation_y(0.0));
     auto tabletop_material = std::make_shared<Material>(tabletop_pattern);
     tabletop_material->setAmbient(0.1);
     tabletop_material->setDiffuse(0.7);
