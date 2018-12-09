@@ -22,7 +22,7 @@ namespace raytracer::shapes {
     Cube::Cube(dummy d) noexcept: Shape{d} {}
 
     std::shared_ptr<Cube> Cube::createCube() noexcept {
-        std::shared_ptr<Cube> cube = std::make_shared<Cube>(dummy{});
+        auto cube = std::make_shared<Cube>(dummy{});
         registerInstance(cube);
         return cube;
     }

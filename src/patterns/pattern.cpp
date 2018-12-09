@@ -12,18 +12,26 @@
 using namespace raytracer::shapes;
 
 namespace raytracer {
-    Pattern::Pattern(): transformation{predefined_matrices::I<>} {}
-    Pattern::Pattern(const Transformation &t): transformation{t} {}
-    Pattern::Pattern(Transformation &&t): transformation{std::move(t)} {}
+    Pattern::Pattern():
+        transformation{predefined_matrices::I<>},
+        transformationInverse{predefined_matrices::I<>} {}
+    Pattern::Pattern(const Transformation &t):
+        transformation{t},
+        transformationInverse{predefined_matrices::I<>} {}
+    Pattern::Pattern(Transformation &&t):
+        transformation{t},
+        transformationInverse{predefined_matrices::I<>} {}
 
     const Transformation &Pattern::getTransformation() const noexcept {
         return transformation;
     }
     void Pattern::setTransformation(const Transformation &t) noexcept {
         transformation = t;
+        transformationInverse = transformation.invert();
     }
     void Pattern::setTransformation(Transformation &&t) noexcept {
         transformation = std::move(t);
+        transformationInverse = transformation.invert();
     }
 
     bool Pattern::operator==(const Pattern &other) const noexcept {
@@ -36,8 +44,8 @@ namespace raytracer {
 
     const Colour Pattern::colourAtObject(const std::shared_ptr<const Shape> &shape,
             const Tuple &world_point) const noexcept {
-        const auto object_point = shape->getTransformation().invert() * world_point;
-        const auto pattern_point = transformation.invert() * object_point;
+        const auto object_point = shape->getTransformationInverse() * world_point;
+        const auto pattern_point = transformationInverse * object_point;
         return colourAt(pattern_point);
     }
 

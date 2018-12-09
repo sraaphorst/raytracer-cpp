@@ -45,8 +45,9 @@ namespace raytracer::shapes {
         if (discriminant < 0)
             return {};
 
-        const auto t1 = (-b - const_sqrtd(discriminant)) / (2 * a);
-        const auto t2 = (-b + const_sqrtd(discriminant)) / (2 * a);
+        const auto sqrt_discriminant = const_sqrtd(discriminant);
+        const auto t1 = (-b - sqrt_discriminant) / (2 * a);
+        const auto t2 = (-b + sqrt_discriminant) / (2 * a);
         if (t1 < t2) return {Intersection{t1, shared_from_this()}, Intersection{t2, shared_from_this()}};
         else return {Intersection{t2, shared_from_this()}, Intersection{t1, shared_from_this()}};
     }

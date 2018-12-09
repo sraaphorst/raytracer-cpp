@@ -31,6 +31,7 @@ add_library(raytracer SHARED
         impl/ray.cpp
 
         shapes/cube.cpp
+        shapes/cylinder.cpp
         shapes/plane.cpp
         shapes/shape.cpp
         shapes/sphere.cpp

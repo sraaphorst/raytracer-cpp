@@ -9,8 +9,8 @@
 #include <array>
 #include <vector>
 
-#include "impl/intersection.h"
-#include "impl/ray.h"
+#include "intersection.h"
+#include "ray.h"
 #include "vec.h"
 
 // A necessary evil to test the private members.
@@ -61,8 +61,8 @@ TEST_CASE("Cube: A ray intersecting a cube") {
         const Ray ray{origin, direction};
         const auto xs = c->localIntersection(ray);
         REQUIRE(xs.size() == 2);
-        REQUIRE(xs[0].getT() == t0);
-        REQUIRE(xs[1].getT() == t1);
+        REQUIRE(ALMOST_EQUALS(xs[0].getT(), t0));
+        REQUIRE(ALMOST_EQUALS(xs[1].getT(), t1));
     }
 }
 

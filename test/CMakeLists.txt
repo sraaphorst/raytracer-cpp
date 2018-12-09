@@ -22,6 +22,7 @@ set(TEST_LIST
         TestCanvas
         TestColour
         TestCube
+        TestCylinder
         TestIntersection
         TestLights
         TestMaterial
