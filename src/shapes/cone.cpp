@@ -1,5 +1,5 @@
 /**
- * cylinder.cpp
+ * cone.cpp
  *
  * By Sebastian Raaphorst, 2018.
  */
@@ -9,8 +9,8 @@
 #include <numeric>
 #include <vector>
 
+#include "cone.h"
 #include "constmath.h"
-#include "cylinder.h"
 #include "intersection.h"
 #include "ray.h"
 #include "shape.h"
@@ -19,63 +19,69 @@
 using namespace raytracer::impl;
 
 namespace raytracer::shapes {
-    Cylinder::Cylinder(dummy d) noexcept:
-        Shape{d},
-        minY{-std::numeric_limits<double>::infinity()},
-        maxY{ std::numeric_limits<double>::infinity()},
-        capped{false} {}
+    Cone::Cone(dummy d) noexcept:
+            Shape{d},
+            minY{-std::numeric_limits<double>::infinity()},
+            maxY{ std::numeric_limits<double>::infinity()},
+            capped{false} {}
 
-    std::shared_ptr<Cylinder> Cylinder::createCylinder() noexcept {
-        auto cylinder = std::make_shared<Cylinder>(dummy{});
-        registerInstance(cylinder);
-        return cylinder;
+    std::shared_ptr<Cone> Cone::createCone() noexcept {
+        auto cone = std::make_shared<Cone>(dummy{});
+        registerInstance(cone);
+        return cone;
     }
 
-    double Cylinder::getMinimumY() const noexcept {
+    double Cone::getMinimumY() const noexcept {
         return minY;
     }
 
-    void Cylinder::setMinimumY(double y) noexcept {
+    void Cone::setMinimumY(double y) noexcept {
         minY = y;
     }
 
-    double Cylinder::getMaximumY() const noexcept {
+    double Cone::getMaximumY() const noexcept {
         return maxY;
     }
 
-    void Cylinder::setMaximumY(double y) noexcept {
+    void Cone::setMaximumY(double y) noexcept {
         maxY = y;
     }
 
-    bool Cylinder::isCapped() const noexcept {
+    bool Cone::isCapped() const noexcept {
         return capped;
     }
 
-    void Cylinder::setCapped(bool c) noexcept {
+    void Cone::setCapped(bool c) noexcept {
         capped = c;
     }
 
-    bool Cylinder::checkCap(const impl::Ray &ray, double t) const noexcept {
+    bool Cone::checkCap(const impl::Ray &ray, double t, double y) const noexcept {
         const auto x = ray.getOrigin()[tuple_constants::x] + t * ray.getDirection()[tuple_constants::x];
         const auto z = ray.getOrigin()[tuple_constants::z] + t * ray.getDirection()[tuple_constants::z];
-        return x * x + z * z <= 1;
+        return x * x + z * z <= y * y;
     }
 
-    const std::vector<Intersection> Cylinder::localIntersection(const Ray &ray) const noexcept {
+    const std::vector<Intersection> Cone::localIntersection(const Ray &ray) const noexcept {
         const auto rdx = ray.getDirection()[tuple_constants::x];
+        const auto rdy = ray.getDirection()[tuple_constants::y];
         const auto rdz = ray.getDirection()[tuple_constants::z];
-        const auto a = rdx * rdx + rdz * rdz;
+        const auto rox = ray.getOrigin()[tuple_constants::x];
+        const auto roy = ray.getOrigin()[tuple_constants::y];
+        const auto roz = ray.getOrigin()[tuple_constants::z];
+
+        const auto a = rdx * rdx - rdy * rdy + rdz * rdz;
+        const auto b = 2 * rox * rdx - 2 * roy * rdy + 2 * roz * rdz;
+        const auto c = rox * rox + - roy * roy + roz * roz;
 
         std::vector<Intersection> xs;
 
+        if (ALMOST_EQUALS(a, 0) && !ALMOST_EQUALS(b, 0)) {
+            const auto t = -c / 2 * b;
+            xs.emplace_back(Intersection{t, shared_from_this()});
+        }
+
         // Possible intersection with walls if a is nearly zero.
         if (!ALMOST_EQUALS(a, 0)) {
-            const auto rox = ray.getOrigin()[tuple_constants::x];
-            const auto roz = ray.getOrigin()[tuple_constants::z];
-
-            const auto b = 2 * rox * rdx + 2 * roz * rdz;
-            const auto c = rox * rox + roz * roz - 1;
-
             const auto discriminant = b * b - 4 * a * c;
             if (discriminant >= 0) {
                 const auto sqrt_discriminant = const_sqrtd(discriminant);
@@ -97,10 +103,10 @@ namespace raytracer::shapes {
         // Check for intersection with caps.
         if (capped && !ALMOST_EQUALS(ray.getDirection()[tuple_constants::y], 0)) {
             const auto t0 = (minY - ray.getOrigin()[tuple_constants::y]) / ray.getDirection()[tuple_constants::y];
-            if (checkCap(ray, t0))
+            if (checkCap(ray, t0, minY))
                 xs.emplace_back(Intersection{t0, shared_from_this()});
             const auto t1 = (maxY - ray.getOrigin()[tuple_constants::y]) / ray.getDirection()[tuple_constants::y];
-            if (checkCap(ray, t1))
+            if (checkCap(ray, t1, maxY))
                 xs.emplace_back(t1, shared_from_this());
         }
 
@@ -108,7 +114,7 @@ namespace raytracer::shapes {
     }
 
 
-    const Tuple Cylinder::localNormalAt(const Tuple &point) const noexcept {
+    const Tuple Cone::localNormalAt(const Tuple &point) const noexcept {
         const auto x = point[tuple_constants::x];
         const auto z = point[tuple_constants::z];
 
@@ -117,7 +123,10 @@ namespace raytracer::shapes {
             return predefined_tuples::y1;
         else if (dist < 1 && LESS_THAN(point[tuple_constants::y], minY))
             return -predefined_tuples::y1;
-        else
-            return make_vector(point[tuple_constants::x], 0, point[tuple_constants::z]);
+
+        auto y = const_sqrtd(x * x + z * z);
+        if (point[tuple_constants::y] > 0)
+            y = - y;
+        return make_vector(x, y, z);
     }
 }

@@ -21,6 +21,7 @@ set(TEST_LIST
         TestCamera
         TestCanvas
         TestColour
+        TestCone
         TestCube
         TestCylinder
         TestIntersection
