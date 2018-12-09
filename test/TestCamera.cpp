@@ -54,7 +54,7 @@ TEST_CASE("Camera: Construct a ray when the camera is transformed") {
     const Camera c{201, 101, math_constants::pi_by_two<>,
             rotation_y(math_constants::pi_by_four<>) * translation(0, -2, 5)};
     const auto r = c.ray_for_pixel(100, 50);
-    const auto sqrt2_by_2 = sqrtd(2) / 2;
+    const auto sqrt2_by_2 = const_sqrtd(2) / 2;
     REQUIRE(r.getOrigin() == make_point(0, 2, -5));
     REQUIRE(r.getDirection() == make_vector(sqrt2_by_2, 0, -sqrt2_by_2));
 }

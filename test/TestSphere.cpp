@@ -98,14 +98,14 @@ TEST_CASE("Sphere: The normal on a sphere at a point on the z-axis") {
 
 TEST_CASE("Sphere: The normal on a sphere at a non-axial point") {
     const auto s = Sphere::createSphere();
-    const auto i = sqrtd(3) / 3;
+    const auto i = const_sqrtd(3) / 3;
     const auto n = s->normalAt(make_point(i, i, i));
     REQUIRE(n == make_vector(i, i, i));
 }
 
 TEST_CASE("Sphere: The normal is a normalized vector") {
     const auto s = Sphere::createSphere();
-    const auto i = sqrtd(3) / 3;
+    const auto i = const_sqrtd(3) / 3;
     const auto n = s->normalAt(make_point(i, i, i));
     REQUIRE(n == n.normalize());
 }

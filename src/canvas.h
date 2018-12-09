@@ -60,7 +60,7 @@ namespace raytracer {
                         auto val = std::max<long>(0, std::min<long>(cval, colour_constants::maxvalue));
 
                         // Constrain lines to 70 characters as per PPM specifications.
-                        auto valwidth = numDigits(val);
+                        auto valwidth = const_numDigits(val);
                         if (linewidth + 1 + valwidth > 70) {
                             ostr << '\n';
                             linewidth = 0;

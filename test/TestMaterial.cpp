@@ -41,7 +41,7 @@ TEST_CASE("Material: Lighting with the eye between the light and the surface") {
 TEST_CASE("Material: Lighting with the eye between light and surface, eye offset 45 deg") {
     const Material m;
     const auto position = predefined_tuples::zero_point;
-    const auto sqrt2by2 = sqrtd(2) / 2;
+    const auto sqrt2by2 = const_sqrtd(2) / 2;
     const auto eyev = make_vector(0, sqrt2by2, -sqrt2by2);
     const auto normalv = make_vector(0, 0, -1);
     const PointLight light{make_point(0, 0, -10), predefined_colours::white};
@@ -62,7 +62,7 @@ TEST_CASE("Material: Lighting with eye opposite surface, light offset 45 deg") {
 TEST_CASE("Material: Lighting with eye in the path of the reflection vector") {
     const Material m;
     const auto position = predefined_tuples::zero_point;
-    const auto sqrt2by2 = sqrtd(2) / 2;
+    const auto sqrt2by2 = const_sqrtd(2) / 2;
     const auto eyev = make_vector(0, -sqrt2by2, -sqrt2by2);
     const auto normalv = make_vector(0, 0, -1);
     const PointLight light{make_point(0, 10, -10), predefined_colours::white};

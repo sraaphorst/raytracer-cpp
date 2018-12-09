@@ -49,10 +49,10 @@ namespace raytracer::shapes {
     }
 
     const Tuple Cube::localNormalAt(const Tuple &point) const noexcept {
-        const auto maxc = std::max(absd(point[0]), std::max(absd(point[1]), absd(point[2])));
-        if (maxc == absd(point[0]))
+        const auto maxc = std::max(const_absd(point[0]), std::max(const_absd(point[1]), const_absd(point[2])));
+        if (maxc == const_absd(point[0]))
             return make_vector(point[0], 0, 0);
-        else if (maxc == absd(point[1]))
+        else if (maxc == const_absd(point[1]))
             return make_vector(0, point[1], 0);
         else
             return make_vector(0, 0, point[2]);

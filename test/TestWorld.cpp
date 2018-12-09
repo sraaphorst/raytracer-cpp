@@ -184,7 +184,7 @@ TEST_CASE("World: Reflected colour for reflective material") {
     plane->setTransformation(translation(0, -1, 0));
     plane->getMaterial()->setReflectivity(0.5);
 
-    const auto sqrt2    = sqrtd(2);
+    const auto sqrt2    = const_sqrtd(2);
     const auto sqrt2by2 = sqrt2/2;
     const Ray ray{make_point(0, 0, -3), make_vector(0, -sqrt2by2, sqrt2by2)};
     const Intersection x{sqrt2, plane};
@@ -199,7 +199,7 @@ TEST_CASE("World: shadeHit with reflective material") {
     plane->setTransformation(translation(0, -1, 0));
     plane->getMaterial()->setReflectivity(0.5);
 
-    const auto sqrt2    = sqrtd(2);
+    const auto sqrt2    = const_sqrtd(2);
     const auto sqrt2by2 = sqrt2/2;
     const Ray ray{make_point(0, 0, -3), make_vector(0, -sqrt2by2, sqrt2by2)};
     const Intersection x{sqrt2, plane};
@@ -229,7 +229,7 @@ TEST_CASE("World: Reflected colour at maximum recursive depth") {
     plane->setTransformation(translation(0, -1, 0));
     plane->getMaterial()->setReflectivity(0.5);
 
-    const auto sqrt2    = sqrtd(2);
+    const auto sqrt2    = const_sqrtd(2);
     const auto sqrt2by2 = sqrt2/2;
     const Ray ray{make_point(0, 0, -3), make_vector(0, -sqrt2by2, sqrt2by2)};
     const Intersection x{sqrt2, plane};
@@ -273,7 +273,7 @@ TEST_CASE("World: Refracted colour under total internal reflection") {
     shape->getMaterial()->setTransparency(1.0);
     shape->getMaterial()->setRefractiveIndex(1.5);
 
-    const auto sqrt2by2 = sqrtd(2)/2;
+    const auto sqrt2by2 = const_sqrtd(2)/2;
     const Ray ray{make_point(0, 0, sqrt2by2), predefined_tuples::y1};
     const std::vector<Intersection> xs{Intersection{-sqrt2by2, shape}, Intersection{sqrt2by2, shape}};
     const auto hit = Intersection::prepareHit(xs[1], ray, xs);
@@ -320,7 +320,7 @@ TEST_CASE("World: shadeHit with transparent material") {
     ball->getMaterial()->setAmbient(0.5);
     w.getObjects().emplace_back(ball);
 
-    const auto sqrt2 = sqrtd(2);
+    const auto sqrt2 = const_sqrtd(2);
     const auto sqrt2by2 = sqrt2/2;
     const Ray ray{make_point(0, 0, -3), make_vector(0, -sqrt2by2, sqrt2by2)};
     const std::vector<Intersection> xs{Intersection{sqrt2, plane}};
@@ -346,7 +346,7 @@ TEST_CASE("World: shadeHit with reflective, transparent material") {
     ball->getMaterial()->setAmbient(0.5);
     w.getObjects().emplace_back(ball);
 
-    const auto sqrt2 = sqrtd(2);
+    const auto sqrt2 = const_sqrtd(2);
     const auto sqrt2by2 = sqrt2/2;
     const Ray ray{make_point(0, 0, -3), make_vector(0, -sqrt2by2, sqrt2by2)};
     const std::vector<Intersection> xs{Intersection{sqrt2, plane}};

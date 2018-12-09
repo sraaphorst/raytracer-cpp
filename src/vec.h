@@ -111,7 +111,7 @@ namespace raytracer {
         }
 
         constexpr T magnitude() const noexcept {
-            return sqrtd(dot_product(*this));
+            return const_sqrtd(dot_product(*this));
         }
 
         constexpr Vector normalize() const noexcept {

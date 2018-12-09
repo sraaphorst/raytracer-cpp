@@ -50,11 +50,11 @@ namespace raytracer {
         for (size_t i = 0; i < 4; ++i)
             for (size_t j = 0; j < 4; ++j)
                 if ((i == 1 && j == 1) || (i == 2 && j == 2))
-                    m[i][j] = cosc(theta);
+                    m[i][j] = const_cos(theta);
                 else if (i == 1 && j == 2)
-                    m[1][2] = -sinc(theta);
+                    m[1][2] = -const_sin(theta);
                 else if (i == 2 && j == 1)
-                    m[2][1] = sinc(theta);
+                    m[2][1] = const_sin(theta);
                 else if (i == j)
                     m[i][j] = 1;
                 else
@@ -67,11 +67,11 @@ namespace raytracer {
         for (size_t i = 0; i < 4; ++i)
             for (size_t j = 0; j < 4; ++j)
                 if ((i == 0 && j == 0) || (i == 2 && j == 2))
-                    m[i][j] = cosc(theta);
+                    m[i][j] = const_cos(theta);
                 else if (i == 0 && j == 2)
-                    m[i][j] = sinc(theta);
+                    m[i][j] = const_sin(theta);
                 else if (i == 2 && j == 0)
-                    m[i][j] = -sinc(theta);
+                    m[i][j] = -const_sin(theta);
                 else if (i == j)
                     m[i][j] = 1;
                 else m[i][j] = 0;
@@ -83,11 +83,11 @@ namespace raytracer {
         for (size_t i = 0; i < 4; ++i)
             for (size_t j = 0; j < 4; ++j)
                 if ((i == 0 && j == 0) || (i == 1 && j == 1))
-                    m[i][j] = cosc(theta);
+                    m[i][j] = const_cos(theta);
                 else if (i == 0 && j == 1)
-                    m[i][j] = -sinc(theta);
+                    m[i][j] = -const_sin(theta);
                 else if (i == 1 && j == 0)
-                    m[i][j] = sinc(theta);
+                    m[i][j] = const_sin(theta);
                 else if (i == j)
                     m[i][j] = 1;
                 else m[i][j] = 0;

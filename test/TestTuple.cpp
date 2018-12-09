@@ -252,7 +252,7 @@ TEST_CASE("Tuple: Reflecting a vector approaching at 45 degrees") {
 
 TEST_CASE("Tuple: Reflecting a vector off a slanted surface") {
     const auto v = make_vector(0, -1, 0);
-    const auto sqrt2by2 = sqrtd(2) / 2;
+    const auto sqrt2by2 = const_sqrtd(2) / 2;
     const auto n = make_vector(sqrt2by2, sqrt2by2, 0);
     const auto r = v.reflect(n);
     REQUIRE(r == make_vector(1, 0, 0));

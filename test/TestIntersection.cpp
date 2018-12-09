@@ -113,7 +113,7 @@ TEST_CASE("Intersection: The point is offset") {
 
 TEST_CASE("Intersection: Precomputing the reflection vector") {
     const std::shared_ptr<Shape> shape = Plane::createPlane();
-    constexpr double sqrt2 = sqrtd(2);
+    constexpr double sqrt2 = const_sqrtd(2);
     constexpr double sqrt2by2 = sqrt2/2;
     const Ray ray{make_point(0, 1, -1), make_vector(0, -sqrt2by2, sqrt2by2)};
     const Intersection hit{sqrt2, shape};
@@ -164,7 +164,7 @@ TEST_CASE("Intersection: The under point is offset below the surface") {
 
 TEST_CASE("Intersection: Schlick approximation under total internal reflection") {
     const auto sphere = Sphere::createGlassSphere();
-    constexpr auto sqrt2by2 = sqrtd(2)/2;
+    constexpr auto sqrt2by2 = const_sqrtd(2)/2;
     const Ray ray{make_point(0, 0, sqrt2by2), predefined_tuples::y1};
     const std::vector<Intersection> xs{Intersection{-sqrt2by2, sphere},
                                        Intersection{ sqrt2by2, sphere}};

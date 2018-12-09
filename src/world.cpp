@@ -154,7 +154,7 @@ namespace raytracer {
             return predefined_colours::black;
 
         // Create the refracted ray.
-        const auto cos_t = sqrtd(1 - sin2_t);
+        const auto cos_t = const_sqrtd(1 - sin2_t);
         const auto direction = hit.getNormalVector() * (n_ratio * cos_i - cos_t) - hit.getEyeVector() * n_ratio;
         const Ray refract_ray{hit.getUnderPoint(), direction};
 

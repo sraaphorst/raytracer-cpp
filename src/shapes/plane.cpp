@@ -25,7 +25,7 @@ namespace raytracer::shapes {
     }
 
     const std::vector<Intersection> Plane::localIntersection(const Ray &ray) const noexcept {
-        if (absd(ray.getDirection()[tuple_constants::y]) < 1e-4)
+        if (const_absd(ray.getDirection()[tuple_constants::y]) < 1e-4)
             return {};
 
         const auto t = -ray.getOrigin()[tuple_constants::y] / ray.getDirection()[tuple_constants::y];

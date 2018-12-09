@@ -28,7 +28,7 @@ namespace raytracer {
     const Colour RingPattern::colourAt(const Tuple &point) const noexcept {
         const auto px = point[tuple_constants::x];
         const auto pz = point[tuple_constants::z];
-        const auto idx = static_cast<size_t>(std::floor(sqrtd(px * px + pz * pz)));
+        const auto idx = static_cast<size_t>(std::floor(const_sqrtd(px * px + pz * pz)));
         return colours[((idx % colours.size()) + colours.size()) % colours.size()];
     }
 
