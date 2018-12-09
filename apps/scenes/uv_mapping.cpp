@@ -33,11 +33,12 @@ int main() {
     // Ball 1 material
     auto ball1_pattern = std::make_shared<CheckerPattern>(make_colour(0.3, 1.0, 0.3),
                                                           make_colour(1.0, 1.0, 0.3));
-    ball1_pattern->setTransformation(rotation_y(math_constants::pi_by_three<>) * scale(0.25, 0.25, 0.25));
-    auto ball1_materail = std::make_shared<Material>(ball1_pattern);
+    //ball1_pattern->setTransformation(rotation_y(math_constants::pi_by_six<>) * scale(0.25, 0.25, 0.25));
+    ball1_pattern->setTransformation(scale(0.2, 0.2, 0.2));
+    auto ball1_material = std::make_shared<Material>(ball1_pattern);
     auto ball1 = Sphere::createSphere();
-    ball1->setMaterial(ball1_materail);
-    ball1->setTransformation(scale(5, 5, 5) * translation(0, 0, 10));
+    ball1->setMaterial(ball1_material);
+    ball1->setTransformation(translation(0, 0, 10));
 
     std::vector<std::shared_ptr<Shape>> shapes = { ball1 };
     World world{light, shapes};

@@ -6,10 +6,16 @@
 
 #pragma once
 
+#include <memory>
+
 #include "pattern.h"
 #include "vec.h"
 
 namespace raytracer {
+    namespace shapes {
+        class Shape;
+    }
+
     class CheckerPattern final: public Pattern {
         Colour colour1;
         Colour colour2;
@@ -27,6 +33,8 @@ namespace raytracer {
 
         const Colour colourAt(const Tuple&) const noexcept override;
 
+        const Colour colourAtObject(const std::shared_ptr<const shapes::Shape> &shape,
+                                             const Tuple &world_point) const noexcept override;
     private:
         bool doCompare(const Pattern &other) const noexcept;
 

@@ -17,6 +17,7 @@ namespace raytracer {
     }
 
     class Pattern {
+    protected:
         Transformation transformation;
         Transformation transformationInverse;
     public:
@@ -43,7 +44,7 @@ namespace raytracer {
         virtual const Colour colourAt(const Tuple&) const noexcept = 0;
 
         /// Computes the colour for a specific object at a given world point.
-        const Colour colourAtObject(const std::shared_ptr<const shapes::Shape>&, const Tuple&) const noexcept;
+        virtual const Colour colourAtObject(const std::shared_ptr<const shapes::Shape>&, const Tuple&) const noexcept;
 
     protected:
         /// Subclass comparison implementations should override this method.
