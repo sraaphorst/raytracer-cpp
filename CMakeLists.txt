@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 if (MSVC)
     add_compile_options(/W4)
 else()
-    add_compile_options(-Wall -Wextra -Wpedantic -Wno-narrowing -ftemplate-depth=10000 -fconstexpr-depth=2000 -std=c++17 -g)
+    add_compile_options(-Wall -Wextra -Wpedantic -Wno-narrowing -ftemplate-depth=10000 -fconstexpr-depth=2000 -std=c++17 -O3)
 endif()
 
 find_package(OpenMP REQUIRED)

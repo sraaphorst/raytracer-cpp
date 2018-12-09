@@ -7,6 +7,7 @@
  */
 
 #include <fstream>
+#include <memory>
 #include <vector>
 
 #include <camera.h>

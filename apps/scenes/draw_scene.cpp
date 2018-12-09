@@ -5,6 +5,7 @@
  */
 
 #include <fstream>
+#include <memory>
 
 #include <camera.h>
 #include <canvas.h>

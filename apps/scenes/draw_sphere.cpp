@@ -5,6 +5,7 @@
  */
 
 #include <fstream>
+#include <memory>
 
 #include <canvas.h>
 #include <intersection.h>
