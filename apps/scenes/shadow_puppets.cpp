@@ -29,37 +29,37 @@ int main() {
             view_transform(make_point(40, 0, -70), make_point(0, 0, -5), predefined_tuples::y1)};
     PointLight light{make_point(0, 0, -100), predefined_colours::white};
 
-    Material sphere_material{};
-    sphere_material.setAmbient(0.2);
-    sphere_material.setDiffuse(0.8);
-    sphere_material.setSpecular(0.3);
-    sphere_material.setShininess(200);
+    auto sphere_material = std::make_shared<Material>();
+    sphere_material->setAmbient(0.2);
+    sphere_material->setDiffuse(0.8);
+    sphere_material->setSpecular(0.3);
+    sphere_material->setShininess(200);
 
-    Material wrist_material{sphere_material};
-    wrist_material.setPattern(std::make_shared<SolidPattern>(make_colour(0.1, 1, 1)));
+    auto wrist_material = std::make_shared<Material>(*sphere_material);
+    wrist_material->setPattern(std::make_shared<SolidPattern>(make_colour(0.1, 1, 1)));
 
-    Material thumb_and_palm_material{sphere_material};
-    thumb_and_palm_material.setPattern(std::make_shared<SolidPattern>(make_colour(0.1, 0.1, 1)));
+    auto thumb_and_palm_material = std::make_shared<Material>(*sphere_material);
+    thumb_and_palm_material->setPattern(std::make_shared<SolidPattern>(make_colour(0.1, 0.1, 1)));
 
-    Material index_material{sphere_material};
-    index_material.setPattern(std::make_shared<SolidPattern>(make_colour(1, 1, 0.1)));
+    auto index_material = std::make_shared<Material>(*sphere_material);
+    index_material->setPattern(std::make_shared<SolidPattern>(make_colour(1, 1, 0.1)));
 
-    Material middle_material{sphere_material};
-    middle_material.setPattern(std::make_shared<SolidPattern>(make_colour(0.1, 1, 0.5)));
+    auto middle_material = std::make_shared<Material>(*sphere_material);
+    middle_material->setPattern(std::make_shared<SolidPattern>(make_colour(0.1, 1, 0.5)));
 
-    Material ring_material{sphere_material};
-    ring_material.setPattern(std::make_shared<SolidPattern>(make_colour(0.1, 1, 0.1)));
+    auto ring_material = std::make_shared<Material>(*sphere_material);
+    ring_material->setPattern(std::make_shared<SolidPattern>(make_colour(0.1, 1, 0.1)));
 
-    Material pinky_material(sphere_material);
-    pinky_material.setPattern(std::make_shared<SolidPattern>(make_colour(0.1, 0.5, 1)));
+    auto pinky_material = std::make_shared<Material>(*sphere_material);
+    pinky_material->setPattern(std::make_shared<SolidPattern>(make_colour(0.1, 0.5, 1)));
 
     // Backdrop onto which to cast the shadow.
     auto backdrop = Sphere::createSphere();
-    Material backdrop_material{};
-    backdrop_material.setPattern(std::make_shared<SolidPattern>(predefined_colours::white));
-    backdrop_material.setAmbient(0);
-    backdrop_material.setDiffuse(0.5);
-    backdrop_material.setSpecular(0);
+    auto backdrop_material = std::make_shared<Material>();
+    backdrop_material->setPattern(std::make_shared<SolidPattern>(predefined_colours::white));
+    backdrop_material->setAmbient(0);
+    backdrop_material->setDiffuse(0.5);
+    backdrop_material->setSpecular(0);
     backdrop->setMaterial(backdrop_material);
     backdrop->setTransformation(translation(0, 0, 20) * scale(200, 200, 0.01));
 
