@@ -19,4 +19,16 @@ namespace raytracer {
     ALMOST_EQUALS(S x, T y) {
         return (const_absd(x - y) < EPSILON);
     }
+
+    template<typename S, typename T>
+    constexpr typename std::enable_if_t<std::is_floating_point_v<S> || std::is_floating_point_v<T>, bool>
+    GREATER_THAN(S x, T y) {
+        return x >= y - EPSILON;
+    }
+
+    template<typename S, typename T>
+    constexpr typename std::enable_if_t<std::is_floating_point_v<S> || std::is_floating_point_v<T>, bool>
+    LESS_THAN(S x, T y) {
+        return x <= y + EPSILON;
+    }
 }

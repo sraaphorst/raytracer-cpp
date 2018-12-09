@@ -4,6 +4,7 @@
  * By Sebastian Raaphorst, 2018.
  */
 
+#include <algorithm>
 #include <memory>
 #include <tuple>
 #include <vector>
@@ -46,10 +47,11 @@ namespace raytracer::shapes {
             return {};
 
         const auto sqrt_discriminant = const_sqrtd(discriminant);
-        const auto t1 = (-b - sqrt_discriminant) / (2 * a);
-        const auto t2 = (-b + sqrt_discriminant) / (2 * a);
-        if (t1 < t2) return {Intersection{t1, shared_from_this()}, Intersection{t2, shared_from_this()}};
-        else return {Intersection{t2, shared_from_this()}, Intersection{t1, shared_from_this()}};
+        auto t0 = (-b - sqrt_discriminant) / (2 * a);
+        auto t1 = (-b + sqrt_discriminant) / (2 * a);
+        if (t0 > t1)
+            std::swap(t0, t1);
+        return {Intersection{t0, shared_from_this()}, Intersection{t1, shared_from_this()}};
     }
 
     const Tuple Sphere::localNormalAt(const Tuple &point) const noexcept {
