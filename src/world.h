@@ -50,7 +50,8 @@ namespace raytracer {
         bool contains(const std::shared_ptr<shapes::Shape> &sptr) const noexcept;
         bool contains(const shapes::Shape &s) const noexcept;
 
-        const std::vector<impl::Intersection> intersect(const impl::Ray &ray) const noexcept;
+        /// If shadowing is true, we are looking for shadows; skip intersections with non-shadowing objects.
+        const std::vector<impl::Intersection> intersect(const impl::Ray &ray, bool shadowing = false) const noexcept;
         const std::optional<const Colour> shadeHit(const std::optional<const impl::Hit>&,
                 int remaining = MAX_RECURSIONS) const noexcept;
         const Colour colourAt(const impl::Ray &ray, int remaining = MAX_RECURSIONS) const noexcept;

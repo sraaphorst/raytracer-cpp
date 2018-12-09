@@ -24,11 +24,13 @@ namespace raytracer::shapes {
         transformation{predefined_matrices::I<double, 4>},
         transformationInverse{predefined_matrices::I<double, 4>},
         transformationInverseTranspose{predefined_matrices::I<double, 4>},
+        casts_shadow{true},
         material{std::make_shared<Material>()} {}
 
     bool Shape::operator==(const Shape &other) const noexcept {
         return typeid(*this) == typeid(other)
                && transformation == other.transformation
+               && casts_shadow == other.casts_shadow
                && *material == *other.material
                && doCompare(other);
     }
@@ -81,6 +83,14 @@ namespace raytracer::shapes {
 
     void Shape::setMaterial(std::shared_ptr<Material> &m) {
         material = m;
+    }
+
+    bool Shape::castsShadow() const noexcept {
+        return casts_shadow;
+    }
+
+    void Shape::setCastsShadow(bool s) noexcept {
+        casts_shadow = s;
     }
 
     const std::vector<Intersection> Shape::intersect(const Ray &r0) const noexcept {

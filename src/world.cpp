@@ -59,7 +59,7 @@ namespace raytracer {
         return false;
     }
 
-    const std::vector<Intersection> World::intersect(const Ray &ray) const noexcept {
+    const std::vector<Intersection> World::intersect(const Ray &ray, bool shadowing) const noexcept {
         std::mutex intersection_mutex;
         std::vector<Intersection> intersections;
 
@@ -67,6 +67,8 @@ namespace raytracer {
 #pragma omp parallel for shared(intersections, ray)
         for (size_t i = 0; i < shapes.size(); ++i) {
             const auto &s = shapes[i];
+            if (shadowing && !s->castsShadow())
+                continue;
             const std::vector<Intersection> vi = s->intersect(ray);
 
             std::lock_guard<std::mutex> guard(intersection_mutex);
@@ -119,7 +121,7 @@ namespace raytracer {
 
         // Cast a shadow ray to see if it intersects anything.
         const Ray ray{point, direction};
-        const auto xs = intersect(ray);
+        const auto xs = intersect(ray, true);
         const auto hit = Intersection::hit(xs);
         return hit.has_value() && hit.value().getT() < distance;
     }

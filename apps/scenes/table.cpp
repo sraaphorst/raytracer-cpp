@@ -98,8 +98,7 @@ int main() {
     // GLASS CUBE
     auto glass_cube = Cube::createCube();
     glass_cube->setTransformation(translation(0, 3.45001, 0) * rotation_y(0.2) * scale(0.25, 0.25, 0.25));
-    // TODO: Implement setShadow.
-    //glass_cube->setShadow(false);
+    glass_cube->setCastsShadow(false);
     auto glass_cube_material = std::make_shared<Material>(std::make_shared<SolidPattern>(make_colour(1, 1, 0.8)));
     glass_cube_material->setAmbient(0);
     glass_cube_material->setDiffuse(0.3);

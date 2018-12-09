@@ -34,6 +34,7 @@ namespace raytracer::shapes {
         Transformation transformation;
         Transformation transformationInverse;
         Transformation transformationInverseTranspose;
+        bool casts_shadow;
         std::shared_ptr<Material> material;
 
     public:
@@ -57,6 +58,9 @@ namespace raytracer::shapes {
         void setMaterial(std::shared_ptr<Material>&&);
         void setMaterial(const std::shared_ptr<Material>&);
         void setMaterial(std::shared_ptr<Material>&);
+
+        bool castsShadow() const noexcept;
+        void setCastsShadow(bool s) noexcept;
 
         /**
          * Convert the ray to object space and then pass it to the concrete implementation of local_intersect,
