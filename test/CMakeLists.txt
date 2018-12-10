@@ -24,6 +24,7 @@ set(TEST_LIST
         TestCone
         TestCube
         TestCylinder
+        TestGroup
         TestIntersection
         TestLights
         TestMaterial
