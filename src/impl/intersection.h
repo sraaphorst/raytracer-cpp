@@ -67,7 +67,7 @@ namespace raytracer::impl {
          * @param xs the list of all intersections for the ray
          * @return a Hit if the intersection is defined, and nullopt otherwise
          */
-        static const std::optional<const Hit> prepareHit(const std::optional<const Intersection> &hit,
+        [[nodiscard]] static const std::optional<const Hit> prepareHit(const std::optional<const Intersection> &hit,
                                                          const Ray &ray,
                                                          const std::vector<Intersection> &xs) noexcept;
 
@@ -79,7 +79,7 @@ namespace raytracer::impl {
          * @param xs the list of all intersections for the ray
          * @return a fully defined Hit
          */
-        static const Hit prepareHit(const Intersection &hit,
+        [[nodiscard]] static const Hit prepareHit(const Intersection &hit,
                                     const Ray &ray,
                                     const std::vector<Intersection> &xs) noexcept;
 
