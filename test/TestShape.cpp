@@ -76,3 +76,8 @@ TEST_CASE("Shape: Computing the normal on a scaled shape") {
     const auto n = s->normalAt(make_point(0, sqrt2_by_2, -sqrt2_by_2));
     REQUIRE(n == make_vector(0, 0.97014, -0.24254));
 }
+
+TEST_CASE("Shape: A shape has a parent attribute") {
+    const auto s = TestShape::createTestShape();
+    REQUIRE(s->getParent() == nullptr);
+}

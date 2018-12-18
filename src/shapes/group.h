@@ -30,12 +30,21 @@ namespace raytracer::shapes {
         /// Factory method to create a group.
         static std::shared_ptr<Group> createGroup() noexcept;
 
+        template<typename T>
+        void add(T& t) noexcept {
+            shapes.emplace_back(t);
+            t->setParent(shared_from_this());
+        }
+
         template<typename... Ts>
-        void addAll(Ts&& ... ts) {
-            (shapes.emplace_back(std::forward<Ts>(ts)),... );
+        void addAll(Ts& ... ts) noexcept {
+            (add(ts),... );
         }
 
         const std::vector<std::shared_ptr<Shape>> getShapes() const noexcept;
+
+        // We need to clear the shapes out of a group in order to not cause memory leaks.
+        void clearShapes() noexcept;
 
     private:
         const std::vector<impl::Intersection> localIntersection(const impl::Ray&) const noexcept override;

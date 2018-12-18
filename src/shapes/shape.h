@@ -7,6 +7,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include <tuple>
 #include <vector>
 
@@ -21,6 +22,8 @@ namespace raytracer::impl {
 }
 
 namespace raytracer::shapes {
+    class Group;
+
     /**
      * Note that there is some ghastliness in how the intersections are created right now, since they need a
      * shared_ptr to this. We could use std::enabled_shared_from_this, and then use make_shared_from_this(),
@@ -34,8 +37,9 @@ namespace raytracer::shapes {
         Transformation transformation;
         Transformation transformationInverse;
         Transformation transformationInverseTranspose;
-        bool casts_shadow;
         std::shared_ptr<Material> material;
+        std::shared_ptr<const Shape> parent;
+        bool casts_shadow;
 
     public:
         explicit Shape(dummy d) noexcept;
@@ -49,15 +53,18 @@ namespace raytracer::shapes {
 
         const Transformation &getTransformation() const noexcept;
         const Transformation &getTransformationInverse() const noexcept;
-        void setTransformation(Transformation&&);
-        void setTransformation(const Transformation&);
-        void setTransformation(Transformation&);
+        void setTransformation(Transformation&&) noexcept;
+        void setTransformation(const Transformation&) noexcept;
+        void setTransformation(Transformation&) noexcept;
 
-        const std::shared_ptr<Material> &getMaterial() const;
-        std::shared_ptr<Material> &getMaterial();
-        void setMaterial(std::shared_ptr<Material>&&);
-        void setMaterial(const std::shared_ptr<Material>&);
-        void setMaterial(std::shared_ptr<Material>&);
+        const std::shared_ptr<Material> &getMaterial() const noexcept;
+        std::shared_ptr<Material> &getMaterial() noexcept;
+        void setMaterial(std::shared_ptr<Material>&&) noexcept;
+        void setMaterial(const std::shared_ptr<Material>&) noexcept;
+        void setMaterial(std::shared_ptr<Material>&) noexcept;
+
+        const std::shared_ptr<const Shape> getParent() const noexcept;
+        void setParent(std::shared_ptr<const Shape>) noexcept;
 
         bool castsShadow() const noexcept;
         void setCastsShadow(bool s) noexcept;
@@ -95,5 +102,7 @@ namespace raytracer::shapes {
          * implemented Shape. The normalAt method then translates it back to world space.
          */
         virtual const Tuple localNormalAt(const Tuple&) const noexcept = 0;
+
+        friend class Group;
     };
 }

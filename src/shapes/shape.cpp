@@ -24,8 +24,9 @@ namespace raytracer::shapes {
         transformation{predefined_matrices::I<double, 4>},
         transformationInverse{predefined_matrices::I<double, 4>},
         transformationInverseTranspose{predefined_matrices::I<double, 4>},
-        casts_shadow{true},
-        material{std::make_shared<Material>()} {}
+        material{std::make_shared<Material>()},
+        parent(nullptr),
+        casts_shadow{true} {}
 
     bool Shape::operator==(const Shape &other) const noexcept {
         return typeid(*this) == typeid(other)
@@ -47,42 +48,50 @@ namespace raytracer::shapes {
         return transformationInverse;
     }
 
-    void Shape::setTransformation(Transformation&& t) {
+    void Shape::setTransformation(Transformation&& t) noexcept {
         transformation = t;
         transformationInverse = transformation.invert();
         transformationInverseTranspose = transformationInverse.transpose();
     }
 
-    void Shape::setTransformation(const Transformation &t) {
+    void Shape::setTransformation(const Transformation &t) noexcept {
         transformation = t;
         transformationInverse = transformation.invert();
         transformationInverseTranspose = transformationInverse.transpose();
     }
 
-    void Shape::setTransformation(Transformation &t) {
+    void Shape::setTransformation(Transformation &t) noexcept {
         transformation = t;
         transformationInverse = transformation.invert();
         transformationInverseTranspose = transformationInverse.transpose();
     }
 
-    const std::shared_ptr<Material> &Shape::getMaterial() const {
+    const std::shared_ptr<Material> &Shape::getMaterial() const noexcept {
         return material;
     }
 
-    std::shared_ptr<Material> &Shape::getMaterial() {
+    std::shared_ptr<Material> &Shape::getMaterial() noexcept {
         return material;
     }
 
-    void Shape::setMaterial(std::shared_ptr<Material> &&m) {
+    void Shape::setMaterial(std::shared_ptr<Material> &&m) noexcept {
         material = std::move(m);
     }
 
-    void Shape::setMaterial(const std::shared_ptr<Material> &m) {
+    void Shape::setMaterial(const std::shared_ptr<Material> &m) noexcept {
         material = m;
     }
 
-    void Shape::setMaterial(std::shared_ptr<Material> &m) {
+    void Shape::setMaterial(std::shared_ptr<Material> &m) noexcept {
         material = m;
+    }
+
+    const std::shared_ptr<const Shape> Shape::getParent() const noexcept {
+        return parent;
+    }
+
+    void Shape::setParent(std::shared_ptr<const Shape> p) noexcept {
+        parent = p;
     }
 
     bool Shape::castsShadow() const noexcept {

@@ -4,6 +4,8 @@
  * By Sebastian Raaphorst, 2018.
  */
 
+#include <algorithm>
+#include <iterator>
 #include <limits>
 #include <memory>
 #include <tuple>
@@ -32,8 +34,22 @@ namespace raytracer::shapes {
         return shapes;
     }
 
-    const std::vector<Intersection> Group::localIntersection(const Ray&) const noexcept {
-        return {};
+    void Group::clearShapes() noexcept {
+        for (auto &shape: shapes)
+            shape->setParent(nullptr);
+        shapes.clear();
+    }
+
+    const std::vector<Intersection> Group::localIntersection(const Ray &ray) const noexcept {
+        std::vector<Intersection> xs{};
+        for (auto &shape: shapes) {
+            auto xss = shape->intersect(ray);
+            std::copy(xss.begin(), xss.end(), std::back_inserter(xs));
+        }
+
+        // Now sort by t.
+        std::sort(xs.begin(), xs.end(), [](const auto &x1, const auto &x2) { return x1.getT() < x2.getT(); });
+        return xs;
     }
 
     const Tuple Group::localNormalAt(const Tuple&) const noexcept {
