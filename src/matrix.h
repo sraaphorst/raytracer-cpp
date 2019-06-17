@@ -189,7 +189,8 @@ namespace raytracer {
             return cols;
         }
 
-        static constexpr typename std::enable_if_t<are_equal_v<rows,cols>, size_t>
+        static constexpr size_t
+        //static constexpr typename std::enable_if_t<are_equal_v<rows,cols>, size_t>
         size() {
             static_assert(rows == cols, "Matrix::size() only for use with square matrices");
             return rows;
