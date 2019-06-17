@@ -191,14 +191,14 @@ namespace raytracer::transformers {
         return details::vector_neg_helper<T,N>(t, std::make_index_sequence<N>{});
     }
 
-    template<size_t m, size_t n>
-    struct are_equal final: std::false_type {};
-
-    template<size_t m>
-    struct are_equal<m,m> final: std::true_type {};
-
-    template<size_t m, size_t n>
-    inline constexpr bool are_equal_v = are_equal<m,n>::value;
+//    template<size_t m, size_t n>
+//    struct are_equal final: std::false_type {};
+//
+//    template<size_t m>
+//    struct are_equal<m,m> final: std::true_type {};
+//
+//    template<size_t m, size_t n>
+//    inline constexpr bool are_equal_v = are_equal<m,n>::value;
 
     template<typename T, size_t N>
     constexpr std::array<T,N> initializer_list_to_array(const std::initializer_list<T> lst) {
