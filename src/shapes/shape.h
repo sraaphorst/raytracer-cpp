@@ -85,7 +85,12 @@ namespace raytracer::shapes {
          * Takes a point and transforms it from world coordinates to object coordinates, replying on the parent
          * object if one exists.
          */
-        virtual const Tuple worldToObject(const Tuple&) const noexcept;
+        const Tuple worldToObject(const Tuple&) const noexcept;
+
+        /**
+         * Takes a normal and converts it to world coordinates.
+         */
+         const Tuple normalToWorld(const Tuple&) const noexcept;
 
     protected:
         /**

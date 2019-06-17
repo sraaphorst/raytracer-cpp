@@ -125,4 +125,12 @@ namespace raytracer::shapes {
     const Tuple Shape::worldToObject(const Tuple &point) const noexcept {
         return transformationInverse * (parent == nullptr ? point : parent->worldToObject(point));
     }
+
+    const Tuple Shape::normalToWorld(const Tuple &normal) const noexcept {
+        const auto n1 = transformationInverseTranspose * normal;
+        const auto n2 = make_vector(n1[tuple_constants::x],
+                                    n1[tuple_constants::y],
+                                    n1[tuple_constants::z]).normalize();
+        return (parent == nullptr) ? n2 : parent->normalToWorld(n2);
+    }
 }
