@@ -10,8 +10,10 @@
 
 #include "affine_transform.h"
 #include "constmath.h"
+#include "group.h"
 #include "material.h"
 #include "matrix.h"
+#include "sphere.h"
 
 using namespace raytracer;
 using namespace raytracer::math_constants;
@@ -80,4 +82,19 @@ TEST_CASE("Shape: Computing the normal on a scaled shape") {
 TEST_CASE("Shape: A shape has a parent attribute") {
     const auto s = TestShape::createTestShape();
     REQUIRE(s->getParent() == nullptr);
+}
+
+TEST_CASE("Shape: Converting a point from world to object space") {
+    auto g1 = Group::createGroup();
+    g1->setTransformation(rotation_y(math_constants::pi_by_two<>));
+
+    auto g2 = Group::createGroup();
+    g2->setTransformation(scale(2, 2, 2));
+    g1->add(g2);
+
+    auto s = Sphere::createSphere();
+    s->setTransformation(translation(5, 0, 0));
+    g2->add(s);
+    REQUIRE(s->worldToObject(make_point(-2, 0, -10)) == make_point(0, 0, -1));
+
 }

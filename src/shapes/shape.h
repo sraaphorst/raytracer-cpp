@@ -81,6 +81,12 @@ namespace raytracer::shapes {
          */
         const Tuple normalAt(const Tuple &p) const noexcept;
 
+        /**
+         * Takes a point and transforms it from world coordinates to object coordinates, replying on the parent
+         * object if one exists.
+         */
+        virtual const Tuple worldToObject(const Tuple&) const noexcept;
+
     protected:
         /**
          * Any additional implementation for equality comparison in subclasses, should be implemented here.
