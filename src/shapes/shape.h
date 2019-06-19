@@ -76,7 +76,7 @@ namespace raytracer::shapes {
         const std::vector<impl::Intersection> intersect(const impl::Ray&) const noexcept;
 
         /**
-         * Takes a point and transforms it to object space. It is then passed to localNormalAt, which is
+         * Takes a world point and transforms it to object space. It is then passed to localNormalAt, which is
          * subclass-dependent. The normal vector is then translated back to world space and returned.
          */
         const Tuple normalAt(const Tuple &p) const noexcept;

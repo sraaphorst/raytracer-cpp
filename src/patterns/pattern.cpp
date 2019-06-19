@@ -44,7 +44,7 @@ namespace raytracer {
 
     const Colour Pattern::colourAtObject(const std::shared_ptr<const Shape> &shape,
             const Tuple &world_point) const noexcept {
-        const auto object_point = shape->getTransformationInverse() * world_point;
+        const auto object_point = shape->worldToObject(world_point);
         const auto pattern_point = transformationInverse * object_point;
         return colourAt(pattern_point);
     }

@@ -114,3 +114,18 @@ TEST_CASE("Shape: Converting a normal from object to world space") {
     constexpr auto i = const_sqrtd(3)/3;
     REQUIRE(s->normalToWorld(make_vector(i, i, i)) == make_vector(0.2857, 0.4286, -0.8571));
 }
+
+TEST_CASE("Shape: Finding the normal on a child object") {
+    auto g1 = Group::createGroup();
+    g1->setTransformation(rotation_y(math_constants::pi_by_two<>));
+
+    auto g2 = Group::createGroup();
+    g2->setTransformation(scale(1, 2, 3));
+    g1->add(g2);
+
+    auto s = Sphere::createSphere();
+    s->setTransformation(translation(5, 0, 0));
+    g2->add(s);
+
+    REQUIRE(s->normalAt(make_point(1.7321, 1.1547, -5.5774)) == make_vector(0.2857, 0.4286, -0.8571));
+}

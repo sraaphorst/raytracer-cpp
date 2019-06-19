@@ -110,16 +110,11 @@ namespace raytracer::shapes {
         return localIntersection(r);
     }
 
-    const Tuple Shape::normalAt(const Tuple &point) const noexcept {
-        // Transform the point to object space.
-        const auto local_point = transformationInverse * point;
+    const Tuple Shape::normalAt(const Tuple &world_point) const noexcept {
+        const auto local_point = worldToObject(world_point);
         const auto local_normal = localNormalAt(local_point);
-        const auto world_normal = transformationInverseTranspose * local_normal;
+        return normalToWorld(local_normal);
 
-        // w could have a value after this, so get rid of it.
-        return make_vector(world_normal[tuple_constants::x],
-                           world_normal[tuple_constants::y],
-                           world_normal[tuple_constants::z]).normalize();
     }
 
     const Tuple Shape::worldToObject(const Tuple &point) const noexcept {
