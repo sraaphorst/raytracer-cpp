@@ -111,8 +111,10 @@ namespace raytracer::shapes {
          * The normalAt method transforms the point to object space and passes it to this method, which
          * should comprise the concrete implementation of calculating the normal vector at the point for the
          * implemented Shape. The normalAt method then translates it back to world space.
+         *
+         * Note: Groups should never have this method called on them, and will throw a domain_error if it is attempted.
          */
-        virtual const Tuple localNormalAt(const Tuple&) const noexcept = 0;
+        virtual const Tuple localNormalAt(const Tuple&) const = 0;
 
         friend class Group;
     };

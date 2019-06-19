@@ -8,6 +8,7 @@
 #include <iterator>
 #include <limits>
 #include <memory>
+#include <stdexcept>
 #include <tuple>
 #include <vector>
 
@@ -52,7 +53,7 @@ namespace raytracer::shapes {
         return xs;
     }
 
-    const Tuple Group::localNormalAt(const Tuple&) const noexcept {
-        return predefined_tuples::zero_vector;
+    const Tuple Group::localNormalAt(const Tuple&) const {
+        throw std::domain_error("Group::localNormalAt cannot be called");
     }
 }

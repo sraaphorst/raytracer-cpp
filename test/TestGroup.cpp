@@ -78,3 +78,7 @@ TEST_CASE("Group: Intersecting a transformed group") {
     const auto xs = g->intersect(ray);
     REQUIRE(xs.size() == 2);
 }
+
+TEST_CASE("Group: localNormalAt not supported") {
+    REQUIRE_THROWS(Group::createGroup()->localNormalAt(predefined_tuples::zero_point));
+}
