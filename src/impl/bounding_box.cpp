@@ -69,7 +69,7 @@ namespace raytracer::impl {
         std::vector<double> maxs;
 
         for (size_t i = 0; i < 3; ++i) {
-            const auto [vmin, vmax] = checkAxis(ray.getOrigin()[i], ray.getDirection()[i]);
+            const auto [vmin, vmax] = checkAxis(ray.getOrigin()[i], ray.getDirection()[i], min_point[i], max_point[i]);
             mins.emplace_back(vmin);
             maxs.emplace_back(vmax);
         }

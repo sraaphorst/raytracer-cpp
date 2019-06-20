@@ -40,7 +40,7 @@ namespace raytracer::shapes {
         std::vector<Intersection> xs;
 
         for (size_t i = 0; i < 3; ++i) {
-            const auto [vmin, vmax] = checkAxis(ray.getOrigin()[i], ray.getDirection()[i]);
+            const auto [vmin, vmax] = checkAxis(ray.getOrigin()[i], ray.getDirection()[i], -1, 1);
             mins.emplace_back(vmin);
             maxs.emplace_back(vmax);
         }

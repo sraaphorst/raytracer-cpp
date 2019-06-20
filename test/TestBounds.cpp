@@ -137,3 +137,49 @@ TEST_CASE("BoundingBox: Intersecting a ray with a bounding box at the origin") {
         REQUIRE(box.intersects(r) == results[i]);
     }
 }
+
+TEST_CASE("BoundingBox: Intersecting a ray with a non-cubic bounding box") {
+    const BoundingBox box{make_point(5, -2, 0), make_point(11, 4, 7)};
+
+    std::array<Tuple, 13> origins {{
+        make_point(15,  1,  2),
+        make_point(-5, -1,  4),
+        make_point( 7,  6,  5),
+        make_point( 9, -5,  6),
+        make_point( 8,  2, 12),
+        make_point( 6,  0, -5),
+        make_point( 8,  1,  3.5),
+        make_point( 9, -1, -8),
+        make_point( 8,  3, -4),
+        make_point( 9, -1, -2),
+        make_point( 4,  0,  9),
+        make_point( 8,  6, -1),
+        make_point(12,  5,  4)
+    }};
+
+    std::array<Tuple, 13> directions {{
+        make_vector(-1,  0,  0),
+        make_vector( 1,  0,  0),
+        make_vector( 0, -1,  0),
+        make_vector( 0,  1,  0),
+        make_vector( 0,  0, -1),
+        make_vector( 0,  0,  1),
+        make_vector( 0,  0,  1),
+        make_vector( 2,  4,  6),
+        make_vector( 6,  2,  4),
+        make_vector( 4,  6,  2),
+        make_vector( 0,  0, -1),
+        make_vector( 0, -1,  0),
+        make_vector(-1,  0,  0)
+    }};
+
+    std::array<bool, 13> results {{
+        true, true, true, true, true, true, true,
+        false, false, false, false, false, false
+    }};
+
+    for (size_t i = 0; i < 13; ++i) {
+        const Ray r{origins[i], directions[i].normalize()};
+        REQUIRE(box.intersects(r) == results[i]);
+    }
+}
