@@ -10,6 +10,8 @@ include_directories(
 )
 
 add_library(raytracer SHARED
+        bounding_box.h
+        bounding_box.cpp
         camera.h
         camera.cpp
         canvas.h

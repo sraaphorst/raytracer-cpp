@@ -96,6 +96,7 @@ namespace raytracer {
         }
 
         constexpr bool operator==(const Vector &t) const noexcept {
+            // Special case for infinity.
             for (auto it1 = contents.cbegin(), it2 = t.contents.cbegin(); it1 != contents.cend(); ++it1, ++it2)
                 if (!ALMOST_EQUALS(*it1, *it2))
                     return false;
@@ -198,6 +199,11 @@ namespace raytracer {
         static constexpr Tuple x1{1, 0, 0, tuple_constants::vector_flag};
         static constexpr Tuple y1{0, 1, 0, tuple_constants::vector_flag};
         static constexpr Tuple z1{0, 0, 1, tuple_constants::vector_flag};
+
+        static constexpr auto inf = std::numeric_limits<double>::infinity();
+        static constexpr auto ninf = -std::numeric_limits<double>::infinity();
+        static constexpr Tuple min_point{inf, inf, inf, tuple_constants::point_flag};
+        static constexpr Tuple max_point{ninf, ninf, ninf, tuple_constants::point_flag};
     };
 
     using Colour = Vector<double, 3>;
