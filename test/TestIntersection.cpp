@@ -180,7 +180,6 @@ TEST_CASE("Intersection: Schlick approximation with a perpendicular viewing angl
                                        Intersection{ 1, sphere}};
     const auto hit = Intersection::prepareHit(xs[1], ray, xs);
     const auto reflectance = hit.schlick();
-    std::cout << reflectance << std::endl;
     REQUIRE(ALMOST_EQUALS(reflectance, 0.04));
 }
 
