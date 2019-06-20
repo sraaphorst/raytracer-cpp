@@ -8,7 +8,7 @@
 
 #include "vec.h"
 
-namespace raytracer {
+namespace raytracer::impl {
     class BoundingBox final {
         Tuple min_point;
         Tuple max_point;
@@ -37,6 +37,10 @@ namespace raytracer {
             return max_point;
         }
 
-        void addPoint(const Tuple &) noexcept;
+        /// Adds a point to a bounding box.
+        void addPoint(const Tuple&) noexcept;
+
+        /// Merges the given bounding box to the original.
+        void addBox(const BoundingBox&) noexcept;
     };
 }

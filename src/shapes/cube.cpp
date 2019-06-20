@@ -9,6 +9,7 @@
 #include <tuple>
 #include <vector>
 
+#include "bounding_box.h"
 #include "constmath.h"
 #include "cube.h"
 #include "intersection.h"
@@ -25,6 +26,11 @@ namespace raytracer::shapes {
         auto cube = std::make_shared<Cube>(dummy{});
         registerInstance(cube);
         return cube;
+    }
+
+
+    BoundingBox Cube::boundsOf() const {
+        return BoundingBox{make_point(-1, -1, -1), make_point(1, 1, 1)};
     }
 
     const std::vector<Intersection> Cube::localIntersection(const Ray &ray) const noexcept {

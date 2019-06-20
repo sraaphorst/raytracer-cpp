@@ -9,6 +9,7 @@
 #include <tuple>
 #include <vector>
 
+#include "bounding_box.h"
 #include "constmath.h"
 #include "intersection.h"
 #include "ray.h"
@@ -32,6 +33,10 @@ namespace raytracer::shapes {
         sphere->getMaterial()->setTransparency(1);
         sphere->getMaterial()->setRefractiveIndex(1.5);
         return sphere;
+    }
+
+    BoundingBox Sphere::boundsOf() const {
+        return BoundingBox{make_point(-1, -1, -1), make_point(1, 1, 1)};
     }
 
     const std::vector<Intersection> Sphere::localIntersection(const Ray &r) const noexcept {

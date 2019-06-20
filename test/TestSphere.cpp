@@ -9,6 +9,7 @@
 #include <optional>
 
 #include "affine_transform.h"
+#include "bounding_box.h"
 #include "constmath.h"
 #include "impl/intersection.h"
 #include "impl/ray.h"
@@ -110,14 +111,14 @@ TEST_CASE("Sphere: The normal is a normalized vector") {
     REQUIRE(n == n.normalize());
 }
 
-TEST_CASE("Computing the normal on a translated sphere") {
+TEST_CASE("Sphere: Computing the normal on a translated sphere") {
     auto s = Sphere::createSphere();
     s->setTransformation(translation(0, 1, 0));
     auto n = s->normalAt(make_point(0, 1.70711, -0.70711));
     REQUIRE(n == make_vector(0, 0.70711, -0.70711));
 }
 
-TEST_CASE("Computing the normal on a transformed sphere") {
+TEST_CASE("Sphere: Computing the normal on a transformed sphere") {
     auto s = Sphere::createSphere();
     s->setTransformation(scale(1, 0.5, 1) * rotation_z(math_constants::pi<> / 5));
     auto n = s->normalAt(make_point(0, math_constants::sqrt2_by_2, -math_constants::sqrt2_by_2));
@@ -136,4 +137,11 @@ TEST_CASE("Sphere: Transparency and Refractive Index for the default material") 
     const Material m{};
     REQUIRE(s->getMaterial()->getTransparency() == 0);
     REQUIRE(s->getMaterial()->getRefractiveIndex() == 1.0);
+}
+
+TEST_CASE("Sphere: A sphere has a bounding box") {
+    const auto s = Sphere::createSphere();
+    const auto box = s->boundsOf();
+    REQUIRE(box.getMinPoint() == make_point(-1, -1, -1));
+    REQUIRE(box.getMaxPoint() == make_point(1, 1, 1));
 }

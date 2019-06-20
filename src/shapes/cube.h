@@ -14,6 +14,7 @@
 #include "vec.h"
 
 namespace raytracer::impl {
+    class BoundingBox;
     class Intersection;
     class Ray;
 }
@@ -27,6 +28,9 @@ namespace raytracer::shapes {
 
         /// Factory method to create a cube at the origin extending +/-1 along all axes.
         static std::shared_ptr<Cube> createCube() noexcept;
+
+        /// Get a bounding box.
+        impl::BoundingBox boundsOf() const override;
 
     private:
         const std::vector<impl::Intersection> localIntersection(const impl::Ray&) const noexcept override;

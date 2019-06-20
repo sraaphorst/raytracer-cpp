@@ -17,6 +17,7 @@
 #include "vec.h"
 
 namespace raytracer::impl {
+    class BoundingBox;
     class Intersection;
     class Ray;
 }
@@ -91,6 +92,11 @@ namespace raytracer::shapes {
          * Takes a normal and converts it to world coordinates.
          */
          const Tuple normalToWorld(const Tuple&) const noexcept;
+
+         /**
+          * Create a bounding box for a shape.
+          */
+         virtual impl::BoundingBox boundsOf() const;
 
     protected:
         /**

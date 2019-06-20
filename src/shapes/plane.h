@@ -13,6 +13,7 @@
 #include "shape.h"
 
 namespace raytracer::impl {
+    class BoundingBox;
     class Intersection;
     class Ray;
 }
@@ -25,6 +26,9 @@ namespace raytracer::shapes {
 
         /// Factory method to create an x-z plane through the origin.
         static std::shared_ptr<Plane> createPlane() noexcept;
+
+        /// Get a bounding box.
+        impl::BoundingBox boundsOf() const override;
 
     private:
         const std::vector<impl::Intersection> localIntersection(const impl::Ray&) const noexcept override;

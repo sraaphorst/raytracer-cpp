@@ -129,3 +129,10 @@ TEST_CASE("Shape: Finding the normal on a child object") {
 
     REQUIRE(s->normalAt(make_point(1.7321, 1.1547, -5.5774)) == make_vector(0.2857, 0.4286, -0.8571));
 }
+
+TEST_CASE("Shape: Test shape has arbitrary bounds") {
+    const auto s = TestShape::createTestShape();
+    const auto box = s->boundsOf();
+    REQUIRE(box.getMinPoint() == make_point(-1, -1, -1));
+    REQUIRE(box.getMaxPoint() == make_point(1, 1, 1));
+}

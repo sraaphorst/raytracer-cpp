@@ -9,6 +9,7 @@
 #include <numeric>
 #include <vector>
 
+#include "bounding_box.h"
 #include "cone.h"
 #include "constmath.h"
 #include "intersection.h"
@@ -59,6 +60,13 @@ namespace raytracer::shapes {
         const auto x = ray.getOrigin()[tuple_constants::x] + t * ray.getDirection()[tuple_constants::x];
         const auto z = ray.getOrigin()[tuple_constants::z] + t * ray.getDirection()[tuple_constants::z];
         return x * x + z * z <= y * y;
+    }
+
+    BoundingBox Cone::boundsOf() const {
+        const auto a = const_absd(minY);
+        const auto b = const_absd(maxY);
+        const auto limit = const_maxd(a, b);
+        return BoundingBox{make_point(-limit, minY, -limit), make_point(limit, maxY, limit)};
     }
 
     const std::vector<Intersection> Cone::localIntersection(const Ray &ray) const noexcept {

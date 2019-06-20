@@ -7,6 +7,7 @@
 #include <memory>
 #include <vector>
 
+#include "bounding_box.h"
 #include "affine_transform.h"
 #include "intersection.h"
 #include "material.h"
@@ -32,6 +33,11 @@ public:
         std::shared_ptr<TestShape> ts = std::make_shared<TestShape>(dummy{});
         registerInstance(ts);
         return ts;
+    }
+
+    /// Get a bounding box.
+    raytracer::impl::BoundingBox boundsOf() const override {
+        return raytracer::impl::BoundingBox{raytracer::make_point(-1, -1, -1), raytracer::make_point(1, 1, 1)};
     }
 
 private:

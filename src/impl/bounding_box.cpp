@@ -7,7 +7,7 @@
 #include "vec.h"
 #include "bounding_box.h"
 
-namespace raytracer {
+namespace raytracer::impl {
     void BoundingBox::addPoint(const Tuple &point) noexcept {
         const auto minx = point[tuple_constants::x] < min_point[tuple_constants::x]
                           ? point[tuple_constants::x] : min_point[tuple_constants::x];
@@ -25,5 +25,10 @@ namespace raytracer {
 
         min_point = make_point(minx, miny, minz);
         max_point = make_point(maxx, maxy, maxz);
+    }
+
+    void BoundingBox::addBox(const BoundingBox &box) noexcept {
+        addPoint(box.getMinPoint());
+        addPoint(box.getMaxPoint());
     }
 }

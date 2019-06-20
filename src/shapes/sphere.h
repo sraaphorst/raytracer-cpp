@@ -14,6 +14,7 @@
 #include "vec.h"
 
 namespace raytracer::impl {
+    class BoundingBox;
     class Intersection;
     class Ray;
 }
@@ -30,6 +31,9 @@ namespace raytracer::shapes {
         // TODO: MOVE OR DELETE
         /// Factory method to create a radius 1 glassy sphere at the origin.
         static std::shared_ptr<Sphere> createGlassSphere() noexcept;
+
+        /// Get a bounding box.
+        impl::BoundingBox boundsOf() const override;
 
     private:
         const std::vector<impl::Intersection> localIntersection(const impl::Ray&) const noexcept override;

@@ -62,6 +62,16 @@ namespace raytracer {
         return d >= 0 ? d : -d;
     }
 
+    /// max value
+    constexpr double const_maxd(const double d1, const double d2) {
+        return d1 > d2 ? d1 : d2;
+    }
+
+    /// min value
+    constexpr double const_mind(const double d1, const double d2) {
+        return d1 < d2 ? d1 : d2;
+    }
+
     /// constexpr calculate the number of digits.
     template <class T>
     constexpr std::enable_if_t<std::is_arithmetic_v<T>, T>

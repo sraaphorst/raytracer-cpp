@@ -10,6 +10,7 @@
 #include <numeric>
 #include <vector>
 
+#include "bounding_box.h"
 #include "intersection.h"
 #include "ray.h"
 #include "vec.h"
@@ -150,4 +151,14 @@ TEST_CASE("Cone: The normal vector on a cone's end caps") {
 
     for (size_t i = 0; i < 6; ++i)
         REQUIRE(c->localNormalAt(points[i]) == normals[i]);
+}
+
+TEST_CASE("Cone: A bounded cone has a bounding box") {
+    auto c = Cone::createCone();
+    c->setMinimumY(-5);
+    c->setMaximumY(3);
+
+    const auto box = c->boundsOf();
+    REQUIRE(box.getMinPoint() == make_point(-5, -5, -5));
+    REQUIRE(box.getMaxPoint() == make_point(5, 3, 5));
 }

@@ -11,6 +11,7 @@
 #include "bounding_box.h"
 
 using namespace raytracer;
+using namespace raytracer::impl;
 
 TEST_CASE("BoundingBox: Creating an empty BoundingBox") {
     constexpr BoundingBox box{};
@@ -30,4 +31,12 @@ TEST_CASE("BoundingBox: Adding points to an empty BoundingBox") {
     box.addPoint(make_point(7, 0, -3));
     REQUIRE(box.getMinPoint() == make_point(-5, 0, -3));
     REQUIRE(box.getMaxPoint() == make_point(7, 2, 0));
+}
+
+TEST_CASE("BoundingBox:: Adding one bounding box to another") {
+    BoundingBox box1{make_point(-5, -2, 0), make_point(7, 4, 4)};
+    const BoundingBox box2{make_point(8, -7, -2), make_point(14, 2, 8)};
+    box1.addBox(box2);
+    REQUIRE(box1.getMinPoint() == make_point(-5, -7, -2));
+    REQUIRE(box1.getMaxPoint() == make_point(14, 4, 8));
 }

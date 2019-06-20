@@ -9,6 +9,7 @@
 #include <array>
 #include <vector>
 
+#include "bounding_box.h"
 #include "intersection.h"
 #include "ray.h"
 #include "vec.h"
@@ -117,4 +118,11 @@ TEST_CASE("Cube: The normal on the surface of a cube") {
         const auto &normal = c->localNormalAt(origin);
         REQUIRE(normal == normals[i]);
     }
+}
+
+TEST_CASE("Cube: A cube has a bounding box") {
+    const auto c = Cube::createCube();
+    const auto box = c->boundsOf();
+    REQUIRE(box.getMinPoint() == make_point(-1, -1, -1));
+    REQUIRE(box.getMaxPoint() == make_point(1, 1, 1));
 }

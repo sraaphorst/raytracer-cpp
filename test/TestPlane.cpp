@@ -6,9 +6,10 @@
 
 #include <catch.hpp>
 
-#include "impl/intersection.h"
-#include "shapes/plane.h"
-#include "impl/ray.h"
+#include "bounding_box.h"
+#include "intersection.h"
+#include "plane.h"
+#include "ray.h"
 #include "vec.h"
 
 using namespace raytracer;
@@ -53,4 +54,12 @@ TEST_CASE("Plane: A ray intersecting a plane from below") {
     REQUIRE(xs.size() == 1);
     REQUIRE(ALMOST_EQUALS(xs[0].getT(), 1));
     REQUIRE(xs[0].getObject() == p);
+}
+
+TEST_CASE("Plane: A plane has a bounding box") {
+    const auto p = Plane::createPlane();
+    const auto box = p->boundsOf();
+    REQUIRE(box.getMinPoint() == make_point(predefined_tuples::ninf, 0, predefined_tuples::ninf));
+    REQUIRE(box.getMaxPoint() == make_point(predefined_tuples::inf, 0, predefined_tuples::inf));
+
 }
