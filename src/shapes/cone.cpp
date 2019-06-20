@@ -62,7 +62,7 @@ namespace raytracer::shapes {
         return x * x + z * z <= y * y;
     }
 
-    BoundingBox Cone::boundsOf() const {
+    BoundingBox Cone::bounds() const {
         const auto a = const_absd(minY);
         const auto b = const_absd(maxY);
         const auto limit = const_maxd(a, b);

@@ -33,7 +33,7 @@ namespace raytracer::shapes {
         static std::shared_ptr<Sphere> createGlassSphere() noexcept;
 
         /// Get a bounding box.
-        impl::BoundingBox boundsOf() const override;
+        impl::BoundingBox bounds() const override;
 
     private:
         const std::vector<impl::Intersection> localIntersection(const impl::Ray&) const noexcept override;

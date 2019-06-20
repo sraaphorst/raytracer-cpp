@@ -6,9 +6,9 @@
 
 #include <algorithm>
 #include <memory>
-#include <numeric>
 #include <vector>
 
+#include "bounding_box.h"
 #include "constmath.h"
 #include "cylinder.h"
 #include "intersection.h"
@@ -21,8 +21,8 @@ using namespace raytracer::impl;
 namespace raytracer::shapes {
     Cylinder::Cylinder(dummy d) noexcept:
         Shape{d},
-        minY{-std::numeric_limits<double>::infinity()},
-        maxY{ std::numeric_limits<double>::infinity()},
+        minY{math_constants::ninf<>},
+        maxY{math_constants::inf<>},
         capped{false} {}
 
     std::shared_ptr<Cylinder> Cylinder::createCylinder() noexcept {
@@ -53,6 +53,11 @@ namespace raytracer::shapes {
 
     void Cylinder::setCapped(bool c) noexcept {
         capped = c;
+    }
+
+    /// Get a bounding box.
+    BoundingBox Cylinder::bounds() const {
+        return BoundingBox{make_point(-1, minY, -1), make_point(1, maxY, 1)};
     }
 
     bool Cylinder::checkCap(const impl::Ray &ray, double t) const noexcept {

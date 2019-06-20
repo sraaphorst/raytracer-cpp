@@ -44,7 +44,7 @@ namespace raytracer::shapes {
         void setCapped(bool) noexcept;
 
         /// Get a bounding box.
-        impl::BoundingBox boundsOf() const override;
+        impl::BoundingBox bounds() const override;
 
     private:
         bool checkCap(const impl::Ray&, double, double) const noexcept;

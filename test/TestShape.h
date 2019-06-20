@@ -36,7 +36,7 @@ public:
     }
 
     /// Get a bounding box.
-    raytracer::impl::BoundingBox boundsOf() const override {
+    raytracer::impl::BoundingBox bounds() const override {
         return raytracer::impl::BoundingBox{raytracer::make_point(-1, -1, -1), raytracer::make_point(1, 1, 1)};
     }
 

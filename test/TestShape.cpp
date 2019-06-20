@@ -132,7 +132,15 @@ TEST_CASE("Shape: Finding the normal on a child object") {
 
 TEST_CASE("Shape: Test shape has arbitrary bounds") {
     const auto s = TestShape::createTestShape();
-    const auto box = s->boundsOf();
+    const auto box = s->bounds();
     REQUIRE(box.getMinPoint() == make_point(-1, -1, -1));
     REQUIRE(box.getMaxPoint() == make_point(1, 1, 1));
+}
+
+TEST_CASE("Shape: Querying a shape's bounding box in its parent's space") {
+    auto s = Sphere::createSphere();
+    s->setTransformation(translation(1, -3, 5) * scale(0.5, 2, 4));
+    const auto box = s->parentSpaceBounds();
+    REQUIRE(box.getMinPoint() == make_point(0.5, -5, 1));
+    REQUIRE(box.getMaxPoint() == make_point(1.5, -1, 9));
 }

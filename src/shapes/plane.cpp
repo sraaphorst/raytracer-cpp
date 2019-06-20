@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "bounding_box.h"
+#include "constmath.h"
 #include "intersection.h"
 #include "plane.h"
 #include "ray.h"
@@ -25,9 +26,9 @@ namespace raytracer::shapes {
         return plane;
     }
 
-    BoundingBox Plane::boundsOf() const {
-        return BoundingBox{make_point(predefined_tuples::ninf, 0, predefined_tuples::ninf),
-                           make_point(predefined_tuples::inf, 0, predefined_tuples::inf)};
+    BoundingBox Plane::bounds() const {
+        return BoundingBox{make_point(math_constants::ninf<>, 0, math_constants::ninf<>),
+                           make_point(math_constants::inf<>, 0, math_constants::inf<>)};
     }
 
     const std::vector<Intersection> Plane::localIntersection(const Ray &ray) const noexcept {

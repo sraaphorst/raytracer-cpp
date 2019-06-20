@@ -122,7 +122,7 @@ TEST_CASE("Cube: The normal on the surface of a cube") {
 
 TEST_CASE("Cube: A cube has a bounding box") {
     const auto c = Cube::createCube();
-    const auto box = c->boundsOf();
+    const auto box = c->bounds();
     REQUIRE(box.getMinPoint() == make_point(-1, -1, -1));
     REQUIRE(box.getMaxPoint() == make_point(1, 1, 1));
 }

@@ -13,6 +13,7 @@
 #include "shape.h"
 
 namespace raytracer::impl {
+    class BoundingBox;
     class Intersection;
     class Ray;
 }
@@ -37,6 +38,9 @@ namespace raytracer::shapes {
         void setMaximumY(double) noexcept;
         bool isCapped() const noexcept;
         void setCapped(bool) noexcept;
+
+        /// Get a bounding box.
+        impl::BoundingBox bounds() const override;
 
     private:
         bool checkCap(const impl::Ray&, double) const noexcept;

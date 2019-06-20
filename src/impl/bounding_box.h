@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "affine_transform.h"
 #include "vec.h"
 
 namespace raytracer::impl {
@@ -42,5 +43,17 @@ namespace raytracer::impl {
 
         /// Merges the given bounding box to the original.
         void addBox(const BoundingBox&) noexcept;
+
+        /// Determines if the bounding box contains a point.
+        bool containsPoint(const Tuple&) const noexcept;
+
+        /// Determines if the bounding box contains another.
+        bool containsBox(const BoundingBox&) const noexcept;
+
+        /**
+         * Apply a transformation to this bounding box to get another bounding box
+         * that contains all eight transformed points of the original box.
+         */
+        BoundingBox transform(const Transformation&) const noexcept;
     };
 }

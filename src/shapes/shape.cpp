@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "affine_transform.h"
+#include "bounding_box.h"
 #include "shape.h"
 #include "intersection.h"
 #include "material.h"
@@ -127,5 +128,9 @@ namespace raytracer::shapes {
                                     n1[tuple_constants::y],
                                     n1[tuple_constants::z]).normalize();
         return (parent == nullptr) ? n2 : parent->normalToWorld(n2);
+    }
+
+    BoundingBox Shape::parentSpaceBounds() const {
+        return bounds().transform(transformation);
     }
 }

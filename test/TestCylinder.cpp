@@ -10,6 +10,8 @@
 #include <numeric>
 #include <vector>
 
+#include "bounding_box.h"
+#include "constmath.h"
 #include "intersection.h"
 #include "ray.h"
 #include "vec.h"
@@ -178,4 +180,11 @@ TEST_CASE("Cylinder: The normal vector on a cylinder's end caps") {
 
     for (size_t i = 0; i < 6; ++i)
         REQUIRE(c->localNormalAt(points[i]) == normals[i]);
+}
+
+TEST_CASE("Cylinder: An unbounded cylinder has a bounding box") {
+    const auto c = Cylinder::createCylinder();
+    const auto box = c->bounds();
+    REQUIRE(box.getMinPoint() == make_point(-1, math_constants::ninf<>, -1));
+    REQUIRE(box.getMaxPoint() == make_point( 1, math_constants::inf<>,   1));
 }

@@ -29,7 +29,7 @@ namespace raytracer::shapes {
     }
 
 
-    BoundingBox Cube::boundsOf() const {
+    BoundingBox Cube::bounds() const {
         return BoundingBox{make_point(-1, -1, -1), make_point(1, 1, 1)};
     }
 

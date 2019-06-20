@@ -35,7 +35,7 @@ namespace raytracer::shapes {
         return sphere;
     }
 
-    BoundingBox Sphere::boundsOf() const {
+    BoundingBox Sphere::bounds() const {
         return BoundingBox{make_point(-1, -1, -1), make_point(1, 1, 1)};
     }
 

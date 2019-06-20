@@ -12,6 +12,7 @@
 #include <tuple>
 #include <vector>
 
+#include "bounding_box.h"
 #include "constmath.h"
 #include "group.h"
 #include "intersection.h"
@@ -39,6 +40,13 @@ namespace raytracer::shapes {
         for (auto &shape: shapes)
             shape->setParent(nullptr);
         shapes.clear();
+    }
+
+    BoundingBox Group::bounds() const {
+        BoundingBox box{};
+        for (const auto &shape: shapes)
+            box.addBox(shape->parentSpaceBounds());
+        return box;
     }
 
     const std::vector<Intersection> Group::localIntersection(const Ray &ray) const noexcept {

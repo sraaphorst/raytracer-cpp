@@ -96,7 +96,13 @@ namespace raytracer::shapes {
          /**
           * Create a bounding box for a shape.
           */
-         virtual impl::BoundingBox boundsOf() const;
+         virtual impl::BoundingBox bounds() const = 0;
+
+         /**
+          * Report a shape's bounds in the space of the shape's parent.
+          * This is used for groups and CSG.
+          */
+          impl::BoundingBox parentSpaceBounds() const;
 
     protected:
         /**

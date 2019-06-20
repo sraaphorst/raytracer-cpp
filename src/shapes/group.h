@@ -14,6 +14,7 @@
 #include "vec.h"
 
 namespace raytracer::impl {
+    class BoundingBox;
     class Intersection;
     class Ray;
 }
@@ -43,8 +44,11 @@ namespace raytracer::shapes {
 
         const std::vector<std::shared_ptr<Shape>> getShapes() const noexcept;
 
-        // We need to clear the shapes out of a group in order to not cause memory leaks.
+        /// We need to clear the shapes out of a group in order to not cause memory leaks.
         void clearShapes() noexcept;
+
+        /// Get a bounding box.
+        impl::BoundingBox bounds() const override;
 
     private:
         const std::vector<impl::Intersection> localIntersection(const impl::Ray&) const noexcept override;

@@ -12,6 +12,7 @@
 
 #include <TestShape.h>
 
+#include "cylinder.h"
 #include "intersection.h"
 #include "ray.h"
 #include "sphere.h"
@@ -81,4 +82,21 @@ TEST_CASE("Group: Intersecting a transformed group") {
 
 TEST_CASE("Group: localNormalAt not supported") {
     REQUIRE_THROWS(Group::createGroup()->localNormalAt(predefined_tuples::zero_point));
+}
+
+TEST_CASE("Group: A group has a bounding box that contains its children") {
+    auto s = Sphere::createSphere();
+    s->setTransformation(translation(2, 5, -3) * scale(2, 2, 2));
+
+    auto c = Cylinder::createCylinder();
+    c->setMinimumY(-2);
+    c->setMaximumY(2);
+    c->setTransformation(translation(-4, -1, 4) * scale(0.5, 1, 0.5));
+
+    auto g = Group::createGroup();
+    g->addAll(s, c);
+
+    const auto box = g->bounds();
+    REQUIRE(box.getMinPoint() == make_point(-4.5, -3, -5));
+    REQUIRE(box.getMaxPoint() == make_point(4, 7, 4.5));
 }

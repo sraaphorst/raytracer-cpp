@@ -12,6 +12,7 @@
 #include <ostream>
 #include <type_traits>
 
+#include "constmath.h"
 #include "transformers.h"
 
 namespace raytracer {
@@ -199,11 +200,8 @@ namespace raytracer {
         static constexpr Tuple x1{1, 0, 0, tuple_constants::vector_flag};
         static constexpr Tuple y1{0, 1, 0, tuple_constants::vector_flag};
         static constexpr Tuple z1{0, 0, 1, tuple_constants::vector_flag};
-
-        static constexpr auto inf = std::numeric_limits<double>::infinity();
-        static constexpr auto ninf = -std::numeric_limits<double>::infinity();
-        static constexpr Tuple min_point{inf, inf, inf, tuple_constants::point_flag};
-        static constexpr Tuple max_point{ninf, ninf, ninf, tuple_constants::point_flag};
+        static constexpr Tuple min_point{math_constants::inf<>, math_constants::inf<>, math_constants::inf<>, tuple_constants::point_flag};
+        static constexpr Tuple max_point{math_constants::ninf<>, math_constants::ninf<>, math_constants::ninf<>, tuple_constants::point_flag};
     };
 
     using Colour = Vector<double, 3>;

@@ -141,7 +141,7 @@ TEST_CASE("Sphere: Transparency and Refractive Index for the default material") 
 
 TEST_CASE("Sphere: A sphere has a bounding box") {
     const auto s = Sphere::createSphere();
-    const auto box = s->boundsOf();
+    const auto box = s->bounds();
     REQUIRE(box.getMinPoint() == make_point(-1, -1, -1));
     REQUIRE(box.getMaxPoint() == make_point(1, 1, 1));
 }

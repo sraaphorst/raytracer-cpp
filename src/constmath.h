@@ -7,6 +7,7 @@
 #pragma once
 
 #include <cmath>
+#include <numeric>
 
 namespace raytracer {
     namespace math_constants {
@@ -17,6 +18,8 @@ namespace raytracer {
         template<typename T = double> constexpr T pi_by_three = pi<T> / 3;
         template<typename T = double> constexpr T pi_by_four = pi<T> / 4;
         template<typename T = double> constexpr T pi_by_six = pi<T> / 6;
+        template <typename T = double> constexpr T inf = std::numeric_limits<T>::infinity();
+        template <typename T = double> constexpr T ninf = -std::numeric_limits<T>::infinity();
     }
 
     namespace math_details {

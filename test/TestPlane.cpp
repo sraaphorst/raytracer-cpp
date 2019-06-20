@@ -7,6 +7,7 @@
 #include <catch.hpp>
 
 #include "bounding_box.h"
+#include "constmath.h"
 #include "intersection.h"
 #include "plane.h"
 #include "ray.h"
@@ -58,8 +59,8 @@ TEST_CASE("Plane: A ray intersecting a plane from below") {
 
 TEST_CASE("Plane: A plane has a bounding box") {
     const auto p = Plane::createPlane();
-    const auto box = p->boundsOf();
-    REQUIRE(box.getMinPoint() == make_point(predefined_tuples::ninf, 0, predefined_tuples::ninf));
-    REQUIRE(box.getMaxPoint() == make_point(predefined_tuples::inf, 0, predefined_tuples::inf));
+    const auto box = p->bounds();
+    REQUIRE(box.getMinPoint() == make_point(math_constants::ninf<>, 0, math_constants::ninf<>));
+    REQUIRE(box.getMaxPoint() == make_point(math_constants::inf<>, 0, math_constants::inf<>));
 
 }

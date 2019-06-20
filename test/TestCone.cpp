@@ -158,7 +158,7 @@ TEST_CASE("Cone: A bounded cone has a bounding box") {
     c->setMinimumY(-5);
     c->setMaximumY(3);
 
-    const auto box = c->boundsOf();
+    const auto box = c->bounds();
     REQUIRE(box.getMinPoint() == make_point(-5, -5, -5));
     REQUIRE(box.getMaxPoint() == make_point(5, 3, 5));
 }
