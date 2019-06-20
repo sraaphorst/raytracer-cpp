@@ -10,6 +10,8 @@
 #include "vec.h"
 
 namespace raytracer::impl {
+    class Ray;
+
     class BoundingBox final {
         Tuple min_point;
         Tuple max_point;
@@ -55,5 +57,8 @@ namespace raytracer::impl {
          * that contains all eight transformed points of the original box.
          */
         BoundingBox transform(const Transformation&) const noexcept;
+
+        /// Determine if a ray intersects the box.
+        bool intersects(const Ray&) const noexcept;
     };
 }

@@ -35,7 +35,6 @@ namespace raytracer::shapes {
     private:
         const std::vector<impl::Intersection> localIntersection(const impl::Ray&) const noexcept override;
         const Tuple localNormalAt(const Tuple&) const noexcept override;
-        std::pair<double, double> checkAxis(const double origin, const double direction) const noexcept;
     };
 }
 

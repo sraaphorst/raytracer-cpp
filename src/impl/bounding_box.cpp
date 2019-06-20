@@ -5,6 +5,8 @@
  */
 
 #include "affine_transform.h"
+#include "cube_functions.h"
+#include "ray.h"
 #include "vec.h"
 #include "bounding_box.h"
 
@@ -60,5 +62,20 @@ namespace raytracer::impl {
         box.addPoint(trans * max_point);
 
         return box;
+    }
+
+    bool BoundingBox::intersects(const Ray &ray) const noexcept {
+        std::vector<double> mins;
+        std::vector<double> maxs;
+
+        for (size_t i = 0; i < 3; ++i) {
+            const auto [vmin, vmax] = checkAxis(ray.getOrigin()[i], ray.getDirection()[i]);
+            mins.emplace_back(vmin);
+            maxs.emplace_back(vmax);
+        }
+
+        const auto tmin = *std::max_element(std::cbegin(mins), std::cend(mins));
+        const auto tmax = *std::min_element(std::cbegin(maxs), std::cend(maxs));
+        return tmin <= tmax;
     }
 }

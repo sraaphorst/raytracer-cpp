@@ -27,6 +27,8 @@ add_library(raytracer SHARED
 
         impl/bounding_box.h
         impl/bounding_box.cpp
+        impl/cube_functions.h
+        impl/cube_functions.cpp
         impl/hit.cpp
         impl/instance_manager.cpp
         impl/intersection.cpp

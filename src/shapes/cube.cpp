@@ -12,6 +12,7 @@
 #include "bounding_box.h"
 #include "constmath.h"
 #include "cube.h"
+#include "cube_functions.h"
 #include "intersection.h"
 #include "ray.h"
 #include "shape.h"
@@ -62,19 +63,5 @@ namespace raytracer::shapes {
             return make_vector(0, point[1], 0);
         else
             return make_vector(0, 0, point[2]);
-    }
-
-    std::pair<double, double> Cube::checkAxis(const double origin,
-            const double direction) const noexcept {
-        // If the direction is close to 0, assume parallel, in which case, no intersection.
-        if (ALMOST_EQUALS(direction, 0))
-            return {(-1 - origin) * std::numeric_limits<double>::infinity(),
-                    (1 - origin) * std::numeric_limits<double>::infinity()};
-
-        auto tmin = (-1 - origin) / direction;
-        auto tmax = ( 1 - origin) / direction;
-        if (tmin > tmax)
-            std::swap(tmin, tmax);
-        return {tmin, tmax};
     }
 }
