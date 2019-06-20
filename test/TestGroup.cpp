@@ -100,3 +100,29 @@ TEST_CASE("Group: A group has a bounding box that contains its children") {
     REQUIRE(box.getMinPoint() == make_point(-4.5, -3, -5));
     REQUIRE(box.getMaxPoint() == make_point(4, 7, 4.5));
 }
+
+TEST_CASE("Group: Intersecting ray and group doesn't test children if box is missed") {
+    const auto c = TestShape::createTestShape();
+    auto g = Group::createGroup();
+    g->add(c);
+
+    const Ray ray{make_point(0, 0, -5), make_vector(0, 1, 0)};
+    g->intersect(ray);
+
+    // The TestShape saves any ray that intersects it, so if it didn't intersect it as we expect, then
+    // the saved ray would be the default ray.
+    REQUIRE(c->saved_ray == Ray{});
+}
+
+TEST_CASE("Group: Intersecting ray and group tests children if box is hit") {
+    const auto c = TestShape::createTestShape();
+    auto g = Group::createGroup();
+    g->add(c);
+
+    const Ray ray{make_point(0, 0, -5), make_vector(0, 0, 1)};
+    g->intersect(ray);
+
+    // The TestShape saves any ray that intersects it, so if it intersected it as we expect it to, then
+    // it would be the saved ray.
+    REQUIRE(c->saved_ray == ray);
+}
