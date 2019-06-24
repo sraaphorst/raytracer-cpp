@@ -36,3 +36,6 @@ target_link_libraries(table PRIVATE raytracer OpenMP::OpenMP_CXX)
 
 add_executable(cylinders scenes/cylinders.cpp)
 target_link_libraries(cylinders PRIVATE raytracer OpenMP::OpenMP_CXX)
+
+add_executable(cover scenes/cover.cpp)
+target_link_libraries(cover PRIVATE raytracer OpenMP::OpenMP_CXX)
