@@ -9,7 +9,6 @@
 #include "common.h"
 #include "matrix.h"
 #include "vec.h"
-#include "transformers.h"
 
 using namespace raytracer;
 using namespace raytracer::transformers;
@@ -57,7 +56,8 @@ TEST_CASE("Matrix: Matrix should be able to determine equality") {
     [[maybe_unused]] constexpr auto res1 = (m1 == m1);
     REQUIRE(m1 == m1);
     REQUIRE(m2 == m2);
-    REQUIRE(m1 != m1 + m1);
+    m1 + m1;
+    REQUIRE(m1 != (m1 + m1));
     REQUIRE(m1 == (m1 + m1)/2);
 }
 

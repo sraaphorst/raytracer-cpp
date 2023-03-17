@@ -6,7 +6,6 @@
 
 #include <catch.hpp>
 
-#include <stdexcept>
 #include <vector>
 
 #include "patterns/checkerpattern.h"
