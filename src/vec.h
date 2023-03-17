@@ -105,11 +105,11 @@ namespace raytracer {
         }
 
         constexpr bool operator!=(const Vector &rhs) const noexcept {
-            return !(rhs == *this);
+            return rhs != *this;
         }
 
-        constexpr T dot_product(const Vector &v) const noexcept {
-            return transformers::details::dot_product<T, N>(contents, v.contents);
+        [[nodiscard]] constexpr T dot_product(const Vector &v) const noexcept {
+            return transformers::dot_product<T, N>(contents, v.contents);
         }
 
         constexpr T magnitude() const noexcept {

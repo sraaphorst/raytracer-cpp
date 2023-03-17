@@ -4,6 +4,8 @@
  * By Sebastian Raaphorst, 2019.
  */
 
+#include <vector>
+
 #include "affine_transform.h"
 #include "cube_functions.h"
 #include "ray.h"

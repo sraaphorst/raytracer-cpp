@@ -4,7 +4,6 @@
  * By Sebastian Raaphorst, 2018.
  */
 
-#include <climits>
 #include <memory>
 #include <mutex>
 #include <vector>

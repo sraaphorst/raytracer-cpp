@@ -72,7 +72,7 @@ namespace raytracer {
     }
 
     bool Material::operator!=(const Material &other) const noexcept {
-        return *this != other;
+        return !(*this == other);
     }
 
     const std::shared_ptr<Pattern> &Material::getPattern() const noexcept {

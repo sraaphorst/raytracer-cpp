@@ -133,7 +133,7 @@ namespace raytracer {
         }
 
         constexpr const Matrix<T, cols, rows> transpose() const {
-            return transformers::details::transpose(contents);
+            return transformers::transpose(contents);
         }
 
         constexpr Matrix operator+(const Matrix &other) const {
@@ -178,7 +178,7 @@ namespace raytracer {
         }
 
         constexpr bool operator!=(const Matrix &other) const {
-            return !(*this == other);
+            return *this != other;
         }
 
         static constexpr size_t row_count() {
@@ -217,15 +217,15 @@ namespace raytracer {
             static_assert(rows == cols, "Matrix::invert() only for use with square matrices");
             static_assert(std::is_floating_point_v<T> && std::is_signed_v<T>,
                     "Matrix::invert() only for use with signed floating point matrices");
-            return Matrix{::raytracer::details::array_cofactors<T, rows>(contents)}.transpose() /
-                ::raytracer::details::array_determinant<T,rows>(contents);
+            return Matrix{details::array_cofactors<T, rows>(contents)}.transpose() /
+                details::array_determinant<T,rows>(contents);
         }
 
         constexpr Matrix andThen(const Matrix &other) const {
             static_assert(rows == 4 && cols == 4, "Matrix::andThen() only for use with 4x4 matrices");
             static_assert(std::is_floating_point_v<T> && std::is_signed_v<T>,
                     "Matrix::andThen() only for use with signed floating point matrices");
-            return Matrix{transformers::details::mat_mult<T, 4, 4, 4>(other.contents, contents)};
+            return Matrix{transformers::helpers::mat_mult<T, 4, 4, 4>(other.contents, contents)};
         }
 
         /// Omit row i and column j to get a submatrix of one dimension less in rows and cols.
@@ -263,10 +263,10 @@ namespace raytracer {
          * use any std::function.
          */
         template<typename T = double, size_t R = 4, size_t C = 4>
-        static constexpr Matrix<T, R, C> ones = transformers::details::make_uniform_matrix<T, R, C>(1);
+        static constexpr Matrix<T, R, C> ones = transformers::make_uniform_matrix<T, R, C>(1);
 
         /// Identity matrix, only defined as a square matrix.
         template<typename T = double, size_t N = 4>
-        static constexpr Matrix<T, N, N> I = transformers::details::make_diagonal_matrix<T, N, N>(0, 1);
+        static constexpr Matrix<T, N, N> I = transformers::make_diagonal_matrix<T, N, N>(0, 1);
     };
 }
